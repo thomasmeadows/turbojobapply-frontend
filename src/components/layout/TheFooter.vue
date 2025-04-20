@@ -8,7 +8,7 @@ const currentYear = new Date().getFullYear();
       <div class="xl:grid xl:grid-cols-3 xl:gap-8">
         <div class="space-y-8 xl:col-span-1">
           <div class="flex items-center">
-            <span class="text-2xl font-bold">Turbo<span class="text-secondary-400">Job Apply</span></span>
+            <img src="/turbojobapply.svg" alt="Turbo Job Apply Logo" class="h-8 w-auto" />
           </div>
           <p class="text-gray-300 text-base">
             Connecting talented professionals with their dream careers.

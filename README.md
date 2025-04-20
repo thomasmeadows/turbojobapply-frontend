@@ -1,5 +1,20 @@
-# Vue 3 + TypeScript + Vite
+# Turbo Job Apply
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Turbo Job Apply is a modern job search platform connecting talented professionals with their dream careers. Our platform offers powerful search features, job application tracking, and premium features to help you land your next opportunity.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## Features
+
+- Fast and efficient job search
+- Save and track your job applications
+- Premium features for serious job seekers
+- Modern, responsive user interface
+
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```

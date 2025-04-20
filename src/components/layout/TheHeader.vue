@@ -32,7 +32,7 @@ const logout = () => {
         <!-- Logo and primary navigation -->
         <div class="flex">
           <router-link to="/" class="flex-shrink-0 flex items-center" @click="closeMobileMenu">
-            <span class="text-2xl font-bold text-primary-600">Turbo <span class="text-secondary-500">Job Apply</span></span>
+            <img src="/turbojobapply.svg" alt="Turbo Job Apply Logo" class="h-8 w-auto" />
           </router-link>
           
           <!-- Desktop Navigation -->
