@@ -2,6 +2,9 @@
   "name": "turbo-job-apply",
   "private": true,
   "version": "0.1.0",
+  "engines": {
+    "node": "23.x"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
