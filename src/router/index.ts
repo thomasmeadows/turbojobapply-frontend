@@ -10,6 +10,12 @@ import DashboardPage from '../views/DashboardPage.vue';
 import SavedJobsPage from '../views/SavedJobsPage.vue';
 import ProfilePage from '../views/ProfilePage.vue';
 import SubscriptionPage from '../views/SubscriptionPage.vue';
+import PricingPage from '../views/PricingPage.vue';
+import AboutPage from '../views/AboutPage.vue';
+import PrivacyPolicyPage from '../views/PrivacyPolicyPage.vue';
+import CookiePolicyPage from '../views/CookiePolicyPage.vue';
+import AccessibilityPage from '../views/AccessibilityPage.vue';
+import TermsOfServicePage from '../views/TermsOfServicePage.vue';
 import NotFoundPage from '../views/NotFoundPage.vue';
 
 const routes = [
@@ -44,6 +50,30 @@ const routes = [
     meta: { title: 'Sign Up - CareerHub', guestOnly: true }
   },
   {
+    path: '/pricing',
+    name: 'Pricing',
+    component: PricingPage,
+    meta: { title: 'Pricing - Turbo Job Apply' }
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: AboutPage,
+    meta: { title: 'About Us - Turbo Job Apply' }
+  },
+  {
+    path: '/privacy-policy',
+    name: 'PrivacyPolicy',
+    component: PrivacyPolicyPage,
+    meta: { title: 'Privacy Policy - Turbo Job Apply' }
+  },
+  {
+    path: '/cookie-policy',
+    name: 'CookiePolicy',
+    component: CookiePolicyPage,
+    meta: { title: 'Cookie Policy - Turbo Job Apply' }
+  },
+  {
     path: '/dashboard',
     name: 'Dashboard',
     component: DashboardPage,
@@ -66,6 +96,18 @@ const routes = [
     name: 'Subscription',
     component: SubscriptionPage,
     meta: { title: 'Premium Subscription - CareerHub', requiresAuth: true }
+  },
+  {
+    path: '/accessibility',
+    name: 'Accessibility',
+    component: AccessibilityPage,
+    meta: { title: 'Accessibility - Turbo Job Apply' }
+  },
+  {
+    path: '/terms-of-service',
+    name: 'TermsOfService',
+    component: TermsOfServicePage,
+    meta: { title: 'Terms of Service - Turbo Job Apply' }
   },
   {
     path: '/:pathMatch(.*)*',

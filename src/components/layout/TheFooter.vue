@@ -69,11 +69,6 @@ const currentYear = new Date().getFullYear();
               <ul class="mt-4 space-y-4">
                 <li>
                   <a href="#" class="text-base text-gray-300 hover:text-white">
-                    Post a Job
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
                     Pricing
                   </a>
                 </li>
@@ -101,17 +96,7 @@ const currentYear = new Date().getFullYear();
                 </li>
                 <li>
                   <a href="#" class="text-base text-gray-300 hover:text-white">
-                    Our Team
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
                     Careers at Turbo Apply
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
-                    Blog
                   </a>
                 </li>
               </ul>
@@ -120,24 +105,24 @@ const currentYear = new Date().getFullYear();
               <h3 class="text-sm font-semibold text-gray-200 tracking-wider uppercase">Legal</h3>
               <ul class="mt-4 space-y-4">
                 <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
+                  <router-link to="/privacy-policy" class="text-base text-gray-300 hover:text-white">
                     Privacy Policy
-                  </a>
+                  </router-link>
                 </li>
                 <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
+                  <router-link to="/terms-of-service" class="text-base text-gray-300 hover:text-white">
                     Terms of Service
-                  </a>
+                  </router-link>
                 </li>
                 <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
+                  <router-link to="/cookie-policy" class="text-base text-gray-300 hover:text-white">
                     Cookie Policy
-                  </a>
+                  </router-link>
                 </li>
                 <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
+                  <router-link to="/accessibility" class="text-base text-gray-300 hover:text-white">
                     Accessibility
-                  </a>
+                  </router-link>
                 </li>
               </ul>
             </div>

@@ -54,7 +54,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Glacial Indifference', 'Helvetica', 'Arial', 'sans-serif'],
       },
       spacing: {
         '4.5': '1.125rem',

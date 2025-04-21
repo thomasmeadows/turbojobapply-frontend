@@ -37,13 +37,17 @@ const logout = () => {
           
           <!-- Desktop Navigation -->
           <nav class="hidden sm:ml-6 sm:flex sm:space-x-8">
-            <router-link to="/" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200" 
-                :class="[$route.path === '/' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700']">
-              Home
-            </router-link>
             <router-link to="/search" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200" 
                 :class="[$route.path === '/search' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700']">
               Find Jobs
+            </router-link>
+            <router-link to="/pricing" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200" 
+                :class="[$route.path === '/pricing' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700']">
+              Pricing
+            </router-link>
+            <router-link to="/about" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200" 
+                :class="[$route.path === '/about' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700']">
+              About
             </router-link>
           </nav>
         </div>
@@ -106,15 +110,20 @@ const logout = () => {
     <!-- Mobile menu -->
     <div v-if="mobileMenuOpen" class="sm:hidden" id="mobile-menu">
       <div class="pt-2 pb-3 space-y-1">
-        <router-link to="/" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors duration-200" 
-            :class="[$route.path === '/' ? 'bg-primary-50 border-primary-500 text-primary-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700']"
-            @click="closeMobileMenu">
-          Home
-        </router-link>
         <router-link to="/search" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors duration-200" 
             :class="[$route.path === '/search' ? 'bg-primary-50 border-primary-500 text-primary-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700']"
             @click="closeMobileMenu">
           Find Jobs
+        </router-link>
+        <router-link to="/pricing" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors duration-200" 
+            :class="[$route.path === '/pricing' ? 'bg-primary-50 border-primary-500 text-primary-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700']"
+            @click="closeMobileMenu">
+          Pricing
+        </router-link>
+        <router-link to="/about" class="block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors duration-200" 
+            :class="[$route.path === '/about' ? 'bg-primary-50 border-primary-500 text-primary-700' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700']"
+            @click="closeMobileMenu">
+          About
         </router-link>
       </div>
       
