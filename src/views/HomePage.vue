@@ -113,7 +113,10 @@ const searchJobs = () => {
               </svg>
             </div>
             <h3 class="text-xl font-semibold text-gray-900 mb-2">Premium Features</h3>
-            <p class="text-gray-600">Upgrade to Premium for $10/month to access fast-track applications and stand out from other candidates.</p>
+            <p class="text-gray-600">
+              All premium features are <span class="font-bold text-accent-600">FREE</span> during our beta testing phase! 
+              Enjoy one-click applications and automated job searching.
+            </p>
           </div>
         </div>
       </div>
@@ -187,35 +190,38 @@ const searchJobs = () => {
         <div class="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
           <div>
             <h2 class="text-3xl font-bold text-white sm:text-4xl mb-6">
-              Stand Out with Premium
+              Stand Out with Premium Features
             </h2>
+            <p class="text-lg text-white mb-4">
+              During our alpha & beta testing phase, all premium features are completely <span class="font-bold">FREE</span>!
+            </p>
             <p class="text-lg text-white mb-8">
-              Upgrade to Premium for just $10/month and get priority application processing, 
-              advanced profile visibility to employers, and exclusive job recommendations.
+              Take advantage of our powerful tools to supercharge your job search before we implement 
+              our regular pricing after beta.
             </p>
             <div class="space-y-4">
               <div class="flex items-start">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                <p class="text-white">Apply for jobs faster than non-premium users</p>
+                <p class="text-white"><span class="font-medium">Turbo Job Apply</span> - Apply to jobs with one click</p>
               </div>
               <div class="flex items-start">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                <p class="text-white">Get your profile highlighted to potential employers</p>
+                <p class="text-white"><span class="font-medium">Auto Job Apply</span> - Set criteria and let us apply for you</p>
               </div>
               <div class="flex items-start">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                <p class="text-white">Access early notifications for new job postings</p>
+                <p class="text-white"><span class="font-medium">Job Tracking</span> - Track application status and follow-ups</p>
               </div>
             </div>
             <div class="mt-10">
-              <router-link to="/subscription" class="btn bg-white text-accent-600 hover:bg-gray-100">
-                Upgrade to Premium
+              <router-link to="/pricing" class="btn bg-white text-accent-600 hover:bg-gray-100">
+                View Pricing Details
               </router-link>
             </div>
           </div>
@@ -223,40 +229,46 @@ const searchJobs = () => {
             <div class="bg-white rounded-lg p-6 shadow-lg w-full max-w-md">
               <div class="text-center py-4">
                 <h3 class="text-2xl font-bold text-gray-900 mb-2">Premium Membership</h3>
-                <div class="text-4xl font-bold text-accent-600 mb-2">$10<span class="text-lg text-gray-500">/month</span></div>
-                <p class="text-gray-600 mb-6">Get ahead in your job search</p>
+                <div class="text-4xl font-bold text-accent-600 mb-2">
+                  <span class="line-through text-gray-400 text-3xl">$19.99</span> $0
+                  <span class="text-lg text-gray-500">/month</span>
+                </div>
+                <p class="text-gray-600 mb-2">During Beta Testing</p>
+                <div class="bg-accent-50 border border-accent-200 rounded-lg p-3 mb-4">
+                  <p class="text-accent-700 text-sm">
+                    Limited Time Offer: All Premium Features Free During Beta Testing
+                  </p>
+                </div>
               </div>
               <div class="space-y-4 mb-6">
                 <div class="flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
-                  <p class="text-gray-700">Priority application processing</p>
+                  <p class="text-gray-700">One-click applications</p>
                 </div>
                 <div class="flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
-                  <p class="text-gray-700">Enhanced profile visibility</p>
+                  <p class="text-gray-700">Automated job applications</p>
                 </div>
                 <div class="flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
-                  <p class="text-gray-700">Early job notifications</p>
+                  <p class="text-gray-700">Real-time job notifications</p>
                 </div>
                 <div class="flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
-                  <p class="text-gray-700">Resume review and feedback</p>
+                  <p class="text-gray-700">Premium customer support</p>
                 </div>
               </div>
-              <div class="text-center">
-                <router-link to="/subscription" class="btn bg-accent-500 text-white hover:bg-accent-600 w-full">
-                  Subscribe Now
-                </router-link>
-              </div>
+              <router-link to="/register" class="w-full btn-primary text-center block py-2">
+                Sign Up Free
+              </router-link>
             </div>
           </div>
         </div>
@@ -289,5 +301,21 @@ const searchJobs = () => {
 .pattern-dots {
   background-image: radial-gradient(currentColor 1px, transparent 1px);
   background-size: calc(10 * 1px) calc(10 * 1px);
+}
+
+.card {
+  @apply rounded-lg border border-gray-200 bg-white shadow-sm transition-shadow duration-300 hover:shadow-md;
+}
+
+.premium-badge {
+  @apply bg-secondary-100 text-secondary-800 inline-flex text-xs px-2 py-1 rounded-full;
+}
+
+.btn-primary {
+  @apply inline-block px-6 py-3 bg-primary-600 text-white rounded-md font-medium hover:bg-primary-700 transition-colors duration-300;
+}
+
+.line-through {
+  text-decoration: line-through;
 }
 </style>

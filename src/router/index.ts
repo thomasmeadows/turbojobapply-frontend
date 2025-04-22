@@ -16,6 +16,8 @@ import PrivacyPolicyPage from '../views/PrivacyPolicyPage.vue';
 import CookiePolicyPage from '../views/CookiePolicyPage.vue';
 import AccessibilityPage from '../views/AccessibilityPage.vue';
 import TermsOfServicePage from '../views/TermsOfServicePage.vue';
+import CareersPage from '../views/CareersPage.vue';
+import EmployerIntegrationsPage from '../views/EmployerIntegrationsPage.vue';
 import NotFoundPage from '../views/NotFoundPage.vue';
 
 const routes = [
@@ -108,6 +110,18 @@ const routes = [
     name: 'TermsOfService',
     component: TermsOfServicePage,
     meta: { title: 'Terms of Service - Turbo Job Apply' }
+  },
+  {
+    path: '/careers',
+    name: 'Careers',
+    component: CareersPage,
+    meta: { title: 'Careers - Turbo Job Apply' }
+  },
+  {
+    path: '/employer-integrations',
+    name: 'EmployerIntegrations',
+    component: EmployerIntegrationsPage,
+    meta: { title: 'Employer Integrations - Turbo Job Apply' }
   },
   {
     path: '/:pathMatch(.*)*',

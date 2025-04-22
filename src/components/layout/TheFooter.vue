@@ -48,19 +48,14 @@ const currentYear = new Date().getFullYear();
                   </router-link>
                 </li>
                 <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
-                    Career Resources
-                  </a>
-                </li>
-                <li>
                   <router-link to="/subscription" class="text-base text-gray-300 hover:text-white">
                     Premium Features
                   </router-link>
                 </li>
                 <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
-                    Success Stories
-                  </a>
+                  <router-link to="/pricing" class="text-base text-gray-300 hover:text-white">
+                    Pricing
+                  </router-link>
                 </li>
               </ul>
             </div>
@@ -68,19 +63,9 @@ const currentYear = new Date().getFullYear();
               <h3 class="text-sm font-semibold text-gray-200 tracking-wider uppercase">For Employers</h3>
               <ul class="mt-4 space-y-4">
                 <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
-                    Recruitment Solutions
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
-                    Employer Resources
-                  </a>
+                  <router-link to="/employer-integrations" class="text-base text-gray-300 hover:text-white">
+                    ATS Integrations
+                  </router-link>
                 </li>
               </ul>
             </div>
@@ -90,14 +75,14 @@ const currentYear = new Date().getFullYear();
               <h3 class="text-sm font-semibold text-gray-200 tracking-wider uppercase">Company</h3>
               <ul class="mt-4 space-y-4">
                 <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
+                  <router-link to="/about" class="text-base text-gray-300 hover:text-white">
                     About Us
-                  </a>
+                  </router-link>
                 </li>
                 <li>
-                  <a href="#" class="text-base text-gray-300 hover:text-white">
+                  <router-link to="/careers" class="text-base text-gray-300 hover:text-white">
                     Careers at Turbo Apply
-                  </a>
+                  </router-link>
                 </li>
               </ul>
             </div>
