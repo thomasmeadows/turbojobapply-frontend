@@ -17,7 +17,7 @@ interface AuthState {
 }
 
 // Auth API URL from environment variables
-const AUTH_API_URL = import.meta.env.VITE_AUTH_API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 // In a real app, you would interact with an API
 export const useAuthStore = defineStore('auth', {
@@ -56,7 +56,7 @@ export const useAuthStore = defineStore('auth', {
       
       try {
         // Call the Auth0 API endpoint from the environment variable
-        const response = await axios.post(AUTH_API_URL, { 
+        const response = await axios.post(`${API_URL}/api/auth/login`, { 
           username: email, 
           password
         });
@@ -114,36 +114,33 @@ export const useAuthStore = defineStore('auth', {
     },
     
     // Register user
-    async register(name: string, email: string, password: string) {
+    async register(name: string | null = null, email: string, password: string) {
       this.loading = true;
       this.error = null;
       
       try {
-        // Mock API call - in real app, this would be a real API endpoint
-        // const response = await axios.post('/api/register', { name, email, password });
+        // Call the API to register user
+        const response = await axios.post(`${API_URL}/api/auth/register`, { 
+          email: email, 
+          password
+        });
         
-        // Mock successful registration for demo
-        const mockUser: User = {
-          id: '1',
-          email,
-          name,
-          isPremium: false,
-          createdAt: new Date().toISOString()
-        };
-        
-        const mockToken = 'mock-jwt-token-' + Math.random().toString(36).substring(2);
-        
-        // Save to store
-        this.user = mockUser;
-        this.token = mockToken;
-        
-        // Save to local storage
-        localStorage.setItem('token', mockToken);
-        localStorage.setItem('user', JSON.stringify(mockUser));
-        
-        return true;
-      } catch (error) {
-        this.error = 'Registration failed. Please try again.';
+        // Check for successful status code
+        if (response.status >= 200 && response.status < 300) {
+          return true;
+        } else {
+          throw new Error('Registration failed');
+        }
+      } catch (error: any) {
+        // Handle specific error messages if available
+        if (error.response?.data?.error_description) {
+          this.error = error.response.data.error_description;
+        } else if (error.response?.data?.message) {
+          this.error = error.response.data.message;
+        } else {
+          this.error = 'Registration failed. Please try again.';
+        }
+        console.error('Registration error:', error);
         return false;
       } finally {
         this.loading = false;
