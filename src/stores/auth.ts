@@ -16,6 +16,9 @@ interface AuthState {
   error: string | null;
 }
 
+// Auth API URL from environment variables
+const AUTH_API_URL = import.meta.env.VITE_AUTH_API_URL;
+
 // In a real app, you would interact with an API
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
@@ -46,37 +49,64 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     
-    // Login user
+    // Login user with Auth0
     async login(email: string, password: string) {
       this.loading = true;
       this.error = null;
       
       try {
-        // Mock API call - in real app, this would be a real API endpoint
-        // const response = await axios.post('/api/login', { email, password });
+        // Call the Auth0 API endpoint from the environment variable
+        const response = await axios.post(AUTH_API_URL, { 
+          username: email, 
+          password
+        });
         
-        // Mock successful login for demo
-        const mockUser: User = {
-          id: '1',
-          email,
-          name: email.split('@')[0],
-          isPremium: false,
-          createdAt: new Date().toISOString()
-        };
-        
-        const mockToken = 'mock-jwt-token-' + Math.random().toString(36).substring(2);
-        
-        // Save to store
-        this.user = mockUser;
-        this.token = mockToken;
-        
-        // Save to local storage
-        localStorage.setItem('token', mockToken);
-        localStorage.setItem('user', JSON.stringify(mockUser));
-        
-        return true;
-      } catch (error) {
-        this.error = 'Invalid email or password';
+        // Process the Auth0 response
+        if (response.data && response.data.access_token) {
+          const token = response.data.access_token;
+          
+          // Get user profile if the token doesn't contain it
+          let userData;
+          if (response.data.userinfo) {
+            userData = response.data.userinfo;
+          } else if (response.data.id_token) {
+            // Parse JWT token if needed (simplified example)
+            const base64Url = response.data.id_token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            userData = JSON.parse(window.atob(base64));
+          }
+          
+          // Create user object from Auth0 response
+          const user: User = {
+            id: userData?.sub || '',
+            email: userData?.email || email,
+            name: userData?.name || email.split('@')[0],
+            isPremium: false, // You may get this from your user metadata
+            createdAt: userData?.created_at || new Date().toISOString()
+          };
+          
+          // Save to store
+          this.user = user;
+          this.token = token;
+          
+          // Save to local storage
+          localStorage.setItem('token', token);
+          localStorage.setItem('user', JSON.stringify(user));
+          
+          return true;
+        } else {
+          throw new Error('Authentication failed');
+        }
+      } catch (error: any) {
+        // Handle Auth0 specific error messages if available
+        if (error.response?.data?.error_description) {
+          this.error = error.response.data.error_description;
+        } else if (error.response?.data?.message) {
+          this.error = error.response.data.message;
+        } else {
+          this.error = 'Invalid email or password';
+        }
+        console.error('Login error:', error);
         return false;
       } finally {
         this.loading = false;
