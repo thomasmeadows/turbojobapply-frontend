@@ -32,13 +32,14 @@ onMounted(async () => {
         </div>
         
         <!-- Job List -->
-        <div v-if="!loading && jobsStore.filteredJobs.length > 0">
+        <div v-if="!loading && jobsStore.allJobs.length > 0">
           <JobCard 
-            v-for="job in jobsStore.filteredJobs" 
+            v-for="job in jobsStore.allJobs" 
             :key="job.id" 
             :job="job" 
           />
         </div>
+
         
         <!-- Empty State -->
         <div v-else-if="!loading && jobsStore.filteredJobs.length === 0" class="bg-white rounded-lg shadow-sm p-8 text-center">

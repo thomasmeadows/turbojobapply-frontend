@@ -83,6 +83,7 @@ const handleSubmit = async () => {
                 autocomplete="email" 
                 required 
                 class="form-input"
+                disabled
               />
             </div>
           </div>
@@ -98,6 +99,7 @@ const handleSubmit = async () => {
                 autocomplete="current-password" 
                 required 
                 class="form-input pr-10"
+                disabled
               />
               <button 
                 type="button" 
@@ -124,6 +126,7 @@ const handleSubmit = async () => {
                 name="remember-me" 
                 type="checkbox" 
                 class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded" 
+                disabled
               />
               <label for="remember-me" class="ml-2 block text-sm text-gray-900">
                 Remember me

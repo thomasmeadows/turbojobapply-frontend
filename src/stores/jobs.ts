@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
 import { format, differenceInDays, parseISO } from 'date-fns';
 import type { Job, JobFilters, LocationOption, CategoryOption } from '../types/job';
-import { mockJobs } from '../data/mockJobs';
+const API_URL = import.meta.env.VITE_API_URL;
+import axios from 'axios';
 
 interface JobsState {
   allJobs: Job[];
@@ -92,11 +93,11 @@ export const useJobsStore = defineStore('jobs', {
       
       try {
         // In a real app, this would be an API call
-        // const response = await axios.get('/api/jobs');
-        // this.allJobs = response.data;
+        const response = await axios.get(`${API_URL}/api/requisitions/search?q=${this.filters.query}`);
+        this.allJobs = response.data.data;
         
         // Using mock data for demo
-        this.allJobs = mockJobs;
+        // this.allJobs = mockJobs;
         this.applyFilters();
       } catch (error) {
         this.error = 'Failed to fetch jobs. Please try again.';

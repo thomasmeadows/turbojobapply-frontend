@@ -47,7 +47,7 @@ const toggleSave = () => {
           <h3 class="text-xl font-semibold text-gray-900 hover:text-primary-600 transition-colors duration-200">{{ job.title }}</h3>
         </router-link>
         <div class="mb-3">
-          <span class="font-medium text-gray-800">{{ job.company }}</span>
+          <span class="font-medium text-gray-800">filler company</span>
           <span class="mx-2 text-gray-400">•</span>
           <span class="text-gray-600">{{ job.location }}</span>
         </div>
@@ -69,32 +69,32 @@ const toggleSave = () => {
     <div class="mt-2 mb-4">
       <div class="flex flex-wrap gap-2">
         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
-          {{ job.type }}
+          type
         </span>
         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-100 text-secondary-800">
-          {{ job.category }}
+          category
         </span>
         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-          {{ job.salary }}
+          salary
         </span>
       </div>
     </div>
     
-    <p class="text-gray-700 line-clamp-2 mb-4">{{ job.description }}</p>
+    <p class="text-gray-700 line-clamp-2 mb-4">description?</p>
     
     <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-2 text-sm">
       <div class="flex items-center mb-2 sm:mb-0">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <span class="text-gray-500" :title="formattedDate">{{ timeAgo }}</span>
+        <span class="text-gray-500">filler</span>
       </div>
       
       <div class="flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
-        <span class="text-gray-500">{{ job.applicationCount }} applicants</span>
+        <span class="text-gray-500">filler</span>
       </div>
     </div>
     

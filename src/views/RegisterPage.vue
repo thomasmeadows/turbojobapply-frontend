@@ -88,6 +88,7 @@ const handleSubmit = async () => {
                 autocomplete="email" 
                 required 
                 class="form-input"
+                disabled
               />
             </div>
           </div>
@@ -103,6 +104,7 @@ const handleSubmit = async () => {
                 autocomplete="new-password" 
                 required 
                 class="form-input pr-10"
+                disabled
               />
               <button 
                 type="button" 
