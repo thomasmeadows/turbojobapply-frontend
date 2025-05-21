@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { format, differenceInDays, parseISO } from 'date-fns';
-import type { Job, JobFilters, LocationOption, CategoryOption } from '../types/job';
+import type { Job, JobFilters, LocationOption, CategoryOption, CountryOption } from '../types/job';
+import { COUNTRIES } from '../types/job';
 const API_URL = import.meta.env.VITE_API_URL;
 import axios from 'axios';
 
@@ -27,7 +28,9 @@ export const useJobsStore = defineStore('jobs', {
       location: '',
       category: '',
       timeframe: 'all',
-      sortBy: 'newest'
+      sortBy: 'newest',
+      isRemote: '',
+      country: 'US' // Default to United States
     }
   }),
   
@@ -50,6 +53,10 @@ export const useJobsStore = defineStore('jobs', {
         label: cat,
         count: this.allJobs.filter(job => job.category === cat).length
       }));
+    },
+    
+    countries(): CountryOption[] {
+      return COUNTRIES;
     },
     
     timeframeOptions(): { value: string; label: string; count: number }[] {
@@ -92,13 +99,16 @@ export const useJobsStore = defineStore('jobs', {
       this.error = null;
       
       try {
-        // In a real app, this would be an API call
-        const response = await axios.get(`${API_URL}/api/requisitions/search?q=${this.filters.query}`);
+        // Build query parameters from filters
+        const params = new URLSearchParams();
+        if (this.filters.query) params.append('q', this.filters.query);
+        if (this.filters.location) params.append('location', this.filters.location);
+        if (this.filters.isRemote) params.append('isRemote', this.filters.isRemote);
+        if (this.filters.country) params.append('country', this.filters.country);
+
+        const response = await axios.get(`${API_URL}/api/requisitions/search?${params.toString()}`);
         this.allJobs = response.data.data;
-        
-        // Using mock data for demo
-        // this.allJobs = mockJobs;
-        this.applyFilters();
+        this.filteredJobs = response.data.data; // Server already filtered the results
       } catch (error) {
         this.error = 'Failed to fetch jobs. Please try again.';
       } finally {
@@ -111,12 +121,8 @@ export const useJobsStore = defineStore('jobs', {
       this.error = null;
       
       try {
-        // In a real app, this would be an API call
-        // const response = await axios.get(`/api/jobs/${id}`);
-        // this.currentJob = response.data;
-        
-        // Using mock data for demo
-        this.currentJob = this.allJobs.find(job => job.id === id) || null;
+        const response = await axios.get(`${API_URL}/api/requisitions/${id}`);
+        this.currentJob = response.data;
         
         if (!this.currentJob) {
           throw new Error('Job not found');
@@ -128,54 +134,9 @@ export const useJobsStore = defineStore('jobs', {
       }
     },
     
-    applyFilters() {
-      let result = [...this.allJobs];
-      
-      // Filter by search query
-      if (this.filters.query) {
-        const query = this.filters.query.toLowerCase();
-        result = result.filter(job => 
-          job.title.toLowerCase().includes(query) || 
-          job.company.toLowerCase().includes(query) ||
-          job.description.toLowerCase().includes(query)
-        );
-      }
-      
-      // Filter by location
-      if (this.filters.location) {
-        result = result.filter(job => job.location === this.filters.location);
-      }
-      
-      // Filter by category
-      if (this.filters.category) {
-        result = result.filter(job => job.category === this.filters.category);
-      }
-      
-      // Filter by timeframe
-      if (this.filters.timeframe !== 'all') {
-        const now = new Date();
-        if (this.filters.timeframe === 'today') {
-          result = result.filter(job => differenceInDays(now, parseISO(job.postedAt)) === 0);
-        } else if (this.filters.timeframe === 'week') {
-          result = result.filter(job => differenceInDays(now, parseISO(job.postedAt)) <= 7);
-        } else if (this.filters.timeframe === 'month') {
-          result = result.filter(job => differenceInDays(now, parseISO(job.postedAt)) <= 30);
-        }
-      }
-      
-      // Sort results
-      if (this.filters.sortBy === 'newest') {
-        result.sort((a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime());
-      } else if (this.filters.sortBy === 'oldest') {
-        result.sort((a, b) => new Date(a.postedAt).getTime() - new Date(b.postedAt).getTime());
-      }
-      
-      this.filteredJobs = result;
-    },
-    
     updateFilters(newFilters: Partial<JobFilters>) {
       this.filters = { ...this.filters, ...newFilters };
-      this.applyFilters();
+      this.fetchJobs(); // Fetch new results with updated filters
     },
     
     resetFilters() {
@@ -184,9 +145,11 @@ export const useJobsStore = defineStore('jobs', {
         location: '',
         category: '',
         timeframe: 'all',
-        sortBy: 'newest'
+        sortBy: 'newest',
+        isRemote: '',
+        country: 'US'
       };
-      this.applyFilters();
+      this.fetchJobs(); // Fetch results with reset filters
     },
     
     toggleSaveJob(jobId: string) {

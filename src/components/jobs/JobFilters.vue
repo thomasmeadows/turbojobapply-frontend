@@ -12,6 +12,7 @@ const searchInput = ref(filters.value.query);
 const locations = computed(() => jobsStore.locations);
 const categories = computed(() => jobsStore.categories);
 const timeframeOptions = computed(() => jobsStore.timeframeOptions);
+const countries = computed(() => jobsStore.countries);
 
 // Reset the filters
 const resetFilters = () => {
@@ -82,62 +83,17 @@ watch(filters, (newFilters) => {
     
     <!-- Filters Section -->
     <div :class="{ 'hidden sm:block': !isMobileFiltersOpen }">
-      <!-- Location Filter -->
+
+      <!-- Country Filter -->
       <div class="p-4 border-b border-gray-200">
-        <h3 class="text-sm font-medium text-gray-900 mb-3">Location</h3>
+        <h3 class="text-sm font-medium text-gray-900 mb-3">Country</h3>
         <select
-          v-model="filters.location"
+          v-model="filters.country"
           class="form-input"
         >
-          <option value="">All Locations</option>
-          <option v-for="location in locations" :key="location.value" :value="location.value">
-            {{ location.label }} ({{ location.count }})
+          <option v-for="country in countries" :key="country.code" :value="country.code">
+            {{ country.label }}
           </option>
-        </select>
-      </div>
-      
-      <!-- Category Filter -->
-      <div class="p-4 border-b border-gray-200">
-        <h3 class="text-sm font-medium text-gray-900 mb-3">Category</h3>
-        <select
-          v-model="filters.category"
-          class="form-input"
-        >
-          <option value="">All Categories</option>
-          <option v-for="category in categories" :key="category.value" :value="category.value">
-            {{ category.label }} ({{ category.count }})
-          </option>
-        </select>
-      </div>
-      
-      <!-- Date Posted Filter -->
-      <div class="p-4 border-b border-gray-200">
-        <h3 class="text-sm font-medium text-gray-900 mb-3">Date Posted</h3>
-        <div class="space-y-2">
-          <div v-for="option in timeframeOptions" :key="option.value" class="flex items-center">
-            <input
-              :id="`date-${option.value}`"
-              v-model="filters.timeframe"
-              type="radio"
-              :value="option.value"
-              class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-            >
-            <label :for="`date-${option.value}`" class="ml-3 block text-sm text-gray-700">
-              {{ option.label }} ({{ option.count }})
-            </label>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Sort By Filter -->
-      <div class="p-4">
-        <h3 class="text-sm font-medium text-gray-900 mb-3">Sort By</h3>
-        <select
-          v-model="filters.sortBy"
-          class="form-input"
-        >
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
         </select>
       </div>
       

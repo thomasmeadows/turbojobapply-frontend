@@ -1,20 +1,29 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useJobsStore } from '../stores/jobs';
+import type { Job } from '../types/job';
+import { COUNTRIES } from '../types/job';
 
 const router = useRouter();
 const jobsStore = useJobsStore();
 const searchQuery = ref('');
-const featuredJobs = ref([]);
+const featuredJobs = ref<Job[]>([]);
+const selectedCountry = ref('US'); // Default to United States
+const isRemote = ref('');
 
 onMounted(async () => {
+  // Fetch featured jobs
   await jobsStore.fetchJobs();
   featuredJobs.value = jobsStore.allJobs.filter(job => job.featured).slice(0, 3);
 });
 
 const searchJobs = () => {
-  jobsStore.updateFilters({ query: searchQuery.value });
+  jobsStore.updateFilters({ 
+    query: searchQuery.value, 
+    country: selectedCountry.value, 
+    isRemote: isRemote.value.toString()
+  });
   router.push('/search');
 };
 </script>
@@ -35,21 +44,47 @@ const searchJobs = () => {
           
           <!-- Search Box -->
           <div class="mt-8 max-w-xl mx-auto">
-            <form @submit.prevent="searchJobs" class="sm:flex">
-              <div class="min-w-0 flex-1">
+            <form @submit.prevent="searchJobs" class="flex flex-col space-y-4">
+              <div class="w-full">
                 <label for="search" class="sr-only">Search</label>
                 <input
                   id="search"
                   v-model="searchQuery"
                   type="text"
                   class="block w-full rounded-md border-0 px-4 py-3 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-500"
-                  placeholder="Job title, company, or keyword"
+                  placeholder="Job title"
                 />
               </div>
-              <div class="mt-3 sm:mt-0 sm:ml-3">
+              <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                <div class="sm:w-96">
+                  <label for="country" class="sr-only">Country</label>
+                  <select
+                    id="country"
+                    v-model="selectedCountry"
+                    class="block w-full rounded-md border-0 px-4 py-3 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-500"
+                  >
+                    <option v-for="country in COUNTRIES" :key="country.code" :value="country.code">
+                      {{ country.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="sm:w-48">
+                  <label for="remote" class="sr-only">Remote</label>
+                  <select
+                    id="remote"
+                    v-model="isRemote"
+                    class="block w-full rounded-md border-0 px-4 py-3 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-500"
+                  >
+                    <option value="">Remote?</option>
+                    <option :value="true">Yes</option>
+                    <option :value="false">No</option>
+                  </select>
+                </div>
+              </div>
+              <div class="flex justify-center">
                 <button
                   type="submit"
-                  class="block w-full rounded-md bg-secondary-500 px-4 py-3 font-medium text-white shadow hover:bg-secondary-600 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2"
+                  class="w-full sm:w-48 rounded-md bg-secondary-500 px-4 py-3 font-medium text-white shadow hover:bg-secondary-600 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2"
                 >
                   Search Jobs
                 </button>
