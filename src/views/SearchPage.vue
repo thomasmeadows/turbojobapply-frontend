@@ -8,6 +8,14 @@ const jobsStore = useJobsStore();
 const loading = ref(true);
 const jobCount = ref(0);
 
+const handlePageChange = async (page: number) => {
+  loading.value = true;
+  jobsStore.currentPage = page;
+  jobsStore.offset = (page - 1) * jobsStore.limit;
+  await jobsStore.fetchJobs();
+  loading.value = false;
+};
+
 onMounted(async () => {
   loading.value = true;
   await jobsStore.fetchJobs();
@@ -28,7 +36,45 @@ onMounted(async () => {
       <div class="flex-1">
         <div class="flex justify-between items-center mb-6">
           <h1 class="text-2xl font-bold text-gray-900">Job Listings</h1>
-          <p class="text-gray-600">{{ jobsStore.filteredJobs.length }} jobs found</p>
+          <p class="text-gray-600">{{ jobsStore.totalJobs }} jobs found</p>
+        </div>
+
+        <!-- Pagination Controls (Top) -->
+        <div v-if="!loading && jobsStore.totalPages > 1" class="mb-6">
+          <nav class="flex justify-center space-x-2">
+            <button
+              @click="handlePageChange(jobsStore.currentPage - 1)"
+              :disabled="jobsStore.currentPage === 1"
+              class="px-3 py-2 rounded-md text-sm font-medium"
+              :class="jobsStore.currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'"
+            >
+              Previous
+            </button>
+            <template v-for="page in jobsStore.totalPages" :key="page">
+              <button
+                v-if="page === 1 || page === jobsStore.totalPages || (page >= jobsStore.currentPage - 1 && page <= jobsStore.currentPage + 1)"
+                @click="handlePageChange(page)"
+                class="px-3 py-2 rounded-md text-sm font-medium"
+                :class="page === jobsStore.currentPage ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'"
+              >
+                {{ page }}
+              </button>
+              <span
+                v-else-if="page === jobsStore.currentPage - 2 || page === jobsStore.currentPage + 2"
+                class="px-3 py-2 text-gray-500"
+              >
+                ...
+              </span>
+            </template>
+            <button
+              @click="handlePageChange(jobsStore.currentPage + 1)"
+              :disabled="jobsStore.currentPage === jobsStore.totalPages"
+              class="px-3 py-2 rounded-md text-sm font-medium"
+              :class="jobsStore.currentPage === jobsStore.totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'"
+            >
+              Next
+            </button>
+          </nav>
         </div>
         
         <!-- Job List -->
@@ -40,6 +86,43 @@ onMounted(async () => {
           />
         </div>
 
+        <!-- Pagination Controls (Bottom) -->
+        <div v-if="!loading && jobsStore.totalPages > 1" class="mt-6">
+          <nav class="flex justify-center space-x-2">
+            <button
+              @click="handlePageChange(jobsStore.currentPage - 1)"
+              :disabled="jobsStore.currentPage === 1"
+              class="px-3 py-2 rounded-md text-sm font-medium"
+              :class="jobsStore.currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'"
+            >
+              Previous
+            </button>
+            <template v-for="page in jobsStore.totalPages" :key="page">
+              <button
+                v-if="page === 1 || page === jobsStore.totalPages || (page >= jobsStore.currentPage - 1 && page <= jobsStore.currentPage + 1)"
+                @click="handlePageChange(page)"
+                class="px-3 py-2 rounded-md text-sm font-medium"
+                :class="page === jobsStore.currentPage ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'"
+              >
+                {{ page }}
+              </button>
+              <span
+                v-else-if="page === jobsStore.currentPage - 2 || page === jobsStore.currentPage + 2"
+                class="px-3 py-2 text-gray-500"
+              >
+                ...
+              </span>
+            </template>
+            <button
+              @click="handlePageChange(jobsStore.currentPage + 1)"
+              :disabled="jobsStore.currentPage === jobsStore.totalPages"
+              class="px-3 py-2 rounded-md text-sm font-medium"
+              :class="jobsStore.currentPage === jobsStore.totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'"
+            >
+              Next
+            </button>
+          </nav>
+        </div>
         
         <!-- Empty State -->
         <div v-else-if="!loading && jobsStore.filteredJobs.length === 0" class="bg-white rounded-lg shadow-sm p-8 text-center">

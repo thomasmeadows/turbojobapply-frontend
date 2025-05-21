@@ -8,6 +8,11 @@ import axios from 'axios';
 interface JobsState {
   allJobs: Job[];
   filteredJobs: Job[];
+  limit: number;
+  offset: number;
+  currentPage: number;
+  totalPages: number;
+  totalJobs: number;
   savedJobs: string[];
   currentJob: Job | null;
   loading: boolean;
@@ -21,6 +26,11 @@ export const useJobsStore = defineStore('jobs', {
     filteredJobs: [],
     savedJobs: JSON.parse(localStorage.getItem('savedJobs') || '[]'),
     currentJob: null,
+    limit: 10,
+    offset: 0,
+    currentPage: 1,
+    totalPages: 1,
+    totalJobs: 0,
     loading: false,
     error: null,
     filters: {
@@ -105,9 +115,14 @@ export const useJobsStore = defineStore('jobs', {
         if (this.filters.location) params.append('location', this.filters.location);
         if (this.filters.isRemote) params.append('isRemote', this.filters.isRemote);
         if (this.filters.country) params.append('country', this.filters.country);
+        if (this.offset) params.append('offset', this.offset.toString());
 
         const response = await axios.get(`${API_URL}/api/requisitions/search?${params.toString()}`);
         this.allJobs = response.data.data;
+        this.totalJobs = response.data.total;
+        this.limit = response.data.limit;
+        this.offset = response.data.offset;
+        this.totalPages = Math.floor(this.totalJobs / this.limit) + 1;
         this.filteredJobs = response.data.data; // Server already filtered the results
       } catch (error) {
         this.error = 'Failed to fetch jobs. Please try again.';
