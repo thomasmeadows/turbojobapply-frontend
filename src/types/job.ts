@@ -14,6 +14,7 @@ export interface Job {
   featured: boolean;
   isRemote: string;
   country: string;
+  external_url?: string;
 }
 
 export interface JobFilters {

@@ -137,7 +137,27 @@ export const useJobsStore = defineStore('jobs', {
       
       try {
         const response = await axios.get(`${API_URL}/api/requisitions/${id}`);
-        this.currentJob = response.data;
+        const jobData = response.data.data;
+        
+        // Map the API response to our frontend job structure
+        this.currentJob = {
+          id: jobData.id.toString(),
+          title: jobData.title,
+          company: jobData.source, // Using source as company for now
+          location: jobData.location,
+          type: 'Full-time', // Default value since not provided in API
+          salary: 'Competitive', // Default value since not provided in API
+          category: 'Software Development', // Default value since not provided in API
+          description: jobData.full_description,
+          requirements: [], // We'll need to parse these from the description
+          benefits: [], // We'll need to parse these from the description
+          postedAt: jobData.posted_at,
+          applicationCount: 0, // Default value since not provided in API
+          featured: false, // Default value since not provided in API
+          isRemote: jobData.remote ? 'true' : 'false',
+          country: jobData.country,
+          external_url: jobData.external_url
+        };
         
         if (!this.currentJob) {
           throw new Error('Job not found');

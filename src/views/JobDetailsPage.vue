@@ -4,13 +4,14 @@ import { useRoute, useRouter } from 'vue-router';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
 import { useJobsStore } from '../stores/jobs';
 import { useAuthStore } from '../stores/auth';
+import type { Job } from '../types/job';
 
 const route = useRoute();
 const router = useRouter();
 const jobsStore = useJobsStore();
 const authStore = useAuthStore();
 const loading = ref(true);
-const relatedJobs = ref([]);
+const relatedJobs = ref<Job[]>([]);
 
 const jobId = computed(() => route.params.id as string);
 const job = computed(() => jobsStore.currentJob);
@@ -62,15 +63,11 @@ const toggleSave = () => {
 };
 
 const applyToJob = () => {
-  if (!isAuthenticated.value) {
-    router.push({ name: 'Login', query: { redirect: route.fullPath } });
-    return;
+  if (job.value?.external_url) {
+    window.open(job.value.external_url, '_blank', 'noopener,noreferrer');
+  } else {
+    console.error('No external URL provided for this job');
   }
-  
-  // In a real app, this would trigger the job application flow
-  alert(isPremium.value 
-    ? 'Your premium application has been submitted with priority status!'
-    : 'Your application has been submitted!');
 };
 </script>
 
@@ -159,11 +156,12 @@ const applyToJob = () => {
               
               <button 
                 @click="applyToJob" 
-                class="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200"
-                :class="isPremium ? 'bg-accent-500 hover:bg-accent-600 focus:ring-accent-500' : 'bg-primary-600 hover:bg-primary-700 focus:ring-primary-500'"
+                class="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
               >
-                <span v-if="isPremium" class="mr-1">⚡</span>
-                {{ isPremium ? 'Premium Apply' : 'Apply Now' }}
+                Apply Now
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
               </button>
             </div>
           </div>
@@ -172,21 +170,26 @@ const applyToJob = () => {
         <!-- Job Description -->
         <div class="p-6 sm:p-8 border-b border-gray-200">
           <h2 class="text-xl font-bold text-gray-900 mb-4">Job Description</h2>
-          <p class="text-gray-700 mb-6 whitespace-pre-line">{{ job.description }}</p>
+          <div class="text-gray-700 mb-6 prose max-w-none" v-html="job.description"></div>
           
-          <h3 class="text-lg font-bold text-gray-900 mb-3">Requirements</h3>
-          <ul class="list-disc pl-5 mb-6 space-y-2">
-            <li v-for="(requirement, index) in job.requirements" :key="index" class="text-gray-700">
-              {{ requirement }}
-            </li>
-          </ul>
+          <!-- Requirements and Benefits sections will be populated from the description -->
+          <div v-if="job.requirements && job.requirements.length > 0">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">Requirements</h3>
+            <ul class="list-disc pl-5 mb-6 space-y-2">
+              <li v-for="(requirement, index) in job.requirements" :key="index" class="text-gray-700">
+                {{ requirement }}
+              </li>
+            </ul>
+          </div>
           
-          <h3 class="text-lg font-bold text-gray-900 mb-3">Benefits</h3>
-          <ul class="list-disc pl-5 space-y-2">
-            <li v-for="(benefit, index) in job.benefits" :key="index" class="text-gray-700">
-              {{ benefit }}
-            </li>
-          </ul>
+          <div v-if="job.benefits && job.benefits.length > 0">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">Benefits</h3>
+            <ul class="list-disc pl-5 space-y-2">
+              <li v-for="(benefit, index) in job.benefits" :key="index" class="text-gray-700">
+                {{ benefit }}
+              </li>
+            </ul>
+          </div>
         </div>
         
         <!-- Apply Section -->
@@ -198,11 +201,12 @@ const applyToJob = () => {
             </div>
             <button 
               @click="applyToJob" 
-              class="btn w-full sm:w-auto"
-              :class="isPremium ? 'bg-accent-500 hover:bg-accent-600 text-white' : 'btn-primary'"
+              class="btn w-full sm:w-auto flex items-center justify-center bg-primary-600 hover:bg-primary-700 text-white"
             >
-              <span v-if="isPremium" class="mr-1">⚡</span>
-              {{ isPremium ? 'Premium Apply' : 'Apply Now' }}
+              Apply Now
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
             </button>
           </div>
           
