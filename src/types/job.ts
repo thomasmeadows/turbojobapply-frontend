@@ -17,23 +17,7 @@ export interface Job {
   external_url?: string;
 }
 
-export interface JobFilters {
-  query: string;
-  location: string;
-  category: string;
-  timeframe: 'today' | 'week' | 'month' | 'all';
-  sortBy: 'newest' | 'oldest';
-  isRemote: string;
-  country: string;
-}
-
 export interface LocationOption {
-  value: string;
-  label: string;
-  count: number;
-}
-
-export interface CategoryOption {
   value: string;
   label: string;
   count: number;

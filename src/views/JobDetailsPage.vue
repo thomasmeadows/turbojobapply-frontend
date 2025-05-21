@@ -15,7 +15,6 @@ const relatedJobs = ref<Job[]>([]);
 
 const jobId = computed(() => route.params.id as string);
 const job = computed(() => jobsStore.currentJob);
-const isSaved = computed(() => jobsStore.isSaved(jobId.value));
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const isPremium = computed(() => authStore.isPremium);
 
@@ -36,13 +35,13 @@ onMounted(async () => {
     await jobsStore.fetchJobById(jobId.value);
     
     // Get all jobs if not already fetched
-    if (jobsStore.allJobs.length === 0) {
+    if (jobsStore.jobs.length === 0) {
       await jobsStore.fetchJobs();
     }
     
     // Get related jobs based on category
     if (job.value) {
-      relatedJobs.value = jobsStore.allJobs
+      relatedJobs.value = jobsStore.jobs
         .filter(j => j.category === job.value?.category && j.id !== job.value?.id)
         .slice(0, 3);
     }

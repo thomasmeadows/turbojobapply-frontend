@@ -15,15 +15,14 @@ const isRemote = ref('');
 onMounted(async () => {
   // Fetch featured jobs
   await jobsStore.fetchJobs();
-  featuredJobs.value = jobsStore.allJobs.filter(job => job.featured).slice(0, 3);
 });
 
 const searchJobs = () => {
-  jobsStore.updateFilters({ 
-    query: searchQuery.value, 
-    country: selectedCountry.value, 
-    isRemote: isRemote.value.toString()
-  });
+  jobsStore.updateSearchOptions( 
+    searchQuery.value, 
+    'US', 
+    isRemote.value.toString()
+  );
   router.push('/search');
 };
 </script>
@@ -45,41 +44,30 @@ const searchJobs = () => {
           <!-- Search Box -->
           <div class="mt-8 max-w-xl mx-auto">
             <form @submit.prevent="searchJobs" class="flex flex-col space-y-4">
-              <div class="w-full">
+              <div class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
                 <label for="search" class="sr-only">Search</label>
                 <input
                   id="search"
                   v-model="searchQuery"
                   type="text"
-                  class="block w-full rounded-md border-0 px-4 py-3 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-500"
+                  class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none"
                   placeholder="Job title"
                 />
-              </div>
-              <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                <div class="sm:w-96">
-                  <label for="country" class="sr-only">Country</label>
-                  <select
-                    id="country"
-                    v-model="selectedCountry"
-                    class="block w-full rounded-md border-0 px-4 py-3 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-500"
-                  >
-                    <option v-for="country in COUNTRIES" :key="country.code" :value="country.code">
-                      {{ country.label }}
-                    </option>
-                  </select>
-                </div>
-                <div class="sm:w-48">
+                <div class="grid shrink-0 grid-cols-1 focus-within:relative">
                   <label for="remote" class="sr-only">Remote</label>
                   <select
                     id="remote"
                     v-model="isRemote"
-                    class="block w-full rounded-md border-0 px-4 py-3 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-500"
+                    class="col-start-1 row-start-1 w-full appearance-none rounded-md border-0 px-4 py-3 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-500"
                   >
                     <option value="">Remote?</option>
                     <option :value="true">Yes</option>
                     <option :value="false">No</option>
                   </select>
                 </div>
+              </div>
+              <div class="flex justify-end" style="margin: 5px">
+                <small style="position: absolute"><router-link to="/search">Advanced Search</router-link></small>
               </div>
               <div class="flex justify-center">
                 <button
@@ -153,68 +141,6 @@ const searchJobs = () => {
               Enjoy one-click applications and automated job searching.
             </p>
           </div>
-        </div>
-      </div>
-    </section>
-    
-    <!-- Featured Jobs Section -->
-    <section class="py-16 lg:py-24 bg-gray-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
-            Featured Job Opportunities
-          </h2>
-          <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-            Explore these handpicked listings from top companies
-          </p>
-        </div>
-        
-        <div class="mt-12 grid gap-8 md:grid-cols-3" v-if="featuredJobs.length > 0">
-          <div v-for="job in featuredJobs" :key="job.id" class="card p-6 flex flex-col justify-between">
-            <div>
-              <div class="flex justify-between items-start mb-4">
-                <div class="flex-1">
-                  <h3 class="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors">
-                    <router-link :to="`/jobs/${job.id}`">{{ job.title }}</router-link>
-                  </h3>
-                  <p class="text-gray-700">{{ job.company }}</p>
-                </div>
-                <span class="premium-badge">Featured</span>
-              </div>
-              
-              <div class="mb-4">
-                <div class="flex items-center text-gray-600 mb-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  {{ job.location }}
-                </div>
-                <div class="flex items-center text-gray-600">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  {{ job.type }}
-                </div>
-              </div>
-              
-              <p class="text-gray-700 mb-4 line-clamp-3">{{ job.description }}</p>
-            </div>
-            
-            <router-link :to="`/jobs/${job.id}`" class="mt-4 btn-primary text-center">
-              View Details
-            </router-link>
-          </div>
-        </div>
-        
-        <div v-else class="text-center py-8">
-          <p class="text-gray-600">Loading featured jobs...</p>
-        </div>
-        
-        <div class="mt-12 text-center">
-          <router-link to="/search" class="btn-primary">
-            Explore All Jobs
-          </router-link>
         </div>
       </div>
     </section>

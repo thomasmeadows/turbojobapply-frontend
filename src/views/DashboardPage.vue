@@ -21,10 +21,6 @@ onMounted(async () => {
   try {
     await jobsStore.fetchJobs();
     
-    // Get some recommended jobs (in a real app, this would be based on user preferences)
-    recommendedJobs.value = jobsStore.allJobs
-      .filter(job => job.featured)
-      .slice(0, 2);
   } finally {
     loading.value = false;
   }
@@ -215,7 +211,6 @@ onMounted(async () => {
                 <router-link :to="`/jobs/${job.id}`" class="text-base font-medium text-gray-900 hover:text-primary-600 block mb-1">
                   {{ job.title }}
                 </router-link>
-                <p class="text-sm text-gray-600 mb-2">{{ job.company }}</p>
                 <div class="flex items-center text-xs text-gray-500">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
