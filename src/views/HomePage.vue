@@ -113,7 +113,7 @@ const searchJobs = () => {
             Find the Perfect Job Match
           </h2>
           <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-            CareerHub helps you discover opportunities aligned with your skills and career goals
+            Turbo Job Apply helps you discover opportunities aligned with your skills and career goals
           </p>
         </div>
         
@@ -317,7 +317,7 @@ const searchJobs = () => {
           Ready to Find Your Dream Job?
         </h2>
         <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-10">
-          Join thousands of professionals who found their perfect career match with CareerHub
+          Join thousands of professionals who found their perfect career match with Turbo Job Apply
         </p>
         <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
           <router-link to="/search" class="btn-primary">

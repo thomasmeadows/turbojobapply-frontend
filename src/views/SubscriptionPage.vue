@@ -60,7 +60,7 @@ const handleCancel = async () => {
     <div class="bg-white shadow rounded-lg overflow-hidden">
       <!-- Banner -->
       <div class="bg-gradient-to-r from-accent-500 to-accent-600 px-6 py-8 text-white">
-        <h2 class="text-2xl font-bold mb-2">CareerHub Premium</h2>
+        <h2 class="text-2xl font-bold mb-2">Turbo Job Apply Premium</h2>
         <p class="text-accent-100">Get ahead in your job search with premium features</p>
       </div>
       

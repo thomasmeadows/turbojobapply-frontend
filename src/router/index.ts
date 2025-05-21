@@ -26,37 +26,37 @@ const routes = [
     path: '/',
     name: 'Home',
     component: HomePage,
-    meta: { title: 'CareerHub - Find Your Dream Job' }
+    meta: { title: 'Turbo Job Apply - Find Your Dream Job' }
   },
   {
     path: '/search',
     name: 'Search',
     component: SearchPage,
-    meta: { title: 'Search Jobs - CareerHub' }
+    meta: { title: 'Search Jobs - Turbo Job Apply' }
   },
   {
     path: '/jobs/:id',
     name: 'JobDetails',
     component: JobDetailsPage,
-    meta: { title: 'Job Details - CareerHub' }
+    meta: { title: 'Job Details - Turbo Job Apply' }
   },
   {
     path: '/login',
     name: 'Login',
     component: LoginPage,
-    meta: { title: 'Log In - CareerHub', guestOnly: true }
+    meta: { title: 'Log In - Turbo Job Apply', guestOnly: true }
   },
   {
     path: '/register',
     name: 'Register',
     component: RegisterPage,
-    meta: { title: 'Sign Up - CareerHub', guestOnly: true }
+    meta: { title: 'Sign Up - Turbo Job Apply', guestOnly: true }
   },
   {
     path: '/register-thank-you',
     name: 'RegisterThankYou',
     component: RegisterThankYouPage,
-    meta: { title: 'Registration Successful - CareerHub' }
+    meta: { title: 'Registration Successful - Turbo Job Apply' }
   },
   {
     path: '/pricing',
@@ -86,25 +86,25 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: DashboardPage,
-    meta: { title: 'Dashboard - CareerHub', requiresAuth: true }
+    meta: { title: 'Dashboard - Turbo Job Apply', requiresAuth: true }
   },
   {
     path: '/saved-jobs',
     name: 'SavedJobs',
     component: SavedJobsPage,
-    meta: { title: 'Saved Jobs - CareerHub', requiresAuth: true }
+    meta: { title: 'Saved Jobs - Turbo Job Apply', requiresAuth: true }
   },
   {
     path: '/profile',
     name: 'Profile',
     component: ProfilePage,
-    meta: { title: 'My Profile - CareerHub', requiresAuth: true }
+    meta: { title: 'My Profile - Turbo Job Apply', requiresAuth: true }
   },
   {
     path: '/subscription',
     name: 'Subscription',
     component: SubscriptionPage,
-    meta: { title: 'Premium Subscription - CareerHub', requiresAuth: true }
+    meta: { title: 'Premium Subscription - Turbo Job Apply', requiresAuth: true }
   },
   {
     path: '/accessibility',
@@ -134,7 +134,7 @@ const routes = [
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: NotFoundPage,
-    meta: { title: 'Page Not Found - CareerHub' }
+    meta: { title: 'Page Not Found - Turbo Job Apply' }
   }
 ];
 
@@ -153,7 +153,7 @@ const router = createRouter({
 // Navigation guards
 router.beforeEach((to, from, next) => {
   // Update document title
-  document.title = to.meta.title as string || 'CareerHub';
+  document.title = to.meta.title as string || 'Turbo Job Apply';
   
   const authStore = useAuthStore();
   const isLoggedIn = authStore.isAuthenticated;
