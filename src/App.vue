@@ -4,13 +4,17 @@ import { useRouter } from 'vue-router';
 import TheHeader from './components/layout/TheHeader.vue';
 import TheFooter from './components/layout/TheFooter.vue';
 import { useAuthStore } from './stores/auth';
+import { useJobsStore } from './stores/jobs';
 
 const authStore = useAuthStore();
+const jobsStore = useJobsStore();
 const router = useRouter();
 
-onMounted(() => {
+onMounted(async () => {
   // Check if user is logged in from local storage
   authStore.checkAuth();
+  // Fetch user config
+  await jobsStore.fetchUserConfig();
 });
 </script>
 

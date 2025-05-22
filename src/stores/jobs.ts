@@ -4,6 +4,14 @@ import { COUNTRIES } from '../types/job';
 const API_URL = import.meta.env.VITE_API_URL;
 import axios from 'axios';
 
+interface UserConfig {
+  ipLocation: {
+    country: string | null;
+    city: string | null;
+    state: string | null;
+  }
+}
+
 interface JobsState {
   jobs: Job[];
   limit: number;
@@ -18,7 +26,8 @@ interface JobsState {
   query: string,
   location: string,
   isRemote: string,
-  country: string
+  country: string,
+  userConfig: UserConfig | null
 }
 
 export const useJobsStore = defineStore('jobs', {
@@ -36,7 +45,8 @@ export const useJobsStore = defineStore('jobs', {
     query: '',
     location: '',
     isRemote: '',
-    country: 'US'
+    country: 'US',
+    userConfig: null
   }),
   
   getters: {
@@ -60,6 +70,20 @@ export const useJobsStore = defineStore('jobs', {
   },
   
   actions: {
+    async fetchUserConfig() {
+      try {
+        const response = await axios.get(`${API_URL}/api/users/config`);
+        this.userConfig = response.data;
+        
+        // If we have country info from IP, update the country filter
+        if (this.userConfig?.ipLocation?.country) {
+          this.country = this.userConfig.ipLocation.country;
+        }
+      } catch (error) {
+        console.error('Failed to fetch user config:', error);
+      }
+    },
+
     async fetchJobs() {
       if (!this.query) {
         return
@@ -87,6 +111,10 @@ export const useJobsStore = defineStore('jobs', {
       } finally {
         this.loading = false;
       }
+    },
+
+    async isSaved(id: string) {
+      return false;
     },
 
     async updateSearchOptions(query: string, country: string, isRemote: string) {
