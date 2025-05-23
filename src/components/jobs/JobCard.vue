@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { format, formatDistanceToNow, parseISO } from 'date-fns';
 import { useJobsStore } from '../../stores/jobs';
 import { useAuthStore } from '../../stores/auth';
 import type { Job } from '../../types/job';
@@ -12,18 +10,7 @@ const props = defineProps<{
 const jobsStore = useJobsStore();
 const authStore = useAuthStore();
 
-const formattedDate = computed(() => {
-  const date = parseISO(props.job.postedAt);
-  return format(date, 'MMM d, yyyy');
-});
-
-const timeAgo = computed(() => {
-  return formatDistanceToNow(parseISO(props.job.postedAt), { addSuffix: true });
-});
-
-const isSaved = computed(() => {
-  return jobsStore.isSaved(props.job.id);
-});
+const isSaved = false;
 
 const toggleSave = () => {
   if (!authStore.isAuthenticated) {

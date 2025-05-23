@@ -29,6 +29,8 @@ const timeAgo = computed(() => {
   return formatDistanceToNow(parseISO(job.value.postedAt), { addSuffix: true });
 });
 
+const isSaved = false;
+
 onMounted(async () => {
   loading.value = true;
   try {

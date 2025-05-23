@@ -23,6 +23,7 @@ const countries = computed(() => jobsStore.countries);
           type="text" 
           class="form-input pl-10 block w-full"
           placeholder="Search jobs by title, company, or keyword"
+          v-model="jobsStore.query"
         >
       </div>
     </div>
@@ -43,35 +44,63 @@ const countries = computed(() => jobsStore.countries);
         <h3 class="text-sm font-medium text-gray-900 mb-3">Country</h3>
         <select
           class="form-input"
+          v-model="jobsStore.country"
         >
           <option v-for="country in countries" :key="country.code" :value="country.code">
             {{ country.label }}
           </option>
         </select>
       </div>
+
+      <!-- Location Filter -->
+      <div class="p-4 border-b border-gray-200">
+        <h3 class="text-sm font-medium text-gray-900 mb-3">Location</h3>
+        <input 
+          type="text" 
+          class="form-input"
+          v-model="jobsStore.location"
+          placeholder="Enter city or state"
+        >
+      </div>
+
+      <!-- Remote Work Filter -->
+      <div class="p-4 border-b border-gray-200">
+        <h3 class="text-sm font-medium text-gray-900 mb-3">Remote Work</h3>
+        <select
+          class="form-input"
+          v-model="jobsStore.isRemote"
+        >
+          <option value="">Remote?</option>
+          <option :value="true">Yes</option>
+          <option :value="false">No</option>
+        </select>
+      </div>
+
+      <!-- Job Source Filter -->
+      <div class="p-4 border-b border-gray-200">
+        <h3 class="text-sm font-medium text-gray-900 mb-3">Job Source</h3>
+        <select
+          class="form-input"
+          v-model="jobsStore.jobSource"
+        >
+          <option value="">Job Source</option>
+          <option value="1">BambooHR</option>
+          <option value="3">GreenhouseIO</option>
+          <option value="2">Workday</option>
+        </select>
+      </div>
       
-      <!-- Mobile Filter Actions -->
-      <div class="p-4 bg-gray-50 flex justify-between sm:hidden">
+      <!-- Search Button -->
+      <div class="p-4 bg-gray-50 border-t border-gray-200">
         <button 
-          class="text-sm font-medium text-gray-700 hover:text-gray-900"
+          @click="jobsStore.fetchJobs"
+          class="w-full btn-primary text-sm"
+          :disabled="!jobsStore.query"
+          :class="{ 'opacity-25 cursor-not-allowed': !jobsStore.query }"
         >
-          Clear All
-        </button>
-        <button 
-          class="btn-primary text-sm"
-        >
-          Apply Filters
+          Search Jobs
         </button>
       </div>
-    </div>
-    
-    <!-- Desktop Reset Filters Button -->
-    <div class="p-4 bg-gray-50 border-t border-gray-200 hidden sm:block">
-      <button 
-        class="text-sm font-medium text-primary-600 hover:text-primary-800"
-      >
-        Reset Filters
-      </button>
     </div>
   </div>
 </template>

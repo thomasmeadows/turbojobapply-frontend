@@ -131,9 +131,6 @@ onMounted(async () => {
           </svg>
           <h3 class="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
           <p class="text-gray-600 mb-4">Try adjusting your search filters or try a different search term.</p>
-          <button  class="btn-primary">
-            Reset Filters
-          </button>
         </div>
         
         <!-- Loading State -->

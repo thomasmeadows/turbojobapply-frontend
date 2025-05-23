@@ -2,27 +2,16 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useJobsStore } from '../stores/jobs';
-import type { Job } from '../types/job';
-import { COUNTRIES } from '../types/job';
 
 const router = useRouter();
 const jobsStore = useJobsStore();
-const searchQuery = ref('');
-const featuredJobs = ref<Job[]>([]);
-const selectedCountry = ref('US'); // Default to United States
-const isRemote = ref('');
 
 onMounted(async () => {
   // Fetch featured jobs
-  await jobsStore.fetchJobs();
 });
 
 const searchJobs = () => {
-  jobsStore.updateSearchOptions( 
-    searchQuery.value, 
-    'US', 
-    isRemote.value.toString()
-  );
+  jobsStore.fetchJobs();
   router.push('/search');
 };
 </script>
@@ -48,7 +37,7 @@ const searchJobs = () => {
                 <label for="search" class="sr-only">Search</label>
                 <input
                   id="search"
-                  v-model="searchQuery"
+                  v-model="jobsStore.query"
                   type="text"
                   class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none"
                   placeholder="Job title"
@@ -57,7 +46,7 @@ const searchJobs = () => {
                   <label for="remote" class="sr-only">Remote</label>
                   <select
                     id="remote"
-                    v-model="isRemote"
+                    v-model="jobsStore.isRemote"
                     class="col-start-1 row-start-1 w-full appearance-none rounded-md border-0 px-4 py-3 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-500"
                   >
                     <option value="">Remote?</option>
@@ -71,6 +60,8 @@ const searchJobs = () => {
               </div>
               <div class="flex justify-center">
                 <button
+                  :disabled="!jobsStore.query"
+                  :class="{ 'opacity-25 cursor-not-allowed': !jobsStore.query }"
                   type="submit"
                   class="w-full sm:w-48 rounded-md bg-secondary-500 px-4 py-3 font-medium text-white shadow hover:bg-secondary-600 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2"
                 >

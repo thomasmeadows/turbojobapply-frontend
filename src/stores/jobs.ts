@@ -23,11 +23,12 @@ interface JobsState {
   currentJob: Job | null;
   loading: boolean;
   error: string | null;
-  query: string,
-  location: string,
-  isRemote: string,
-  country: string,
-  userConfig: UserConfig | null
+  query: string;
+  location: string;
+  isRemote: string;
+  country: string;
+  userConfig: UserConfig | null;
+  jobSource: string;
 }
 
 export const useJobsStore = defineStore('jobs', {
@@ -46,7 +47,8 @@ export const useJobsStore = defineStore('jobs', {
     location: '',
     isRemote: '',
     country: 'US',
-    userConfig: null
+    userConfig: null,
+    jobSource: ''
   }),
   
   getters: {
@@ -79,6 +81,9 @@ export const useJobsStore = defineStore('jobs', {
         if (this.userConfig?.ipLocation?.country) {
           this.country = this.userConfig.ipLocation.country;
         }
+        if(!this.country) {
+          this.country = 'US';
+        }
       } catch (error) {
         console.error('Failed to fetch user config:', error);
       }
@@ -98,6 +103,7 @@ export const useJobsStore = defineStore('jobs', {
         if (this.location) params.append('location', this.location);
         if (this.isRemote) params.append('isRemote', this.isRemote);
         if (this.country) params.append('country', this.country);
+        if (this.jobSource) params.append('source', this.jobSource);
         if (this.offset) params.append('offset', this.offset.toString());
 
         const response = await axios.get(`${API_URL}/api/requisitions/search?${params.toString()}`);
@@ -111,10 +117,6 @@ export const useJobsStore = defineStore('jobs', {
       } finally {
         this.loading = false;
       }
-    },
-
-    async isSaved(id: string) {
-      return false;
     },
 
     async updateSearchOptions(query: string, country: string, isRemote: string) {

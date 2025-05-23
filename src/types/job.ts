@@ -1,3 +1,8 @@
+import countries from 'i18n-iso-countries';
+import englishList from 'i18n-iso-countries/langs/en.json';
+
+countries.registerLocale(englishList);
+
 export interface Job {
   id: string;
   title: string;
@@ -29,26 +34,21 @@ export interface CountryOption {
   code: string;
 }
 
+let countryList = countries.getNames('en', { select: 'official' })
 // ISO 3166-1 alpha-2 country codes
-export const COUNTRIES: CountryOption[] = [
-  { value: 'US', label: 'United States of America', code: 'US' },
-  { value: 'CA', label: 'Canada', code: 'CA' },
-  { value: 'GB', label: 'United Kingdom', code: 'GB' },
-  { value: 'AU', label: 'Australia', code: 'AU' },
-  { value: 'DE', label: 'Germany', code: 'DE' },
-  { value: 'FR', label: 'France', code: 'FR' },
-  { value: 'ES', label: 'Spain', code: 'ES' },
-  { value: 'IT', label: 'Italy', code: 'IT' },
-  { value: 'JP', label: 'Japan', code: 'JP' },
-  { value: 'IN', label: 'India', code: 'IN' },
-  { value: 'BR', label: 'Brazil', code: 'BR' },
-  { value: 'MX', label: 'Mexico', code: 'MX' },
-  { value: 'NL', label: 'Netherlands', code: 'NL' },
-  { value: 'SE', label: 'Sweden', code: 'SE' },
-  { value: 'CH', label: 'Switzerland', code: 'CH' },
-  { value: 'SG', label: 'Singapore', code: 'SG' },
-  { value: 'AE', label: 'United Arab Emirates', code: 'AE' },
-  { value: 'ZA', label: 'South Africa', code: 'ZA' },
-  { value: 'NZ', label: 'New Zealand', code: 'NZ' },
-  { value: 'IE', label: 'Ireland', code: 'IE' }
-];
+export const COUNTRIES: CountryOption[] = 
+  Object.keys(countryList)
+    .map((key) => ({ value: key, label: countryList[key], code: key }))
+    .sort((a, b) => {
+      const nameA = a.label.toUpperCase(); // ignore upper and lowercase
+      const nameB = b.label.toUpperCase(); // ignore upper and lowercase
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+    
+      // names must be equal
+      return 0;
+    });
