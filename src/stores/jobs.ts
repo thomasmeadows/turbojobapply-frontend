@@ -75,7 +75,7 @@ export const useJobsStore = defineStore('jobs', {
         if (job.bamboohr_requisition_id) {
           return 'BambooHR';
         }
-        if (job.greenhouse_requisition_id) {
+        if (job.greenhouseio_requisition_id) {
           return 'GreenhouseIO';
         }
         if (job.workday_requisition_id) {
@@ -149,9 +149,11 @@ export const useJobsStore = defineStore('jobs', {
       try {
         const response = await axios.get(`${API_URL}/api/requisitions/${id}`);
         const jobData = response.data.data;
-        
         // Map the API response to our frontend job structure
         this.currentJob = {
+          bamboohr_requisition_id: jobData.bamboohr_requisition_id,
+          greenhouseio_requisition_id: jobData.greenhouseio_requisition_id,
+          workday_requisition_id: jobData.workday_requisition_id,
           id: jobData.id.toString(),
           title: jobData.title,
           company: jobData.source, // Using source as company for now
@@ -165,11 +167,11 @@ export const useJobsStore = defineStore('jobs', {
           posted_at: jobData.posted_at,
           applicationCount: 0, // Default value since not provided in API
           featured: false, // Default value since not provided in API
-          isRemote: jobData.remote ? 'true' : 'false',
+          remote: jobData.remote,
           country: jobData.country,
-          external_url: jobData.external_url
+          external_url: jobData.external_url,
+          source: jobData.source // Added source to match the expected structure
         };
-        
         if (!this.currentJob) {
           throw new Error('Job not found');
         }

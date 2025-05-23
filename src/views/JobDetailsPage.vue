@@ -138,8 +138,6 @@ const applyToJob = () => {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Posted {{ timeAgo }} ({{ formattedDate }})
-                <span class="mx-2">•</span>
-                <span>{{ job.applicationCount }} applicants</span>
               </div>
             </div>
             
@@ -170,27 +168,8 @@ const applyToJob = () => {
         
         <!-- Job Description -->
         <div class="p-6 sm:p-8 border-b border-gray-200">
-          <h2 class="text-xl font-bold text-gray-900 mb-4">Job Description</h2>
+          <h2 class="text-xl font-bold text-gray-900 mb-4">Job Description - {{ job.company }}</h2>
           <div class="text-gray-700 mb-6 prose max-w-none" v-html="job.description"></div>
-          
-          <!-- Requirements and Benefits sections will be populated from the description -->
-          <div v-if="job.requirements && job.requirements.length > 0">
-            <h3 class="text-lg font-bold text-gray-900 mb-3">Requirements</h3>
-            <ul class="list-disc pl-5 mb-6 space-y-2">
-              <li v-for="(requirement, index) in job.requirements" :key="index" class="text-gray-700">
-                {{ requirement }}
-              </li>
-            </ul>
-          </div>
-          
-          <div v-if="job.benefits && job.benefits.length > 0">
-            <h3 class="text-lg font-bold text-gray-900 mb-3">Benefits</h3>
-            <ul class="list-disc pl-5 space-y-2">
-              <li v-for="(benefit, index) in job.benefits" :key="index" class="text-gray-700">
-                {{ benefit }}
-              </li>
-            </ul>
-          </div>
         </div>
         
         <!-- Apply Section -->
@@ -224,27 +203,6 @@ const applyToJob = () => {
                   Upgrade for $10/month
                 </router-link>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Related Jobs Section -->
-      <div v-if="relatedJobs.length > 0" class="mt-10">
-        <h2 class="text-xl font-bold text-gray-900 mb-6">Similar Jobs You Might Like</h2>
-        
-        <div class="grid gap-6 md:grid-cols-3">
-          <div v-for="relatedJob in relatedJobs" :key="relatedJob.id" class="card p-5">
-            <h3 class="font-medium text-gray-900 mb-1 hover:text-primary-600 transition-colors duration-200">
-              <router-link :to="`/jobs/${relatedJob.id}`">{{ relatedJob.title }}</router-link>
-            </h3>
-            <p class="text-gray-600 text-sm mb-2">{{ relatedJob.company }} • {{ relatedJob.location }}</p>
-            <p class="text-gray-700 text-sm mb-3 line-clamp-2">{{ relatedJob.description }}</p>
-            <div class="flex justify-between items-center text-xs text-gray-500">
-              <span>{{ formatDistanceToNow(parseISO(relatedJob.posted_at), { addSuffix: true }) }}</span>
-              <router-link :to="`/jobs/${relatedJob.id}`" class="text-primary-600 hover:text-primary-700 font-medium">
-                View
-              </router-link>
             </div>
           </div>
         </div>

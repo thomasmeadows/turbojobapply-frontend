@@ -4,8 +4,9 @@ import englishList from 'i18n-iso-countries/langs/en.json';
 countries.registerLocale(englishList);
 
 export interface Job {
+  remote: boolean;
   bamboohr_requisition_id: any;
-  greenhouse_requisition_id: any;
+  greenhouseio_requisition_id: any;
   workday_requisition_id: any;
   id: string;
   title: string;
@@ -20,7 +21,6 @@ export interface Job {
   applicationCount: number;
   posted_at: any;
   featured: boolean;
-  isRemote: string;
   country: string;
   external_url: string;
   source: string;
