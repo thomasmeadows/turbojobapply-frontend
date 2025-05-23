@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { format, formatDistanceToNow, parseISO } from 'date-fns';
 import { useJobsStore } from '../../stores/jobs';
 import { useAuthStore } from '../../stores/auth';
 import type { Job } from '../../types/job';
@@ -20,6 +22,17 @@ const toggleSave = () => {
   
   jobsStore.toggleSaveJob(props.job.id);
 };
+
+const formattedDate = computed(() => {
+  if (!props.job.posted_at) return '';
+  const date = parseISO(props.job.posted_at);
+  return format(date, 'MMMM d, yyyy');
+});
+
+const timeAgo = computed(() => {
+  if (!props.job) return '';
+  return formatDistanceToNow(parseISO(props.job.posted_at), { addSuffix: true });
+});
 </script>
 
 <template>
@@ -34,7 +47,7 @@ const toggleSave = () => {
           <h3 class="text-xl font-semibold text-gray-900 hover:text-primary-600 transition-colors duration-200">{{ job.title }}</h3>
         </router-link>
         <div class="mb-3">
-          <span class="font-medium text-gray-800">filler company</span>
+          <span class="font-medium text-gray-800">{{ jobsStore.getSourceName(job) }}</span>
           <span class="mx-2 text-gray-400">•</span>
           <span class="text-gray-600">{{ job.location }}</span>
         </div>
@@ -67,21 +80,21 @@ const toggleSave = () => {
       </div>
     </div>
     
-    <p class="text-gray-700 line-clamp-2 mb-4">description?</p>
+    <p class="text-gray-700 line-clamp-2 mb-4"></p>
     
     <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-2 text-sm">
       <div class="flex items-center mb-2 sm:mb-0">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <span class="text-gray-500">filler</span>
+        <span class="text-gray-500">Posted {{ timeAgo }} ({{ formattedDate }})</span>
       </div>
       
       <div class="flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
-        <span class="text-gray-500">filler</span>
+        <span class="text-gray-500">{{ job.isRemote ? 'Remote' : 'On-site' }}</span>
       </div>
     </div>
     

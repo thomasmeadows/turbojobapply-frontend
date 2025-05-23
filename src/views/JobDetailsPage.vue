@@ -20,13 +20,13 @@ const isPremium = computed(() => authStore.isPremium);
 
 const formattedDate = computed(() => {
   if (!job.value) return '';
-  const date = parseISO(job.value.postedAt);
+  const date = parseISO(job.value.posted_at);
   return format(date, 'MMMM d, yyyy');
 });
 
 const timeAgo = computed(() => {
   if (!job.value) return '';
-  return formatDistanceToNow(parseISO(job.value.postedAt), { addSuffix: true });
+  return formatDistanceToNow(parseISO(job.value.posted_at), { addSuffix: true });
 });
 
 const isSaved = false;
@@ -241,7 +241,7 @@ const applyToJob = () => {
             <p class="text-gray-600 text-sm mb-2">{{ relatedJob.company }} • {{ relatedJob.location }}</p>
             <p class="text-gray-700 text-sm mb-3 line-clamp-2">{{ relatedJob.description }}</p>
             <div class="flex justify-between items-center text-xs text-gray-500">
-              <span>{{ formatDistanceToNow(parseISO(relatedJob.postedAt), { addSuffix: true }) }}</span>
+              <span>{{ formatDistanceToNow(parseISO(relatedJob.posted_at), { addSuffix: true }) }}</span>
               <router-link :to="`/jobs/${relatedJob.id}`" class="text-primary-600 hover:text-primary-700 font-medium">
                 View
               </router-link>

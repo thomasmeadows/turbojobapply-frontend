@@ -128,7 +128,7 @@ onMounted(async () => {
                     <p class="text-sm text-gray-600">{{ job.company }} • {{ job.location }}</p>
                   </div>
                   <div class="text-xs text-gray-500">
-                    {{ formatDistanceToNow(parseISO(job.postedAt), { addSuffix: true }) }}
+                    {{ formatDistanceToNow(parseISO(job.posted_at), { addSuffix: true }) }}
                   </div>
                 </div>
               </div>
@@ -186,44 +186,6 @@ onMounted(async () => {
                   </div>
                   <span class="text-sm font-medium text-gray-900">Upgrade to Premium</span>
                 </div>
-              </router-link>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Recommended Jobs -->
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="p-6">
-            <h2 class="text-lg font-medium text-gray-900 mb-4">Recommended for You</h2>
-            
-            <div v-if="loading" class="py-6 flex justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="animate-spin h-6 w-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            </div>
-            
-            <div v-else-if="recommendedJobs.length === 0" class="py-6 text-center">
-              <p class="text-gray-500">No recommendations yet</p>
-            </div>
-            
-            <div v-else class="space-y-4">
-              <div v-for="job in recommendedJobs" :key="job.id" class="border border-gray-200 rounded-md p-4 hover:bg-gray-50 transition-colors duration-200">
-                <router-link :to="`/jobs/${job.id}`" class="text-base font-medium text-gray-900 hover:text-primary-600 block mb-1">
-                  {{ job.title }}
-                </router-link>
-                <div class="flex items-center text-xs text-gray-500">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <span>{{ job.location }}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="mt-4">
-              <router-link to="/search" class="text-sm font-medium text-primary-600 hover:text-primary-700">
-                View more jobs
               </router-link>
             </div>
           </div>

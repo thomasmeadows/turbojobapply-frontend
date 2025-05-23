@@ -68,6 +68,20 @@ export const useJobsStore = defineStore('jobs', {
     
     savedJobsList(): Job[] {
       return this.jobs.filter(job => this.savedJobs.includes(job.id));
+    },
+
+    getSourceName() {
+      return (job: Job) => {
+        if (job.bamboohr_requisition_id) {
+          return 'BambooHR';
+        }
+        if (job.greenhouse_requisition_id) {
+          return 'GreenhouseIO';
+        }
+        if (job.workday_requisition_id) {
+          return 'Workday';
+        }
+      };
     }
   },
   
@@ -148,7 +162,7 @@ export const useJobsStore = defineStore('jobs', {
           description: jobData.full_description,
           requirements: [], // We'll need to parse these from the description
           benefits: [], // We'll need to parse these from the description
-          postedAt: jobData.posted_at,
+          posted_at: jobData.posted_at,
           applicationCount: 0, // Default value since not provided in API
           featured: false, // Default value since not provided in API
           isRemote: jobData.remote ? 'true' : 'false',

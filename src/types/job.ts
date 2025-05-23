@@ -4,6 +4,9 @@ import englishList from 'i18n-iso-countries/langs/en.json';
 countries.registerLocale(englishList);
 
 export interface Job {
+  bamboohr_requisition_id: any;
+  greenhouse_requisition_id: any;
+  workday_requisition_id: any;
   id: string;
   title: string;
   company: string;
@@ -14,12 +17,13 @@ export interface Job {
   description: string;
   requirements: string[];
   benefits: string[];
-  postedAt: string;
   applicationCount: number;
+  posted_at: any;
   featured: boolean;
   isRemote: string;
   country: string;
-  external_url?: string;
+  external_url: string;
+  source: string;
 }
 
 export interface LocationOption {
