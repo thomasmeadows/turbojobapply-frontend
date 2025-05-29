@@ -6,8 +6,6 @@ import SearchPage from '../views/SearchPage.vue';
 import JobDetailsPage from '../views/JobDetailsPage.vue';
 import LoginPage from '../views/LoginPage.vue';
 import EmailVerificationPage from '../views/EmailVerificationPage.vue';
-import RegisterPage from '../views/RegisterPage.vue';
-import RegisterThankYouPage from '../views/RegisterThankYouPage.vue';
 import DashboardPage from '../views/DashboardPage.vue';
 import SavedJobsPage from '../views/SavedJobsPage.vue';
 import ProfilePage from '../views/ProfilePage.vue';
@@ -52,18 +50,6 @@ const routes = [
     name: 'EmailVerification',
     component: EmailVerificationPage,
     meta: { title: 'Email Verification - Turbo Job Apply' }
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: RegisterPage,
-    meta: { title: 'Sign Up - Turbo Job Apply', guestOnly: true }
-  },
-  {
-    path: '/register-thank-you',
-    name: 'RegisterThankYou',
-    component: RegisterThankYouPage,
-    meta: { title: 'Registration Successful - Turbo Job Apply' }
   },
   {
     path: '/pricing',

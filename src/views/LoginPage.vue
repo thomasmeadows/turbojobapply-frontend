@@ -78,9 +78,9 @@ const handleSubmit = async () => {
 <template>
   <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Log in to your account</h2>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Welcome to TurboJobApply</h2>
       <p class="mt-2 text-center text-sm text-gray-600">
-        Enter your email and we'll send you a magic link to log in
+        Enter your email and we'll send you a magic link to log in. New users will be automatically registered.
       </p>
     </div>
 
@@ -148,7 +148,7 @@ const handleSubmit = async () => {
 
           <div class="text-center">
             <p class="text-sm text-gray-600">
-              No password required! We'll send you a secure link that expires in 15 minutes.
+              No password required! We'll send you a secure link that expires in 15 minutes. First time here? You'll be automatically registered.
             </p>
           </div>
         </form>
