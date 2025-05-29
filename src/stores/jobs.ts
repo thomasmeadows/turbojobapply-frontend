@@ -20,8 +20,11 @@ interface JobsState {
   totalPages: number;
   totalJobs: number;
   savedJobs: string[];
+  bookmarkedJobs: any[];
+  bookmarkedJobIds: Set<number>;
   currentJob: Job | null;
   loading: boolean;
+  bookmarksLoading: boolean;
   error: string | null;
   query: string;
   location: string;
@@ -35,6 +38,8 @@ export const useJobsStore = defineStore('jobs', {
   state: (): JobsState => ({
     jobs: [],
     savedJobs: JSON.parse(localStorage.getItem('savedJobs') || '[]'),
+    bookmarkedJobs: [],
+    bookmarkedJobIds: new Set(),
     currentJob: null,
     limit: 10,
     offset: 0,
@@ -42,6 +47,7 @@ export const useJobsStore = defineStore('jobs', {
     totalPages: 1,
     totalJobs: 0,
     loading: false,
+    bookmarksLoading: false,
     error: null,
     query: '',
     location: '',
@@ -81,6 +87,43 @@ export const useJobsStore = defineStore('jobs', {
         if (job.workday_requisition_id) {
           return 'Workday';
         }
+      };
+    },
+
+    getJobSource() {
+      return (job: Job) => {
+        if (job.bamboohr_requisition_id) {
+          return 'bamboohr';
+        }
+        if (job.greenhouseio_requisition_id) {
+          return 'greenhouseio';
+        }
+        if (job.workday_requisition_id) {
+          return 'workday';
+        }
+        return '';
+      };
+    },
+
+    getJobRequisitionId() {
+      return (job: Job) => {
+        if (job.bamboohr_requisition_id) {
+          return job.bamboohr_requisition_id;
+        }
+        if (job.greenhouseio_requisition_id) {
+          return job.greenhouseio_requisition_id;
+        }
+        if (job.workday_requisition_id) {
+          return job.workday_requisition_id;
+        }
+        return null;
+      };
+    },
+
+    isJobBookmarked() {
+      return (job: Job) => {
+        const requisitionId = this.getJobRequisitionId(job);
+        return requisitionId ? this.bookmarkedJobIds.has(requisitionId) : false;
       };
     }
   },
@@ -194,6 +237,134 @@ export const useJobsStore = defineStore('jobs', {
       
       // Update localStorage
       localStorage.setItem('savedJobs', JSON.stringify(this.savedJobs));
+    },
+
+    // Fetch all bookmarked jobs for the user
+    async fetchBookmarks() {
+      this.bookmarksLoading = true;
+      this.error = null;
+      
+      try {
+        const response = await axios.get(`${API_URL}/api/bookmarks`);
+        this.bookmarkedJobs = response.data.bookmarks;
+        
+        // Update bookmarked job IDs set for quick lookup
+        this.bookmarkedJobIds.clear();
+        this.bookmarkedJobs.forEach(bookmark => {
+          this.bookmarkedJobIds.add(bookmark.requisition_id);
+        });
+      } catch (error: any) {
+        if (error.response?.status !== 401) {
+          this.error = 'Failed to fetch bookmarks';
+          console.error('Failed to fetch bookmarks:', error);
+        }
+      } finally {
+        this.bookmarksLoading = false;
+      }
+    },
+
+    // Add a bookmark for a job
+    async addBookmark(job: Job) {
+      const source = this.getJobSource(job);
+      const requisitionId = this.getJobRequisitionId(job);
+      
+      if (!source || !requisitionId) {
+        this.error = 'Invalid job data for bookmarking';
+        return false;
+      }
+
+      try {
+        const response = await axios.post(`${API_URL}/api/bookmarks`, {
+          source,
+          requisition_id: requisitionId
+        });
+        
+        // Add to local state
+        this.bookmarkedJobIds.add(requisitionId);
+        
+        // Refresh bookmarks to get full job details
+        await this.fetchBookmarks();
+        
+        return true;
+      } catch (error: any) {
+        if (error.response?.data?.error) {
+          this.error = error.response.data.error;
+        } else {
+          this.error = 'Failed to bookmark job';
+        }
+        console.error('Failed to bookmark job:', error);
+        return false;
+      }
+    },
+
+    // Remove a bookmark for a job
+    async removeBookmark(job: Job) {
+      const source = this.getJobSource(job);
+      const requisitionId = this.getJobRequisitionId(job);
+      
+      if (!source || !requisitionId) {
+        this.error = 'Invalid job data for removing bookmark';
+        return false;
+      }
+
+      try {
+        await axios.delete(`${API_URL}/api/bookmarks`, {
+          data: {
+            source,
+            requisition_id: requisitionId
+          }
+        });
+        
+        // Remove from local state
+        this.bookmarkedJobIds.delete(requisitionId);
+        
+        // Remove from bookmarked jobs array
+        this.bookmarkedJobs = this.bookmarkedJobs.filter(
+          bookmark => bookmark.requisition_id !== requisitionId
+        );
+        
+        return true;
+      } catch (error: any) {
+        if (error.response?.data?.error) {
+          this.error = error.response.data.error;
+        } else {
+          this.error = 'Failed to remove bookmark';
+        }
+        console.error('Failed to remove bookmark:', error);
+        return false;
+      }
+    },
+
+    // Toggle bookmark status for a job
+    async toggleBookmark(job: Job) {
+      const isBookmarked = this.isJobBookmarked(job);
+      
+      if (isBookmarked) {
+        return await this.removeBookmark(job);
+      } else {
+        return await this.addBookmark(job);
+      }
+    },
+
+    // Clear all bookmarks
+    async clearAllBookmarks() {
+      try {
+        await axios.delete(`${API_URL}/api/bookmarks/clear`);
+        
+        // Clear local state
+        this.bookmarkedJobs = [];
+        this.bookmarkedJobIds.clear();
+        
+        return true;
+      } catch (error: any) {
+        if (error.response?.data?.error) {
+          this.error = error.response.data.error;
+        } else {
+          this.error = 'Failed to clear bookmarks';
+        }
+        console.error('Failed to clear bookmarks:', error);
+        return false;
+      }
     }
   }
 });

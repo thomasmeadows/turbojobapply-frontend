@@ -12,15 +12,17 @@ const props = defineProps<{
 const jobsStore = useJobsStore();
 const authStore = useAuthStore();
 
-const isSaved = false;
+const isBookmarked = computed(() => {
+  return jobsStore.isJobBookmarked(props.job);
+});
 
-const toggleSave = () => {
+const toggleBookmark = async () => {
   if (!authStore.isAuthenticated) {
     // You could redirect to login here
     return;
   }
   
-  jobsStore.toggleSaveJob(props.job.id);
+  await jobsStore.toggleBookmark(props.job);
 };
 
 const formattedDate = computed(() => {
@@ -55,11 +57,12 @@ const timeAgo = computed(() => {
       
       <div class="flex items-start mt-2 sm:mt-0">
         <button 
-          @click="toggleSave" 
+          @click="toggleBookmark" 
           class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-          :aria-label="isSaved ? 'Unsave job' : 'Save job'"
+          :aria-label="isBookmarked ? 'Remove bookmark' : 'Bookmark job'"
+          :disabled="jobsStore.bookmarksLoading"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" :class="isSaved ? 'text-primary-500 fill-current' : 'text-gray-400'" viewBox="0 0 24 24" stroke="currentColor" :fill="isSaved ? 'currentColor' : 'none'">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" :class="isBookmarked ? 'text-primary-500 fill-current' : 'text-gray-400'" viewBox="0 0 24 24" stroke="currentColor" :fill="isBookmarked ? 'currentColor' : 'none'">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
           </svg>
         </button>

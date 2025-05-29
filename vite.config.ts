@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
-    // Explicitly handle environment variables for Auth0 configuration
+    // Explicitly handle environment variables for configuration
     define: {
       'process.env': env,
     },

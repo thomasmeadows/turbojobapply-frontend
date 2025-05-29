@@ -12,6 +12,7 @@ const loading = ref(true);
 
 const user = computed(() => authStore.user);
 const savedJobs = computed(() => jobsStore.savedJobsList);
+const bookmarkedJobs = computed(() => jobsStore.bookmarkedJobs);
 const isPremium = computed(() => authStore.isPremium);
 
 const recommendedJobs = ref([]);
@@ -19,7 +20,10 @@ const recommendedJobs = ref([]);
 onMounted(async () => {
   loading.value = true;
   try {
-    await jobsStore.fetchJobs();
+    // Fetch bookmarks if user is authenticated
+    if (authStore.isAuthenticated) {
+      await jobsStore.fetchBookmarks();
+    }
     
   } finally {
     loading.value = false;
@@ -65,8 +69,8 @@ onMounted(async () => {
             
             <div class="mt-6 grid grid-cols-2 gap-4">
               <div class="bg-gray-50 p-4 rounded-md">
-                <div class="text-2xl font-bold text-gray-900">{{ savedJobs.length }}</div>
-                <p class="text-sm text-gray-500">Saved Jobs</p>
+                <div class="text-2xl font-bold text-gray-900">{{ bookmarkedJobs.length }}</div>
+                <p class="text-sm text-gray-500">Bookmarked Jobs</p>
               </div>
               <div class="bg-gray-50 p-4 rounded-md">
                 <div class="text-2xl font-bold text-gray-900">0</div>
@@ -92,43 +96,52 @@ onMounted(async () => {
           </div>
         </div>
         
-        <!-- Saved Jobs Preview -->
+        <!-- Bookmarked Jobs Preview -->
         <div class="bg-white shadow rounded-lg overflow-hidden">
           <div class="p-6">
             <div class="flex items-center justify-between mb-4">
-              <h2 class="text-lg font-medium text-gray-900">Recently Saved Jobs</h2>
+              <h2 class="text-lg font-medium text-gray-900">Recently Bookmarked Jobs</h2>
               <router-link to="/saved-jobs" class="text-sm font-medium text-primary-600 hover:text-primary-700">
                 View all
               </router-link>
             </div>
             
-            <div v-if="loading" class="py-10 flex justify-center">
+            <div v-if="loading || jobsStore.bookmarksLoading" class="py-10 flex justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="animate-spin h-6 w-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
             </div>
             
-            <div v-else-if="savedJobs.length === 0" class="py-10 text-center">
+            <div v-else-if="bookmarkedJobs.length === 0" class="py-10 text-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
               </svg>
-              <p class="text-gray-500 mb-2">You haven't saved any jobs yet</p>
+              <p class="text-gray-500 mb-2">You haven't bookmarked any jobs yet</p>
               <router-link to="/search" class="text-sm font-medium text-primary-600 hover:text-primary-700">
                 Start exploring jobs
               </router-link>
             </div>
             
             <div v-else class="space-y-4">
-              <div v-for="job in savedJobs.slice(0, 3)" :key="job.id" class="border border-gray-200 rounded-md p-4 hover:bg-gray-50 transition-colors duration-200">
+              <div v-for="bookmark in bookmarkedJobs.slice(0, 3)" :key="bookmark.bookmark_id" class="border border-gray-200 rounded-md p-4 hover:bg-gray-50 transition-colors duration-200">
                 <div class="flex justify-between">
                   <div>
-                    <router-link :to="`/jobs/${job.id}`" class="text-base font-medium text-gray-900 hover:text-primary-600">
-                      {{ job.title }}
-                    </router-link>
-                    <p class="text-sm text-gray-600">{{ job.company }} • {{ job.location }}</p>
+                    <a :href="bookmark.external_url" target="_blank" class="text-base font-medium text-gray-900 hover:text-primary-600">
+                      {{ bookmark.title }}
+                    </a>
+                    <p class="text-sm text-gray-600">{{ bookmark.company_name }} • {{ bookmark.location || 'Remote' }}</p>
+                    <div class="flex items-center mt-1">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                        {{ bookmark.source === 'bamboohr' ? 'BambooHR' : bookmark.source === 'greenhouseio' ? 'GreenhouseIO' : 'Workday' }}
+                      </span>
+                      <span v-if="bookmark.remote" class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                        Remote
+                      </span>
+                    </div>
                   </div>
-                  <div class="text-xs text-gray-500">
-                    {{ formatDistanceToNow(parseISO(job.posted_at), { addSuffix: true }) }}
+                  <div class="text-xs text-gray-500 text-right">
+                    <div>Bookmarked {{ formatDistanceToNow(parseISO(bookmark.bookmarked_at), { addSuffix: true }) }}</div>
+                    <div class="mt-1">Posted {{ formatDistanceToNow(parseISO(bookmark.posted_at), { addSuffix: true }) }}</div>
                   </div>
                 </div>
               </div>

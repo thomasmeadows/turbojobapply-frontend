@@ -64,7 +64,7 @@ const logout = () => {
                 <button class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" @click="toggleMobileMenu">
                   <span class="p-2 rounded-full text-gray-700 bg-gray-100">
                     <span class="sr-only">Open user menu</span>
-                    {{ authStore.user?.name.charAt(0).toUpperCase() }}
+                    {{ authStore.user?.name?.charAt(0).toUpperCase() }}
                   </span>
                 </button>
                 <span v-if="isPremium" class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-accent-500 ring-2 ring-white"></span>
