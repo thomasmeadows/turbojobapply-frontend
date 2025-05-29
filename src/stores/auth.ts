@@ -4,14 +4,16 @@ import axios from 'axios';
 interface User {
   id: string;
   email: string;
-  name: string;
-  isPremium: boolean;
-  createdAt: string;
+  name?: string;
+  email_validated: boolean;
+  last_login?: string;
+  created_at: string;
 }
 
 interface AuthState {
   user: User | null;
-  token: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   loading: boolean;
   error: string | null;
 }
@@ -19,150 +21,224 @@ interface AuthState {
 // Auth API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
-// In a real app, you would interact with an API
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     user: null,
-    token: null,
+    accessToken: null,
+    refreshToken: null,
     loading: false,
     error: null
   }),
   
   getters: {
     isAuthenticated(): boolean {
-      return !!this.token;
+      return !!this.accessToken;
     },
-    isPremium(): boolean {
-      return this.user?.isPremium || false;
+    isEmailValidated(): boolean {
+      return this.user?.email_validated || false;
     }
   },
   
   actions: {
     // Check if user is logged in (from local storage)
     checkAuth() {
-      const token = localStorage.getItem('token');
+      const accessToken = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
       const userData = localStorage.getItem('user');
       
-      if (token && userData) {
-        this.token = token;
+      if (accessToken && refreshToken && userData) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.user = JSON.parse(userData);
+        
+        // Set up axios default authorization header
+        axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
       }
     },
     
-    // Login user with Auth0
-    async login(email: string, password: string) {
+    // Send magic link to user's email
+    async sendMagicLink(email: string) {
       this.loading = true;
       this.error = null;
       
       try {
-        // Call the Auth0 API endpoint from the environment variable
-        const response = await axios.post(`${API_URL}/api/auth/login`, { 
-          username: email, 
-          password
+        const response = await axios.post(`${API_URL}/api/auth/send-magic-link`, { 
+          email
         });
         
-        // Process the Auth0 response
+        return {
+          success: true,
+          message: response.data.message
+        };
+      } catch (error: any) {
+        if (error.response?.data?.error) {
+          this.error = error.response.data.error;
+        } else {
+          this.error = 'Failed to send magic link. Please try again.';
+        }
+        console.error('Magic link error:', error);
+        return {
+          success: false,
+          message: this.error
+        };
+      } finally {
+        this.loading = false;
+      }
+    },
+    
+    // Verify magic link token (called when user clicks magic link)
+    async verifyMagicLink(token: string) {
+      this.loading = true;
+      this.error = null;
+      
+      try {
+        const response = await axios.get(`${API_URL}/api/auth/verify?token=${token}`);
+        
         if (response.data && response.data.access_token) {
-          const token = response.data.access_token;
-          
-          // Get user profile if the token doesn't contain it
-          let userData;
-          if (response.data.userinfo) {
-            userData = response.data.userinfo;
-          } else if (response.data.id_token) {
-            // Parse JWT token if needed (simplified example)
-            const base64Url = response.data.id_token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            userData = JSON.parse(window.atob(base64));
-          }
-          
-          // Create user object from Auth0 response
-          const user: User = {
-            id: userData?.sub || '',
-            email: userData?.email || email,
-            name: userData?.name || email.split('@')[0],
-            isPremium: false, // You may get this from your user metadata
-            createdAt: userData?.created_at || new Date().toISOString()
-          };
+          const { access_token, refresh_token, user } = response.data;
           
           // Save to store
+          this.accessToken = access_token;
+          this.refreshToken = refresh_token;
           this.user = user;
-          this.token = token;
           
           // Save to local storage
-          localStorage.setItem('token', token);
+          localStorage.setItem('accessToken', access_token);
+          localStorage.setItem('refreshToken', refresh_token);
           localStorage.setItem('user', JSON.stringify(user));
+          
+          // Set up axios default authorization header
+          axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
           
           return true;
         } else {
-          throw new Error('Authentication failed');
+          throw new Error('Invalid response from server');
         }
       } catch (error: any) {
-        // Handle Auth0 specific error messages if available
-        if (error.response?.data?.error_description) {
-          this.error = error.response.data.error_description;
-        } else if (error.response?.data?.message) {
-          this.error = error.response.data.message;
+        if (error.response?.data?.error) {
+          this.error = error.response.data.error;
         } else {
-          this.error = 'Invalid email or password';
+          this.error = 'Invalid or expired magic link';
         }
-        console.error('Login error:', error);
+        console.error('Magic link verification error:', error);
         return false;
       } finally {
         this.loading = false;
       }
     },
     
-    // Register user
-    async register(name: string | null = null, email: string, password: string) {
-      this.loading = true;
-      this.error = null;
+    // Refresh access token using refresh token
+    async refreshAccessToken() {
+      if (!this.refreshToken) {
+        this.logout();
+        return false;
+      }
       
       try {
-        // Call the API to register user
-        const response = await axios.post(`${API_URL}/api/auth/register`, { 
-          email: email, 
-          password
+        const response = await axios.post(`${API_URL}/api/auth/refresh`, {
+          refresh_token: this.refreshToken
         });
         
-        // Check for successful status code
-        if (response.status >= 200 && response.status < 300) {
+        if (response.data && response.data.access_token) {
+          const { access_token, user } = response.data;
+          
+          // Update tokens
+          this.accessToken = access_token;
+          this.user = user;
+          
+          // Update local storage
+          localStorage.setItem('accessToken', access_token);
+          localStorage.setItem('user', JSON.stringify(user));
+          
+          // Update axios header
+          axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+          
           return true;
         } else {
-          throw new Error('Registration failed');
+          throw new Error('Invalid refresh response');
         }
       } catch (error: any) {
-        // Handle specific error messages if available
-        if (error.response?.data?.error_description) {
-          this.error = error.response.data.error_description;
-        } else if (error.response?.data?.message) {
-          this.error = error.response.data.message;
-        } else {
-          this.error = 'Registration failed. Please try again.';
-        }
-        console.error('Registration error:', error);
+        console.error('Token refresh failed:', error);
+        this.logout();
         return false;
-      } finally {
-        this.loading = false;
+      }
+    },
+    
+    // Get user profile
+    async getUserProfile() {
+      if (!this.accessToken) {
+        return false;
+      }
+      
+      try {
+        const response = await axios.get(`${API_URL}/api/auth/profile`);
+        
+        if (response.data) {
+          this.user = response.data;
+          localStorage.setItem('user', JSON.stringify(response.data));
+          return true;
+        }
+        
+        return false;
+      } catch (error: any) {
+        console.error('Failed to get user profile:', error);
+        
+        // If token is invalid, try to refresh
+        if (error.response?.status === 401) {
+          return await this.refreshAccessToken();
+        }
+        
+        return false;
       }
     },
     
     // Logout user
-    logout() {
+    async logout() {
+      // Call logout endpoint if we have a token
+      if (this.accessToken) {
+        try {
+          await axios.post(`${API_URL}/api/auth/logout`);
+        } catch (error) {
+          console.error('Logout API call failed:', error);
+        }
+      }
+      
+      // Clear state
       this.user = null;
-      this.token = null;
+      this.accessToken = null;
+      this.refreshToken = null;
+      this.error = null;
       
       // Clear local storage
-      localStorage.removeItem('token');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
+      
+      // Clear axios default header
+      delete axios.defaults.headers.common['Authorization'];
     },
     
-    // Update premium status
-    updatePremiumStatus(isPremium: boolean) {
-      if (this.user) {
-        this.user.isPremium = isPremium;
-        localStorage.setItem('user', JSON.stringify(this.user));
-      }
+    // Set up axios interceptor for automatic token refresh
+    setupAxiosInterceptor() {
+      axios.interceptors.response.use(
+        (response) => response,
+        async (error) => {
+          const originalRequest = error.config;
+          
+          if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            
+            const refreshSuccess = await this.refreshAccessToken();
+            
+            if (refreshSuccess) {
+              originalRequest.headers['Authorization'] = `Bearer ${this.accessToken}`;
+              return axios(originalRequest);
+            }
+          }
+          
+          return Promise.reject(error);
+        }
+      );
     }
   }
 });

@@ -5,6 +5,7 @@ import HomePage from '../views/HomePage.vue';
 import SearchPage from '../views/SearchPage.vue';
 import JobDetailsPage from '../views/JobDetailsPage.vue';
 import LoginPage from '../views/LoginPage.vue';
+import EmailVerificationPage from '../views/EmailVerificationPage.vue';
 import RegisterPage from '../views/RegisterPage.vue';
 import RegisterThankYouPage from '../views/RegisterThankYouPage.vue';
 import DashboardPage from '../views/DashboardPage.vue';
@@ -45,6 +46,12 @@ const routes = [
     name: 'Login',
     component: LoginPage,
     meta: { title: 'Log In - Turbo Job Apply', guestOnly: true }
+  },
+  {
+    path: '/auth/verify',
+    name: 'EmailVerification',
+    component: EmailVerificationPage,
+    meta: { title: 'Email Verification - Turbo Job Apply' }
   },
   {
     path: '/register',
