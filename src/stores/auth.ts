@@ -239,6 +239,88 @@ export const useAuthStore = defineStore('auth', {
           return Promise.reject(error);
         }
       );
+    },
+
+    // Initiate LinkedIn OAuth flow
+    async linkedInLogin() {
+      this.loading = true;
+      this.error = null;
+      
+      try {
+        const response = await axios.post(`${API_URL}/api/auth/linkedin`);
+        
+        if (response.data && response.data.authUrl) {
+          // Store state for verification
+          sessionStorage.setItem('linkedin_oauth_state', response.data.state);
+          
+          // Redirect to LinkedIn OAuth
+          window.location.href = response.data.authUrl;
+          
+          return true;
+        } else {
+          throw new Error('Failed to get LinkedIn OAuth URL');
+        }
+      } catch (error: any) {
+        if (error.response?.data?.error) {
+          this.error = error.response.data.error;
+        } else {
+          this.error = 'Failed to initiate LinkedIn login. Please try again.';
+        }
+        console.error('LinkedIn login error:', error);
+        return false;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    // Handle LinkedIn OAuth callback
+    async handleLinkedInCallback(code: string, state?: string) {
+      this.loading = true;
+      this.error = null;
+      
+      try {
+        // Verify state parameter if provided
+        const storedState = sessionStorage.getItem('linkedin_oauth_state');
+        if (state && storedState && state !== storedState) {
+          throw new Error('Invalid state parameter - possible CSRF attack');
+        }
+        
+        // Clear stored state
+        sessionStorage.removeItem('linkedin_oauth_state');
+        
+        const response = await axios.get(`${API_URL}/api/auth/linkedin/callback?code=${code}&state=${state || ''}`);
+        
+        if (response.data && response.data.access_token) {
+          const { access_token, refresh_token, user } = response.data;
+          
+          // Save to store
+          this.accessToken = access_token;
+          this.refreshToken = refresh_token;
+          this.user = user;
+          
+          // Save to local storage
+          localStorage.setItem('accessToken', access_token);
+          localStorage.setItem('refreshToken', refresh_token);
+          localStorage.setItem('user', JSON.stringify(user));
+          
+          // Set up axios default authorization header
+          axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+          
+          return true;
+        } else {
+          throw new Error('Invalid response from server');
+        }
+      } catch (error: any) {
+        if (error.response?.data?.error) {
+          this.error = error.response.data.error;
+        } else {
+          this.error = 'LinkedIn login failed. Please try again.';
+        }
+        console.error('LinkedIn callback error:', error);
+        return false;
+      } finally {
+        this.loading = false;
+      }
     }
   }
 });

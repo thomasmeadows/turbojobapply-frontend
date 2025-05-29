@@ -86,7 +86,7 @@ const logout = () => {
           <template v-else>
             <div class="flex-shrink-0 flex items-center">
               <router-link to="/login" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                Log in
+                Log in/Create Account
               </router-link>
             </div>
           </template>
@@ -154,7 +154,7 @@ const logout = () => {
         <template v-else>
           <div class="flex flex-col px-4 space-y-3">
             <router-link to="/login" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-colors duration-200" @click="closeMobileMenu">
-              Log in
+              Log in/Create Account
             </router-link>
           </div>
         </template>
