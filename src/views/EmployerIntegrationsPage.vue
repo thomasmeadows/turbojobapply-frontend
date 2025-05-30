@@ -1,5 +1,94 @@
 <script setup lang="ts">
-// No specific setup needed for this page
+import { ref } from 'vue';
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+// Form data
+const formData = ref({
+  company_name: '',
+  contact_name: '',
+  contact_email: '',
+  ats_description: ''
+});
+
+// Form state
+const isSubmitting = ref(false);
+const isSubmitted = ref(false);
+const errorMessage = ref('');
+
+// Submit form
+const submitForm = async () => {
+  if (isSubmitting.value) return;
+  
+  // Clear previous error
+  errorMessage.value = '';
+  
+  // Basic validation
+  if (!formData.value.company_name.trim()) {
+    errorMessage.value = 'Company name is required';
+    return;
+  }
+  
+  if (!formData.value.contact_name.trim()) {
+    errorMessage.value = 'Contact name is required';
+    return;
+  }
+  
+  if (!formData.value.contact_email.trim()) {
+    errorMessage.value = 'Email is required';
+    return;
+  }
+  
+  if (!formData.value.ats_description.trim()) {
+    errorMessage.value = 'ATS description is required';
+    return;
+  }
+  
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(formData.value.contact_email.trim())) {
+    errorMessage.value = 'Please enter a valid email address';
+    return;
+  }
+  
+  isSubmitting.value = true;
+  
+  try {
+    await axios.post(`${API_URL}/api/ats-integration/request`, {
+      company_name: formData.value.company_name.trim(),
+      contact_name: formData.value.contact_name.trim(),
+      contact_email: formData.value.contact_email.trim(),
+      ats_description: formData.value.ats_description.trim()
+    });
+    
+    // Success
+    isSubmitted.value = true;
+    
+    // Reset form
+    formData.value = {
+      company_name: '',
+      contact_name: '',
+      contact_email: '',
+      ats_description: ''
+    };
+    
+  } catch (error: any) {
+    if (error.response?.data?.error) {
+      errorMessage.value = error.response.data.error;
+    } else {
+      errorMessage.value = 'Failed to submit request. Please try again.';
+    }
+    console.error('Failed to submit ATS integration request:', error);
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+// Close success message
+const closeSuccessMessage = () => {
+  isSubmitted.value = false;
+};
 </script>
 
 <template>
@@ -118,50 +207,102 @@
             please provide your information below and we'll contact you to discuss your requirements.
           </p>
           <div class="mt-6">
-            <form class="space-y-4">
+            <!-- Success Message -->
+            <div v-if="isSubmitted" class="mb-6 rounded-md bg-green-50 p-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="ml-3 flex-1">
+                  <h3 class="text-sm font-medium text-green-800">Request Submitted Successfully!</h3>
+                  <div class="mt-2 text-sm text-green-700">
+                    <p>Thank you for your interest in custom ATS integration. We will contact you within 24-48 hours to discuss your requirements.</p>
+                  </div>
+                  <div class="mt-4">
+                    <button @click="closeSuccessMessage" class="text-sm bg-green-50 text-green-800 hover:bg-green-100 rounded-md p-2">
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Error Message -->
+            <div v-if="errorMessage" class="mb-6 rounded-md bg-red-50 p-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-red-800">Error</h3>
+                  <div class="mt-2 text-sm text-red-700">
+                    <p>{{ errorMessage }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <form @submit.prevent="submitForm" class="space-y-4">
               <div>
-                <label for="company" class="block text-sm font-medium text-gray-700">Company Name</label>
+                <label for="company" class="block text-sm font-medium text-gray-700">Company Name <span class="text-red-500">*</span></label>
                 <input
                   type="text"
                   id="company"
-                  name="company"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                  v-model="formData.company_name"
+                  :disabled="isSubmitting"
+                  required
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm disabled:bg-gray-100"
                 />
               </div>
               <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">Contact Name</label>
+                <label for="name" class="block text-sm font-medium text-gray-700">Contact Name <span class="text-red-500">*</span></label>
                 <input
                   type="text"
                   id="name"
-                  name="name"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                  v-model="formData.contact_name"
+                  :disabled="isSubmitting"
+                  required
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm disabled:bg-gray-100"
                 />
               </div>
               <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email <span class="text-red-500">*</span></label>
                 <input
                   type="email"
                   id="email"
-                  name="email"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                  v-model="formData.contact_email"
+                  :disabled="isSubmitting"
+                  required
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm disabled:bg-gray-100"
                 />
               </div>
               <div>
-                <label for="ats" class="block text-sm font-medium text-gray-700">ATS Description</label>
+                <label for="ats" class="block text-sm font-medium text-gray-700">ATS Description <span class="text-red-500">*</span></label>
                 <textarea
                   id="ats"
-                  name="ats"
-                  rows="3"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                  placeholder="Please briefly describe your ATS system"
+                  v-model="formData.ats_description"
+                  :disabled="isSubmitting"
+                  required
+                  rows="4"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm disabled:bg-gray-100"
+                  placeholder="Please describe your ATS system, including the name, version, and any specific integration requirements or challenges."
                 ></textarea>
               </div>
               <div>
                 <button
                   type="submit"
-                  class="inline-flex justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                  :disabled="isSubmitting"
+                  class="inline-flex items-center justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Submit Request
+                  <svg v-if="isSubmitting" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {{ isSubmitting ? 'Submitting...' : 'Submit Request' }}
                 </button>
               </div>
             </form>
