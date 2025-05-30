@@ -3,9 +3,11 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import { StripeService, type SubscriptionStatus } from '../services/stripe';
+import { useSubscriptionRefresh } from '../composables/useSubscriptionRefresh';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const { refreshAfterPayment } = useSubscriptionRefresh();
 const loading = ref(false);
 const paymentSuccess = ref(false);
 const errorMessage = ref('');
@@ -96,12 +98,28 @@ onMounted(async () => {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('success') === 'true') {
     paymentSuccess.value = true;
-    await authStore.refreshUserProfile(); // Refresh user profile to get updated roles
-    await loadSubscriptionStatus(); // Refresh subscription data
+    
+    // Enhanced refresh flow after successful payment
+    await refreshAfterPayment({
+      pollForChanges: true,
+      maxAttempts: 6,
+      onProgress: (attempt, maxAttempts) => {
+        console.log(`Checking for premium activation: ${attempt}/${maxAttempts}`);
+      }
+    });
+    
+    // Clean up URL parameters after processing
+    const cleanUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
   } else if (urlParams.get('canceled') === 'true') {
     errorMessage.value = 'Subscription setup was canceled. You can try again anytime.';
+    
+    // Clean up URL parameters
+    const cleanUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
   }
 });
+
 </script>
 
 <template>

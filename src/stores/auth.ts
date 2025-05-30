@@ -383,6 +383,44 @@ export const useAuthStore = defineStore('auth', {
         console.error('Failed to refresh user profile:', error);
         return false;
       }
+    },
+
+    // Comprehensive refresh after subscription changes
+    async refreshAfterSubscriptionChange(pollForChanges = false, maxAttempts = 5) {
+      try {
+        let attempts = 0;
+        let previousPremiumStatus = this.isPremium;
+        
+        while (attempts < maxAttempts) {
+          attempts++;
+          console.log(`Refreshing user data after subscription change - attempt ${attempts}`);
+          
+          // Wait before checking (except first attempt)
+          if (attempts > 1) {
+            await new Promise(resolve => setTimeout(resolve, 3000));
+          }
+          
+          // Refresh user profile (triggers Stripe sync on backend)
+          await this.refreshUserProfile();
+          
+          // Refresh access token to get latest roles in JWT
+          await this.refreshAccessToken();
+          
+          // If we're not polling, or if status changed, we're done
+          if (!pollForChanges || this.isPremium !== previousPremiumStatus) {
+            console.log('User data refreshed successfully');
+            return true;
+          }
+          
+          console.log('Subscription status unchanged, retrying...');
+        }
+        
+        console.warn('Max attempts reached for subscription refresh');
+        return false;
+      } catch (error) {
+        console.error('Error refreshing user data after subscription change:', error);
+        return false;
+      }
     }
   }
 });

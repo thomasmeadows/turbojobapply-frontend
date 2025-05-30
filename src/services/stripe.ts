@@ -109,6 +109,26 @@ export class StripeService {
   }
 
   /**
+   * Force refresh subscription status from Stripe
+   * Useful after payment completion to immediately sync status
+   */
+  static async refreshSubscriptionStatus(): Promise<SubscriptionStatus> {
+    try {
+      const response = await axios.post(`${API_URL}/api/subscription/refresh`, {}, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error('Error refreshing subscription status:', error);
+      throw new Error(
+        error.response?.data?.error || 'Failed to refresh subscription status'
+      );
+    }
+  }
+
+  /**
    * Cancel subscription at period end
    */
   static async cancelSubscription(): Promise<any> {
