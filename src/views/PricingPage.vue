@@ -120,6 +120,14 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
+              <p class="ml-3 text-base text-gray-700"><span class="font-medium">AI Job Apply</span> - Use AI to enhance resume's and cover's before submitting them</p>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
               <p class="ml-3 text-base text-gray-700"><span class="font-medium">Auto Job Apply</span> - Set criteria and let us apply for you</p>
             </li>
             <li class="flex items-start">

@@ -219,6 +219,12 @@ const searchJobs = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
+                <p class="text-white"><span class="font-medium">AI Job Apply</span> - Use AI to enhance resume's and cover's before submitting them</p>
+              </div>
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
                 <p class="text-white"><span class="font-medium">Auto Job Apply</span> - Set criteria and let us apply for you</p>
               </div>
               <div class="flex items-start">
@@ -255,6 +261,12 @@ const searchJobs = () => {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
                   <p class="text-gray-700">One-click applications</p>
+                </div>
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <p class="text-gray-700">AI-enhanced resumes and cover letters</p>
                 </div>
                 <div class="flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

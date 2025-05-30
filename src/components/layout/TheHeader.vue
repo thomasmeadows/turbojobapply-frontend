@@ -59,18 +59,32 @@ const logout = () => {
               Saved Jobs
             </router-link>
             
-            <div class="ml-3 relative">
+            <div class="ml-3 relative flex items-center">
+              <!-- User Icon - Click to go to dashboard -->
               <div class="relative">
-                <button class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" @click="toggleMobileMenu">
+                <router-link to="/dashboard" class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:bg-gray-50 transition-colors duration-200">
                   <span class="p-2 rounded-full text-gray-700 bg-gray-100">
-                    <span class="sr-only">Open user menu</span>
-                    {{ authStore.user?.name?.charAt(0).toUpperCase() }}
+                    <span class="sr-only">Go to dashboard</span>
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
                   </span>
-                </button>
+                </router-link>
                 <span v-if="isPremium" class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-accent-500 ring-2 ring-white"></span>
               </div>
+              
+              <!-- Dropdown Arrow Button -->
+              <button 
+                @click="toggleMobileMenu" 
+                class="ml-1 p-1 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
+              >
+                <span class="sr-only">Open user menu</span>
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
               <!-- Dropdown menu -->
-              <div v-if="mobileMenuOpen" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div v-if="mobileMenuOpen" class="origin-top-right absolute right-0 top-full mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                 <router-link to="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">Dashboard</router-link>
                 <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">Profile</router-link>
                 <router-link to="/subscription" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">
@@ -129,7 +143,9 @@ const logout = () => {
           <div class="flex items-center px-4">
             <div class="flex-shrink-0">
               <div class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-                <span class="text-gray-700 font-medium">{{ authStore.user?.name.charAt(0).toUpperCase() }}</span>
+                <svg class="h-6 w-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
               </div>
             </div>
             <div class="ml-3">

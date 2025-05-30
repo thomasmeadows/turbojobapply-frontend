@@ -54,6 +54,20 @@ const handleCancel = async () => {
 
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Beta Banner -->
+    <div class="bg-primary-600 text-white py-4 rounded-lg mb-6">
+      <div class="text-center">
+        <p class="text-lg font-medium">
+          <span class="inline-flex items-center">
+            <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+            </svg>
+            Limited Time: All Premium Features Free During Beta Testing
+          </span>
+        </p>
+      </div>
+    </div>
+
     <h1 class="text-2xl font-bold text-gray-900 mb-2">Premium Subscription</h1>
     <p class="text-gray-600 mb-6">Unlock advanced features to supercharge your job search</p>
     
@@ -61,7 +75,7 @@ const handleCancel = async () => {
       <!-- Banner -->
       <div class="bg-gradient-to-r from-accent-500 to-accent-600 px-6 py-8 text-white">
         <h2 class="text-2xl font-bold mb-2">Turbo Job Apply Premium</h2>
-        <p class="text-accent-100">Get ahead in your job search with premium features</p>
+        <p class="text-accent-100">Advanced AI-powered job application features</p>
       </div>
       
       <!-- Content -->
@@ -117,8 +131,8 @@ const handleCancel = async () => {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h4 class="text-gray-900 font-medium">Fast-track Applications</h4>
-                  <p class="text-gray-600">Your job applications are processed faster than standard applications</p>
+                  <h4 class="text-gray-900 font-medium">Turbo Job Apply</h4>
+                  <p class="text-gray-600">Apply to jobs with one click</p>
                 </div>
               </div>
               
@@ -127,8 +141,8 @@ const handleCancel = async () => {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h4 class="text-gray-900 font-medium">Enhanced Profile</h4>
-                  <p class="text-gray-600">Your profile gets highlighted to potential employers</p>
+                  <h4 class="text-gray-900 font-medium">AI Job Apply</h4>
+                  <p class="text-gray-600">Use AI to enhance resume's and cover's before submitting them</p>
                 </div>
               </div>
               
@@ -137,8 +151,38 @@ const handleCancel = async () => {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
                 <div>
-                  <h4 class="text-gray-900 font-medium">Early Access</h4>
-                  <p class="text-gray-600">Get notified about new job postings before standard users</p>
+                  <h4 class="text-gray-900 font-medium">Auto Job Apply</h4>
+                  <p class="text-gray-600">Set criteria and let us apply for you</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mt-0.5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <div>
+                  <h4 class="text-gray-900 font-medium">Job Notifications</h4>
+                  <p class="text-gray-600">Real-time alerts for new matching jobs</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mt-0.5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <div>
+                  <h4 class="text-gray-900 font-medium">Job Tracking</h4>
+                  <p class="text-gray-600">Track application status and follow-ups</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mt-0.5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <div>
+                  <h4 class="text-gray-900 font-medium">Premium Customer Support</h4>
+                  <p class="text-gray-600">Priority assistance</p>
                 </div>
               </div>
             </div>
@@ -156,9 +200,12 @@ const handleCancel = async () => {
                 <div class="flex justify-between items-center">
                   <div>
                     <p class="text-gray-900 font-medium">Premium Plan</p>
-                    <p class="text-gray-600 text-sm">Billed monthly</p>
+                    <p class="text-gray-600 text-sm">Currently free during beta - Future price: $19.99/month</p>
                   </div>
-                  <p class="text-gray-900 font-medium">$10.00/month</p>
+                  <div class="text-right">
+                    <p class="text-gray-900 font-medium line-through text-gray-400">$19.99/month</p>
+                    <p class="text-accent-600 font-bold">FREE (Beta)</p>
+                  </div>
                 </div>
               </div>
               
@@ -178,7 +225,7 @@ const handleCancel = async () => {
         </div>
         
         <div v-else>
-          <h3 class="text-lg font-medium text-gray-900 mb-4">Upgrade to Premium for $10/month</h3>
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Get Premium Features - Free During Beta Testing</h3>
           
           <div class="space-y-4 mb-6">
             <div class="flex items-start">
@@ -186,8 +233,8 @@ const handleCancel = async () => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
               <div>
-                <h4 class="text-gray-900 font-medium">Fast-track Applications</h4>
-                <p class="text-gray-600">Your job applications are processed faster than standard applications</p>
+                <h4 class="text-gray-900 font-medium">Turbo Job Apply</h4>
+                <p class="text-gray-600">Apply to jobs with one click</p>
               </div>
             </div>
             
@@ -196,8 +243,8 @@ const handleCancel = async () => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
               <div>
-                <h4 class="text-gray-900 font-medium">Enhanced Profile</h4>
-                <p class="text-gray-600">Your profile gets highlighted to potential employers</p>
+                <h4 class="text-gray-900 font-medium">AI Job Apply</h4>
+                <p class="text-gray-600">Use AI to enhance resume's and cover's before submitting them</p>
               </div>
             </div>
             
@@ -206,8 +253,38 @@ const handleCancel = async () => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
               <div>
-                <h4 class="text-gray-900 font-medium">Early Access</h4>
-                <p class="text-gray-600">Get notified about new job postings before standard users</p>
+                <h4 class="text-gray-900 font-medium">Auto Job Apply</h4>
+                <p class="text-gray-600">Set criteria and let us apply for you</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mt-0.5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <div>
+                <h4 class="text-gray-900 font-medium">Job Notifications</h4>
+                <p class="text-gray-600">Real-time alerts for new matching jobs</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mt-0.5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <div>
+                <h4 class="text-gray-900 font-medium">Job Tracking</h4>
+                <p class="text-gray-600">Track application status and follow-ups</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mt-0.5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <div>
+                <h4 class="text-gray-900 font-medium">Premium Customer Support</h4>
+                <p class="text-gray-600">Priority assistance</p>
               </div>
             </div>
           </div>
@@ -217,9 +294,12 @@ const handleCancel = async () => {
               <div class="flex justify-between items-center">
                 <div>
                   <p class="text-gray-900 font-medium">Premium Plan</p>
-                  <p class="text-gray-600 text-sm">Billed monthly</p>
+                  <p class="text-gray-600 text-sm">Free during beta - Future price: $19.99/month</p>
                 </div>
-                <p class="text-gray-900 font-medium">$10.00/month</p>
+                <div class="text-right">
+                  <p class="text-gray-900 font-medium line-through text-gray-400">$19.99/month</p>
+                  <p class="text-accent-600 font-bold">FREE (Beta)</p>
+                </div>
               </div>
             </div>
             
@@ -232,11 +312,11 @@ const handleCancel = async () => {
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              {{ loading ? 'Processing...' : 'Subscribe Now' }}
+              {{ loading ? 'Processing...' : 'Get Free Beta Access' }}
             </button>
             
             <p class="mt-2 text-xs text-gray-500 text-center">
-              By subscribing, you agree to our terms and conditions. You can cancel anytime.
+              Free during beta testing. By accessing premium features, you agree to our terms and conditions.
             </p>
           </div>
         </div>
@@ -244,3 +324,9 @@ const handleCancel = async () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.line-through {
+  text-decoration: line-through;
+}
+</style>
