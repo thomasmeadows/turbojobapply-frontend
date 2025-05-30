@@ -1,13 +1,64 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useJobsStore } from '../stores/jobs';
 
 const router = useRouter();
 const jobsStore = useJobsStore();
 
+// Rotating facts state
+const currentFactIndex = ref(0);
+const isVisible = ref(true);
+let rotationInterval: NodeJS.Timeout | null = null;
+
+// Define the facts that will rotate
+const facts = ref([
+  { text: 'jobs available worldwide', value: 0 },
+  { text: 'opportunities in the US', value: 0 },
+  { text: 'remote positions in the US', value: 0 }
+]);
+
+// Function to update fact values from statistics
+const updateFactValues = () => {
+  if (jobsStore.statistics) {
+    facts.value[0].value = jobsStore.statistics.total;
+    facts.value[1].value = jobsStore.statistics.usJobs;
+    facts.value[2].value = jobsStore.statistics.remoteUsJobs;
+  }
+};
+
+// Function to rotate to next fact with scale and fade effect
+const rotateFact = () => {
+  isVisible.value = false;
+  
+  setTimeout(() => {
+    currentFactIndex.value = (currentFactIndex.value + 1) % facts.value.length;
+    isVisible.value = true;
+  }, 5000); // Duration of the scale/fade out animation
+};
+
+// Start the rotation
+const startFactRotation = () => {
+  rotationInterval = setInterval(rotateFact, 10000); // 10 seconds total (5s visible + 5s transition)
+};
+
+// Stop the rotation
+const stopFactRotation = () => {
+  if (rotationInterval) {
+    clearInterval(rotationInterval);
+    rotationInterval = null;
+  }
+};
+
 onMounted(async () => {
-  // Fetch featured jobs
+  // Fetch job statistics
+  await jobsStore.fetchJobStatistics();
+  updateFactValues();
+  startFactRotation();
+});
+
+onUnmounted(() => {
+  stopFactRotation();
 });
 
 const searchJobs = () => {
@@ -69,9 +120,15 @@ const searchJobs = () => {
                 </button>
               </div>
             </form>
-            <p class="mt-3 text-sm text-primary-100">
-              Popular searches: Designer, Developer, Marketing, Remote
-            </p>
+            <!-- Rotating Job Statistics -->
+            <div class="mt-3 text-sm text-primary-100 h-8 flex items-center justify-center overflow-hidden">
+              <transition name="scale-fade" mode="out-in">
+                <p v-if="isVisible && facts[currentFactIndex]" :key="currentFactIndex" class="scale-fade-text">
+                  <span class="font-semibold text-white">{{ facts[currentFactIndex].value.toLocaleString() }}</span>
+                  {{ facts[currentFactIndex].text }}
+                </p>
+              </transition>
+            </div>
           </div>
         </div>
       </div>
@@ -269,5 +326,39 @@ const searchJobs = () => {
 
 .line-through {
   text-decoration: line-through;
+}
+
+/* Scale and fade transition for rotating facts */
+.scale-fade-enter-active {
+  transition: all 0.5s ease-in;
+}
+
+.scale-fade-leave-active {
+  transition: all 5s ease-out;
+}
+
+.scale-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.scale-fade-enter-to {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.scale-fade-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.scale-fade-leave-to {
+  opacity: 0;
+  transform: scale(2);
+}
+
+.scale-fade-text {
+  transform-origin: center;
+  white-space: nowrap;
 }
 </style>

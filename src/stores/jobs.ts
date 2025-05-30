@@ -12,6 +12,12 @@ interface UserConfig {
   }
 }
 
+interface JobStatistics {
+  total: number;
+  usJobs: number;
+  remoteUsJobs: number;
+}
+
 interface JobsState {
   jobs: Job[];
   limit: number;
@@ -32,6 +38,7 @@ interface JobsState {
   country: string;
   userConfig: UserConfig | null;
   jobSource: string;
+  statistics: JobStatistics | null;
 }
 
 export const useJobsStore = defineStore('jobs', {
@@ -54,7 +61,8 @@ export const useJobsStore = defineStore('jobs', {
     isRemote: '',
     country: 'US',
     userConfig: null,
-    jobSource: ''
+    jobSource: '',
+    statistics: null
   }),
   
   getters: {
@@ -364,6 +372,17 @@ export const useJobsStore = defineStore('jobs', {
         }
         console.error('Failed to clear bookmarks:', error);
         return false;
+      }
+    },
+
+    // Fetch job statistics for homepage display
+    async fetchJobStatistics() {
+      try {
+        const response = await axios.get(`${API_URL}/api/requisitions/statistics`);
+        this.statistics = response.data.data;
+      } catch (error) {
+        console.error('Failed to fetch job statistics:', error);
+        this.statistics = { total: 0, usJobs: 0, remoteUsJobs: 0 };
       }
     }
   }
