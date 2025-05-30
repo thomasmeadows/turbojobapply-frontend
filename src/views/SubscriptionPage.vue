@@ -17,8 +17,8 @@ const handleSubscribe = async () => {
     // Simulating payment processing
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Update user's premium status
-    authStore.updatePremiumStatus(true);
+    // In a real implementation, this would involve a backend API call
+    // to update the user's premium status in the database
     
     // Show success message
     paymentSuccess.value = true;
@@ -38,8 +38,8 @@ const handleCancel = async () => {
     // Simulating cancellation processing
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Update user's premium status
-    authStore.updatePremiumStatus(false);
+    // In a real implementation, this would involve a backend API call
+    // to update the user's premium status in the database
     
     // Show success message
     paymentSuccess.value = false;

@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useJobsStore } from '../stores/jobs';
+import { useAuthStore } from '../stores/auth';
 
 const router = useRouter();
 const jobsStore = useJobsStore();
+const authStore = useAuthStore();
+
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+const isPremium = computed(() => authStore.isPremium);
 
 // Rotating facts state
 const currentFactIndex = ref(0);
@@ -184,7 +189,11 @@ const searchJobs = () => {
               </svg>
             </div>
             <h3 class="text-xl font-semibold text-gray-900 mb-2">Premium Features</h3>
-            <p class="text-gray-600">
+            <p v-if="isPremium" class="text-gray-600">
+              <span class="font-bold text-green-600">You have premium access!</span> 
+              Enjoy unlimited one-click applications and automated job searching.
+            </p>
+            <p v-else class="text-gray-600">
               All premium features are <span class="font-bold text-accent-600">FREE</span> during our beta testing phase! 
               Enjoy one-click applications and automated job searching.
             </p>
@@ -194,7 +203,7 @@ const searchJobs = () => {
     </section>
     
     <!-- Premium Promotion Section -->
-    <section class="py-16 lg:py-24 bg-gradient-to-r from-accent-500 to-accent-600 text-white">
+    <section v-if="!isPremium" class="py-16 lg:py-24 bg-gradient-to-r from-accent-500 to-accent-600 text-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
           <div>
@@ -287,10 +296,79 @@ const searchJobs = () => {
                   <p class="text-gray-700">Premium customer support</p>
                 </div>
               </div>
-              <router-link to="/register" class="w-full btn-primary text-center block py-2">
+              <router-link v-if="!isAuthenticated" to="/register" class="w-full btn-primary text-center block py-2">
                 Sign Up Free
               </router-link>
+              <router-link v-else to="/subscription" class="w-full btn-primary text-center block py-2">
+                Get Premium Access
+              </router-link>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Premium Member Section -->
+    <section v-if="isPremium" class="py-16 lg:py-24 bg-gradient-to-r from-green-500 to-green-600 text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h2 class="text-3xl font-bold text-white sm:text-4xl mb-6">
+            Welcome Back, Premium Member!
+          </h2>
+          <p class="text-lg text-green-100 mb-8 max-w-3xl mx-auto">
+            You have full access to all premium features during our beta testing phase. 
+            Start using your advanced job search tools to find your perfect opportunity.
+          </p>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white bg-opacity-10 rounded-lg p-4">
+              <div class="text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <h3 class="font-medium text-white">Turbo Apply</h3>
+                <p class="text-green-100 text-sm">One-click applications</p>
+              </div>
+            </div>
+            <div class="bg-white bg-opacity-10 rounded-lg p-4">
+              <div class="text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                <h3 class="font-medium text-white">AI Enhancement</h3>
+                <p class="text-green-100 text-sm">AI-powered resumes</p>
+              </div>
+            </div>
+            <div class="bg-white bg-opacity-10 rounded-lg p-4">
+              <div class="text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+                </svg>
+                <h3 class="font-medium text-white">Auto Apply</h3>
+                <p class="text-green-100 text-sm">Automated applications</p>
+              </div>
+            </div>
+            <div class="bg-white bg-opacity-10 rounded-lg p-4">
+              <div class="text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 12h16M4 18h16" />
+                </svg>
+                <h3 class="font-medium text-white">Job Tracking</h3>
+                <p class="text-green-100 text-sm">Application tracking</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <router-link to="/dashboard" class="bg-white text-green-600 hover:bg-gray-100 font-medium py-3 px-6 rounded-md transition-colors">
+              Go to Dashboard
+            </router-link>
+            <router-link to="/search" class="bg-green-700 text-white hover:bg-green-800 font-medium py-3 px-6 rounded-md transition-colors">
+              Start Job Search
+            </router-link>
           </div>
         </div>
       </div>
@@ -309,8 +387,14 @@ const searchJobs = () => {
           <router-link to="/search" class="btn-primary">
             Start Searching
           </router-link>
-          <router-link to="/register" class="btn-outline">
+          <router-link v-if="!isAuthenticated" to="/register" class="btn-outline">
             Create Account
+          </router-link>
+          <router-link v-else-if="!isPremium" to="/subscription" class="btn-outline">
+            Get Premium Access
+          </router-link>
+          <router-link v-else to="/dashboard" class="btn-outline">
+            Go to Dashboard
           </router-link>
         </div>
       </div>

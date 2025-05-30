@@ -5,17 +5,13 @@ import { useJobsStore } from '../stores/jobs';
 import { useAuthStore } from '../stores/auth';
 import { parseISO, formatDistanceToNow } from 'date-fns';
 
-const router = useRouter();
 const jobsStore = useJobsStore();
 const authStore = useAuthStore();
 const loading = ref(true);
 
 const user = computed(() => authStore.user);
-const savedJobs = computed(() => jobsStore.savedJobsList);
 const bookmarkedJobs = computed(() => jobsStore.bookmarkedJobs);
 const isPremium = computed(() => authStore.isPremium);
-
-const recommendedJobs = ref([]);
 
 onMounted(async () => {
   loading.value = true;
@@ -78,7 +74,21 @@ onMounted(async () => {
               </div>
             </div>
             
-            <div v-if="!isPremium" class="mt-6 bg-accent-50 rounded-md p-4">
+            <div v-if="isPremium" class="mt-6 bg-green-50 rounded-md p-4">
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mt-0.5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                  <p class="text-sm text-gray-700">
+                    <span class="font-medium">Premium Member</span> - You have access to all premium features including fast-track applications, enhanced profile visibility, and priority support.
+                  </p>
+                  <p class="text-xs text-gray-600 mt-1">Beta access to premium features is active</p>
+                </div>
+              </div>
+            </div>
+            
+            <div v-else class="mt-6 bg-accent-50 rounded-md p-4">
               <div class="flex items-start">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-500 mt-0.5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />

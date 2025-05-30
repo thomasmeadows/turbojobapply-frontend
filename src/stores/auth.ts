@@ -8,6 +8,7 @@ interface User {
   email_validated: boolean;
   last_login?: string;
   created_at: string;
+  roles?: string[];
 }
 
 interface AuthState {
@@ -36,6 +37,15 @@ export const useAuthStore = defineStore('auth', {
     },
     isEmailValidated(): boolean {
       return this.user?.email_validated || false;
+    },
+    hasRole: (state) => (roleName: string): boolean => {
+      return state.user?.roles?.includes(roleName) || false;
+    },
+    isAdmin(): boolean {
+      return this.user?.roles?.includes('admin') || false;
+    },
+    isPremium(): boolean {
+      return this.user?.roles?.includes('premium') || false;
     }
   },
   
@@ -49,7 +59,17 @@ export const useAuthStore = defineStore('auth', {
       if (accessToken && refreshToken && userData) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        this.user = JSON.parse(userData);
+        try {
+          this.user = JSON.parse(userData);
+          // Ensure roles array exists for backward compatibility
+          if (this.user && !this.user.roles) {
+            this.user.roles = [];
+          }
+        } catch (error) {
+          console.error('Error parsing user data from localStorage:', error);
+          this.logout();
+          return;
+        }
         
         // Set up axios default authorization header
         axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
@@ -97,6 +117,11 @@ export const useAuthStore = defineStore('auth', {
         if (response.data && response.data.access_token) {
           const { access_token, refresh_token, user } = response.data;
           
+          // Ensure user has roles array
+          if (user && !user.roles) {
+            user.roles = [];
+          }
+          
           // Save to store
           this.accessToken = access_token;
           this.refreshToken = refresh_token;
@@ -142,6 +167,11 @@ export const useAuthStore = defineStore('auth', {
         if (response.data && response.data.access_token) {
           const { access_token, user } = response.data;
           
+          // Ensure user has roles array
+          if (user && !user.roles) {
+            user.roles = [];
+          }
+          
           // Update tokens
           this.accessToken = access_token;
           this.user = user;
@@ -174,8 +204,14 @@ export const useAuthStore = defineStore('auth', {
         const response = await axios.get(`${API_URL}/api/auth/profile`);
         
         if (response.data) {
-          this.user = response.data;
-          localStorage.setItem('user', JSON.stringify(response.data));
+          const user = response.data;
+          // Ensure user has roles array
+          if (user && !user.roles) {
+            user.roles = [];
+          }
+          
+          this.user = user;
+          localStorage.setItem('user', JSON.stringify(user));
           return true;
         }
         
@@ -293,6 +329,11 @@ export const useAuthStore = defineStore('auth', {
         if (response.data && response.data.access_token) {
           const { access_token, refresh_token, user } = response.data;
           
+          // Ensure user has roles array
+          if (user && !user.roles) {
+            user.roles = [];
+          }
+          
           // Save to store
           this.accessToken = access_token;
           this.refreshToken = refresh_token;
@@ -320,6 +361,27 @@ export const useAuthStore = defineStore('auth', {
         return false;
       } finally {
         this.loading = false;
+      }
+    },
+
+    // Update user data in store and localStorage
+    updateUserData(userData: User) {
+      this.user = userData;
+      localStorage.setItem('user', JSON.stringify(userData));
+    },
+
+    // Refresh user profile and roles from server
+    async refreshUserProfile() {
+      try {
+        const success = await this.getUserProfile();
+        if (success) {
+          // User profile updated successfully with latest roles
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error('Failed to refresh user profile:', error);
+        return false;
       }
     }
   }
