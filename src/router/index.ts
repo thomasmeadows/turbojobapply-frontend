@@ -18,6 +18,7 @@ import AccessibilityPage from '../views/AccessibilityPage.vue';
 import TermsOfServicePage from '../views/TermsOfServicePage.vue';
 import CareersPage from '../views/CareersPage.vue';
 import EmployerIntegrationsPage from '../views/EmployerIntegrationsPage.vue';
+import CancelSubscriptionPage from '../views/CancelSubscriptionPage.vue';
 import NotFoundPage from '../views/NotFoundPage.vue';
 
 const routes = [
@@ -98,6 +99,12 @@ const routes = [
     name: 'Subscription',
     component: SubscriptionPage,
     meta: { title: 'Premium Subscription - Turbo Job Apply', requiresAuth: true }
+  },
+  {
+    path: '/subscription/cancel',
+    name: 'CancelSubscription',
+    component: CancelSubscriptionPage,
+    meta: { title: 'Cancel Subscription - Turbo Job Apply', requiresAuth: true }
   },
   {
     path: '/accessibility',

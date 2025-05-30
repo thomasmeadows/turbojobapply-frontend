@@ -296,7 +296,7 @@ const searchJobs = () => {
                   <p class="text-gray-700">Premium customer support</p>
                 </div>
               </div>
-              <router-link v-if="!isAuthenticated" to="/register" class="w-full btn-primary text-center block py-2">
+              <router-link v-if="!isAuthenticated" to="/subscription" class="w-full btn-primary text-center block py-2">
                 Sign Up Free
               </router-link>
               <router-link v-else to="/subscription" class="w-full btn-primary text-center block py-2">
@@ -387,7 +387,7 @@ const searchJobs = () => {
           <router-link to="/search" class="btn-primary">
             Start Searching
           </router-link>
-          <router-link v-if="!isAuthenticated" to="/register" class="btn-outline">
+          <router-link v-if="!isAuthenticated" to="/subscription" class="btn-outline">
             Create Account
           </router-link>
           <router-link v-else-if="!isPremium" to="/subscription" class="btn-outline">

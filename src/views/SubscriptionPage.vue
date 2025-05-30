@@ -1,55 +1,107 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import { StripeService, type SubscriptionStatus } from '../services/stripe';
 
+const router = useRouter();
 const authStore = useAuthStore();
 const loading = ref(false);
 const paymentSuccess = ref(false);
 const errorMessage = ref('');
+const subscriptionData = ref<SubscriptionStatus | null>(null);
+const loadingSubscription = ref(true);
 
 const isPremium = computed(() => authStore.isPremium);
+
+const isSubscriptionActive = computed(() => {
+  if (!subscriptionData.value?.subscription) return false;
+  return StripeService.isSubscriptionActive(subscriptionData.value.subscription);
+});
+
+const subscriptionStatus = computed(() => {
+  if (!subscriptionData.value?.subscription) return 'inactive';
+  return StripeService.formatSubscriptionStatus(subscriptionData.value.subscription.status);
+});
+
+const nextBillingDate = computed(() => {
+  if (!subscriptionData.value?.subscription) return null;
+  return StripeService.formatDate(subscriptionData.value.subscription.current_period_end);
+});
+
+const daysRemaining = computed(() => {
+  if (!subscriptionData.value?.subscription) return 0;
+  return StripeService.getDaysRemaining(subscriptionData.value.subscription);
+});
+
+const loadSubscriptionStatus = async () => {
+  try {
+    loadingSubscription.value = true;
+    subscriptionData.value = await StripeService.getSubscriptionStatus();
+  } catch (error) {
+    console.error('Error loading subscription status:', error);
+  } finally {
+    loadingSubscription.value = false;
+  }
+};
 
 const handleSubscribe = async () => {
   loading.value = true;
   errorMessage.value = '';
   
   try {
-    // Simulating payment processing
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // In a real implementation, this would involve a backend API call
-    // to update the user's premium status in the database
-    
-    // Show success message
-    paymentSuccess.value = true;
+    // Redirect to Stripe Checkout
+    const currentUrl = window.location.origin;
+    await StripeService.redirectToCheckout(
+      `${currentUrl}/subscription?success=true`,
+      `${currentUrl}/subscription?canceled=true`
+    );
   } catch (error) {
-    errorMessage.value = 'Payment processing failed. Please try again.';
+    errorMessage.value = error instanceof Error ? error.message : 'Failed to start checkout process. Please try again.';
     console.error('Subscription error:', error);
+    loading.value = false;
+  }
+};
+
+
+const handleReactivate = async () => {
+  loading.value = true;
+  errorMessage.value = '';
+  
+  try {
+    await StripeService.reactivateSubscription();
+    paymentSuccess.value = true;
+    await loadSubscriptionStatus(); // Refresh subscription data
+  } catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : 'Reactivation failed. Please try again.';
+    console.error('Reactivation error:', error);
   } finally {
     loading.value = false;
   }
 };
 
-const handleCancel = async () => {
-  loading.value = true;
-  errorMessage.value = '';
-  
+const handleManageBilling = async () => {
   try {
-    // Simulating cancellation processing
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // In a real implementation, this would involve a backend API call
-    // to update the user's premium status in the database
-    
-    // Show success message
-    paymentSuccess.value = false;
+    await StripeService.redirectToCustomerPortal();
   } catch (error) {
-    errorMessage.value = 'Cancellation failed. Please try again.';
-    console.error('Cancellation error:', error);
-  } finally {
-    loading.value = false;
+    errorMessage.value = error instanceof Error ? error.message : 'Failed to access billing portal. Please try again.';
+    console.error('Billing portal error:', error);
   }
 };
+
+onMounted(async () => {
+  await loadSubscriptionStatus();
+  
+  // Check for success/canceled URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('success') === 'true') {
+    paymentSuccess.value = true;
+    await authStore.refreshUserProfile(); // Refresh user profile to get updated roles
+    await loadSubscriptionStatus(); // Refresh subscription data
+  } else if (urlParams.get('canceled') === 'true') {
+    errorMessage.value = 'Subscription setup was canceled. You can try again anytime.';
+  }
+});
 </script>
 
 <template>
@@ -108,8 +160,17 @@ const handleCancel = async () => {
           </div>
         </div>
         
+        <!-- Loading State -->
+        <div v-if="loadingSubscription" class="flex justify-center items-center py-8">
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-accent-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span class="text-gray-600">Loading subscription status...</span>
+        </div>
+
         <!-- Main Content -->
-        <div v-if="isPremium">
+        <div v-else-if="isPremium || isSubscriptionActive">
           <div class="flex items-center mb-6">
             <div class="bg-accent-100 p-2 rounded-full">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -118,7 +179,38 @@ const handleCancel = async () => {
             </div>
             <div class="ml-4">
               <h3 class="text-lg font-medium text-gray-900">You're a Premium Member!</h3>
-              <p class="text-gray-600">Your subscription is active and will renew automatically</p>
+              <p class="text-gray-600" v-if="subscriptionData?.subscription?.cancel_at_period_end">
+                Your subscription is canceled but remains active until {{ nextBillingDate }}
+              </p>
+              <p class="text-gray-600" v-else>
+                Your subscription is active and will renew automatically
+              </p>
+            </div>
+          </div>
+          
+          <!-- Cancellation Notice -->
+          <div v-if="subscriptionData?.subscription?.cancel_at_period_end" class="mb-6 rounded-md bg-yellow-50 p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-yellow-800">Subscription Canceled</h3>
+                <div class="mt-2 text-sm text-yellow-700">
+                  <p>Your subscription has been canceled but you'll continue to have premium access until {{ nextBillingDate }} ({{ daysRemaining }} days remaining).</p>
+                </div>
+                <div class="mt-4">
+                  <button 
+                    @click="handleReactivate" 
+                    class="text-sm bg-yellow-50 text-yellow-800 hover:bg-yellow-100 px-3 py-1 rounded border border-yellow-200"
+                    :disabled="loading"
+                  >
+                    {{ loading ? 'Processing...' : 'Reactivate Subscription' }}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           
@@ -191,41 +283,58 @@ const handleCancel = async () => {
               <div class="flex items-center justify-between mb-4">
                 <div>
                   <h4 class="text-gray-900 font-medium">Billing Information</h4>
-                  <p class="text-gray-600">Your plan renews on June 15, 2023</p>
+                  <p class="text-gray-600" v-if="nextBillingDate">
+                    {{ subscriptionData?.subscription?.cancel_at_period_end ? 'Access expires on' : 'Next billing date:' }} {{ nextBillingDate }}
+                  </p>
                 </div>
-                <span class="bg-accent-100 text-accent-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Active</span>
+                <span 
+                  :class="{
+                    'bg-green-100 text-green-800': subscriptionStatus === 'Active',
+                    'bg-yellow-100 text-yellow-800': subscriptionStatus === 'Canceled',
+                    'bg-red-100 text-red-800': subscriptionStatus === 'Past Due' || subscriptionStatus === 'Unpaid',
+                    'bg-blue-100 text-blue-800': subscriptionStatus === 'Trial Period',
+                    'bg-gray-100 text-gray-800': !['Active', 'Canceled', 'Past Due', 'Unpaid', 'Trial Period'].includes(subscriptionStatus)
+                  }"
+                  class="text-xs font-medium px-2.5 py-0.5 rounded-full"
+                >
+                  {{ subscriptionStatus }}
+                </span>
               </div>
               
               <div class="bg-gray-50 rounded-md p-4 mb-6">
                 <div class="flex justify-between items-center">
                   <div>
                     <p class="text-gray-900 font-medium">Premium Plan</p>
-                    <p class="text-gray-600 text-sm">Currently free during beta - Future price: $19.99/month</p>
+                    <p class="text-gray-600 text-sm">Monthly subscription with advanced features</p>
                   </div>
                   <div class="text-right">
-                    <p class="text-gray-900 font-medium line-through text-gray-400">$19.99/month</p>
-                    <p class="text-accent-600 font-bold">FREE (Beta)</p>
+                    <p class="text-gray-900 font-medium">$19.99/month</p>
                   </div>
                 </div>
               </div>
               
-              <button 
-                @click="handleCancel" 
-                class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500"
-                :disabled="loading"
-              >
-                <svg v-if="loading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                {{ loading ? 'Processing...' : 'Cancel Subscription' }}
-              </button>
+              <div class="space-y-3">
+                <button 
+                  @click="handleManageBilling" 
+                  class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500"
+                >
+                  Manage Billing
+                </button>
+                
+                <button 
+                  v-if="!subscriptionData?.subscription?.cancel_at_period_end"
+                  @click="router.push('/subscription/cancel')" 
+                  class="w-full flex justify-center py-2 px-4 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                >
+                  Cancel Subscription
+                </button>
+              </div>
             </div>
           </div>
         </div>
         
         <div v-else>
-          <h3 class="text-lg font-medium text-gray-900 mb-4">Get Premium Features - Free During Beta Testing</h3>
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Upgrade to Premium</h3>
           
           <div class="space-y-4 mb-6">
             <div class="flex items-start">
@@ -294,11 +403,10 @@ const handleCancel = async () => {
               <div class="flex justify-between items-center">
                 <div>
                   <p class="text-gray-900 font-medium">Premium Plan</p>
-                  <p class="text-gray-600 text-sm">Free during beta - Future price: $19.99/month</p>
+                  <p class="text-gray-600 text-sm">Monthly subscription with advanced features</p>
                 </div>
                 <div class="text-right">
-                  <p class="text-gray-900 font-medium line-through text-gray-400">$19.99/month</p>
-                  <p class="text-accent-600 font-bold">FREE (Beta)</p>
+                  <p class="text-gray-900 font-medium">$19.99/month</p>
                 </div>
               </div>
             </div>
@@ -312,11 +420,11 @@ const handleCancel = async () => {
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              {{ loading ? 'Processing...' : 'Get Free Beta Access' }}
+              {{ loading ? 'Redirecting to checkout...' : 'Subscribe Now' }}
             </button>
             
             <p class="mt-2 text-xs text-gray-500 text-center">
-              Free during beta testing. By accessing premium features, you agree to our terms and conditions.
+              Cancel anytime. You'll continue to have access until the end of your billing period.
             </p>
           </div>
         </div>

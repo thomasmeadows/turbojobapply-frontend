@@ -157,7 +157,7 @@
           </ul>
           <div class="mt-8">
             <router-link 
-              to="/register" 
+              to="/subscription" 
               class="w-full bg-primary-600 border border-transparent rounded-md py-3 px-5 inline-flex items-center justify-center text-base font-medium text-white hover:bg-primary-700"
             >
               Sign up for Free Access
