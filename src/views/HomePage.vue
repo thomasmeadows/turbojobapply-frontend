@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useJobsStore } from '../stores/jobs';
 import { useAuthStore } from '../stores/auth';
@@ -55,15 +55,45 @@ const stopFactRotation = () => {
   }
 };
 
+const tabFocus = ref(true);
+
+const detectFocusOut = () => {
+    let inView = false;
+
+    const onWindowFocusChange = (e: Event) => {
+        if ({ focus: 1, pageshow: 1 }[e.type]) {
+            if (inView) return;
+            tabFocus.value = true;
+            inView = true;
+        } else if (inView) {
+            tabFocus.value = !tabFocus;
+            inView = false;
+        }
+    };
+
+    window.addEventListener('focus', onWindowFocusChange);
+    window.addEventListener('blur', onWindowFocusChange);
+    window.addEventListener('pageshow', onWindowFocusChange);
+    window.addEventListener('pagehide', onWindowFocusChange);
+}
+
 onMounted(async () => {
   // Fetch job statistics
   await jobsStore.fetchJobStatistics();
   updateFactValues();
   startFactRotation();
+  detectFocusOut();
 });
 
 onUnmounted(() => {
   stopFactRotation();
+});
+
+watch(tabFocus, (newVal) => {
+  if (!newVal) {
+    return stopFactRotation();
+  };
+  return startFactRotation();
 });
 
 const searchJobs = () => {
@@ -128,7 +158,7 @@ const searchJobs = () => {
             <!-- Rotating Job Statistics -->
             <div class="mt-3 text-sm text-primary-100 h-8 flex items-center justify-center overflow-hidden">
               <transition name="scale-fade" mode="out-in">
-                <p v-if="isVisible && facts[currentFactIndex]" :key="currentFactIndex" class="scale-fade-text">
+                <p v-if="isVisible && facts[currentFactIndex] && facts[currentFactIndex].value > 0" :key="currentFactIndex" class="scale-fade-text">
                   <span class="font-semibold text-white">{{ facts[currentFactIndex].value.toLocaleString() }}</span>
                   {{ facts[currentFactIndex].text }}
                 </p>

@@ -20,6 +20,7 @@ interface JobStatistics {
 
 interface JobsState {
   jobs: Job[];
+  firstSearch: boolean;
   limit: number;
   offset: number;
   currentPage: number;
@@ -44,6 +45,7 @@ interface JobsState {
 export const useJobsStore = defineStore('jobs', {
   state: (): JobsState => ({
     jobs: [],
+    firstSearch: true,
     savedJobs: JSON.parse(localStorage.getItem('savedJobs') || '[]'),
     bookmarkedJobs: [],
     bookmarkedJobIds: new Set(),
@@ -154,11 +156,16 @@ export const useJobsStore = defineStore('jobs', {
       }
     },
 
-    async fetchJobs() {
+    async fetchJobs(currentPage: number = 1) {
       if (!this.query) {
         return
       }
       this.loading = true;
+      this.firstSearch = false;
+      this.currentPage = currentPage || 1;
+      this.offset = (currentPage - 1) * this.limit;
+      this.totalJobs = 0;
+      this.jobs = [];
       this.error = null;
       
       try {
