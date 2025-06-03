@@ -87,9 +87,10 @@ const logout = () => {
               <div v-if="mobileMenuOpen" class="origin-top-right absolute right-0 top-full mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                 <router-link to="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">Dashboard</router-link>
                 <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">Profile</router-link>
+                <router-link to="/job-profiles" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">Job Profiles</router-link>
                 <router-link to="/subscription" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">
                   <span v-if="isPremium">Premium Account</span>
-                  <span v-else>Upgrade to Premium</span>
+                  <span v-else">Upgrade to Premium</span>
                 </router-link>
                 <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   Sign out

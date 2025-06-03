@@ -9,6 +9,7 @@ import EmailVerificationPage from '../views/EmailVerificationPage.vue';
 import DashboardPage from '../views/DashboardPage.vue';
 import SavedJobsPage from '../views/SavedJobsPage.vue';
 import ProfilePage from '../views/ProfilePage.vue';
+import JobProfilePage from '../views/JobProfilePage.vue';
 import SubscriptionPage from '../views/SubscriptionPage.vue';
 import PricingPage from '../views/PricingPage.vue';
 import AboutPage from '../views/AboutPage.vue';
@@ -93,6 +94,12 @@ const routes = [
     name: 'Profile',
     component: ProfilePage,
     meta: { title: 'My Profile - Turbo Job Apply', requiresAuth: true }
+  },
+  {
+    path: '/job-profiles',
+    name: 'JobProfiles',
+    component: JobProfilePage,
+    meta: { title: 'Job Profiles - Turbo Job Apply', requiresAuth: true }
   },
   {
     path: '/subscription',
