@@ -19,7 +19,7 @@
                 <select
                   v-model="selectedProfileId"
                   @change="handleProfileChange"
-                  class="block w-72 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base bg-white transition-colors"
+                  class="block w-[432px] px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base bg-white transition-colors"
                 >
                   <option value="">Select a profile...</option>
                   <option
