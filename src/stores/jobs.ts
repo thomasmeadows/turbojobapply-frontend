@@ -289,7 +289,7 @@ export const useJobsStore = defineStore('jobs', {
       }
 
       try {
-        const response = await axios.post(`${API_URL}/api/bookmarks`, {
+        await axios.post(`${API_URL}/api/bookmarks`, {
           source,
           requisition_id: requisitionId
         });

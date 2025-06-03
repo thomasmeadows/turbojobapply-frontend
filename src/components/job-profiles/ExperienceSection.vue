@@ -202,7 +202,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import QuillEditor from '@/components/common/QuillEditor.vue'
 
@@ -216,7 +216,15 @@ const emit = defineEmits<{
 
 const authStore = useAuthStore()
 const localProfile = ref({ ...props.modelValue })
-const experience = ref(localProfile.value.experience || [])
+// Format dates when initializing
+const initialExperience = (localProfile.value.experience || []).map((exp: any) => ({
+  ...exp,
+  start_date: exp.start_date ? new Date(exp.start_date).toISOString().split('T')[0] : '',
+  end_date: exp.end_date ? new Date(exp.end_date).toISOString().split('T')[0] : ''
+}))
+const experience = ref(initialExperience)
+const isUpdatingFromAPI = ref(false)
+const isSaving = ref(false)
 
 // Computed properties
 const sortedExperience = computed(() => {
@@ -226,7 +234,13 @@ const sortedExperience = computed(() => {
 // Watch for external updates
 watch(() => props.modelValue, (newValue) => {
   localProfile.value = { ...newValue }
-  experience.value = newValue.experience || []
+  // Format dates when loading from external data
+  const formattedExperience = (newValue.experience || []).map((exp: any) => ({
+    ...exp,
+    start_date: exp.start_date ? new Date(exp.start_date).toISOString().split('T')[0] : '',
+    end_date: exp.end_date ? new Date(exp.end_date).toISOString().split('T')[0] : ''
+  }))
+  experience.value = formattedExperience
 }, { deep: true })
 
 // Watch for local changes and emit updates
@@ -284,7 +298,7 @@ const removeExperience = async (exp: any, index: number) => {
   experience.value.splice(index, 1)
   
   // Update display orders
-  experience.value.forEach((exp, idx) => {
+  experience.value.forEach((exp: any, idx: number) => {
     exp.display_order = idx
   })
 }
@@ -316,17 +330,12 @@ const handleCurrentJobChange = (exp: any) => {
 const handleDescriptionUpdate = (exp: any, html: string) => {
   exp.description = html
   // Trigger auto-save after description change
-  if (saveTimeout) {
-    clearTimeout(saveTimeout)
-  }
-  saveTimeout = setTimeout(() => {
-    if (exp.job_title && exp.company_name && exp.start_date) {
-      saveExperience(exp)
-    }
-  }, 1500) // Auto-save after 1.5 seconds of inactivity
 }
 
 const saveExperience = async (exp: any) => {
+  // Prevent recursive saves
+  if (isSaving.value) return
+  
   // Validate required fields
   if (!exp.job_title.trim() || !exp.company_name.trim() || !exp.start_date) {
     return // Don't save incomplete experiences
@@ -339,6 +348,9 @@ const saveExperience = async (exp: any) => {
   }
 
   try {
+    isSaving.value = true
+    isUpdatingFromAPI.value = true // Prevent watcher from triggering auto-save
+
     if (exp.id) {
       // Update existing experience
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/job-profiles/experience/${exp.id}`, {
@@ -360,7 +372,15 @@ const saveExperience = async (exp: any) => {
 
       if (response.ok) {
         const result = await response.json()
-        Object.assign(exp, result.experience)
+        // Format dates to yyyy-MM-dd for date inputs
+        const updatedExp = { ...result.experience }
+        if (updatedExp.start_date) {
+          updatedExp.start_date = new Date(updatedExp.start_date).toISOString().split('T')[0]
+        }
+        if (updatedExp.end_date) {
+          updatedExp.end_date = new Date(updatedExp.end_date).toISOString().split('T')[0]
+        }
+        Object.assign(exp, updatedExp)
       }
     } else {
       // Create new experience
@@ -383,27 +403,28 @@ const saveExperience = async (exp: any) => {
 
       if (response.ok) {
         const result = await response.json()
-        Object.assign(exp, result.experience)
+        // Format dates to yyyy-MM-dd for date inputs
+        const updatedExp = { ...result.experience }
+        if (updatedExp.start_date) {
+          updatedExp.start_date = new Date(updatedExp.start_date).toISOString().split('T')[0]
+        }
+        if (updatedExp.end_date) {
+          updatedExp.end_date = new Date(updatedExp.end_date).toISOString().split('T')[0]
+        }
+        Object.assign(exp, updatedExp)
       }
     }
   } catch (error) {
     console.error('Error saving experience:', error)
+  } finally {
+    isSaving.value = false
+    isUpdatingFromAPI.value = false
   }
 }
 
-// Auto-save when user stops typing (debounced)
-let saveTimeout: number | null = null
 watch(experience, () => {
-  if (saveTimeout) {
-    clearTimeout(saveTimeout)
-  }
-  saveTimeout = setTimeout(() => {
-    experience.value.forEach(exp => {
-      if (exp.job_title && exp.company_name && exp.start_date) {
-        saveExperience(exp)
-      }
-    })
-  }, 2000) // Auto-save after 2 seconds of inactivity
+  // Skip auto-save if we're updating from API or already saving to prevent infinite loop
+  if (isUpdatingFromAPI.value || isSaving.value) return
 }, { deep: true })
 </script>
 

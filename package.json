@@ -13,7 +13,6 @@
     "test": "vue-tsc -b"
   },
   "dependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.41.1",
     "@stripe/stripe-js": "^7.3.1",
     "@vueuse/core": "^10.6.1",
     "axios": "^1.6.2",
