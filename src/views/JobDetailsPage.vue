@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { format, formatDistanceToNow, parseISO } from 'date-fns';
+import { format, formatDistanceToNow, parseISO, differenceInDays } from 'date-fns';
 import { useJobsStore } from '../stores/jobs';
 import { useAuthStore } from '../stores/auth';
 import type { Job } from '../types/job';
@@ -39,6 +39,29 @@ const formattedDate = computed(() => {
 const timeAgo = computed(() => {
   if (!job.value) return '';
   return formatDistanceToNow(parseISO(job.value.posted_at), { addSuffix: true });
+});
+
+// Job freshness alert logic
+const jobFreshnessAlert = computed(() => {
+  if (!job.value?.updated_at) return null;
+  
+  const updatedDate = parseISO(job.value.updated_at);
+  const daysSinceUpdate = differenceInDays(new Date(), updatedDate);
+  console.error(daysSinceUpdate, ' days since update')
+  
+  if (daysSinceUpdate >= 14) {
+    return {
+      type: 'error',
+      message: 'An update has not been found for this job in over 2 weeks. It is likely the job has been taken down and has been queued for potential deletion.'
+    };
+  } else if (daysSinceUpdate >= 7) {
+    return {
+      type: 'warning',
+      message: 'An update was not found for this job in the last week, we have queued it to review if the job is still available.'
+    };
+  }
+  
+  return null;
 });
 
 const isSaved = false;
@@ -116,6 +139,47 @@ const applyToJob = () => {
           </svg>
           Back to results
         </button>
+      </div>
+
+      <!-- Job Freshness Alerts -->
+      <div v-if="jobFreshnessAlert" class="mb-6">
+        <!-- Error Alert (2+ weeks old) -->
+        <div v-if="jobFreshnessAlert.type === 'error'" class="bg-red-50 border border-red-200 rounded-md p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                Job Listing May Be Outdated
+              </h3>
+              <div class="mt-2 text-sm text-red-700">
+                <p>{{ jobFreshnessAlert.message }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Warning Alert (1+ week old) -->
+        <div v-if="jobFreshnessAlert.type === 'warning'" class="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-yellow-800">
+                Job Listing Under Review
+              </h3>
+              <div class="mt-2 text-sm text-yellow-700">
+                <p>{{ jobFreshnessAlert.message }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       
       <!-- Main Content -->

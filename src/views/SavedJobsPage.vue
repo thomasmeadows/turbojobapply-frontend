@@ -3,6 +3,7 @@ import { onMounted, ref, computed } from 'vue';
 import { useJobsStore } from '../stores/jobs';
 import { useAuthStore } from '../stores/auth';
 import { formatDistanceToNow, parseISO } from 'date-fns';
+import { generateJobUrl } from '../utils/urlUtils';
 
 const jobsStore = useJobsStore();
 const authStore = useAuthStore();
@@ -15,9 +16,42 @@ const removeBookmark = async (bookmark: any) => {
     bamboohr_requisition_id: bookmark.source === 'bamboohr' ? bookmark.requisition_id : null,
     greenhouseio_requisition_id: bookmark.source === 'greenhouseio' ? bookmark.requisition_id : null,
     workday_requisition_id: bookmark.source === 'workday' ? bookmark.requisition_id : null,
+    adp_requisition_id: bookmark.source === 'adp' ? bookmark.requisition_id : null,
+    jobvite_requisition_id: bookmark.source === 'jobvite' ? bookmark.requisition_id : null,
+    breezy_requisition_id: bookmark.source === 'breezy' ? bookmark.requisition_id : null,
+    lever_requisition_id: bookmark.source === 'lever' ? bookmark.requisition_id : null,
+    smartrecruiters_requisition_id: bookmark.source === 'smartrecruiters' ? bookmark.requisition_id : null,
+    dover_requisition_id: bookmark.source === 'dover' ? bookmark.requisition_id : null,
   };
   
   await jobsStore.removeBookmark(fakeJob as any);
+};
+
+const getJobUrl = (bookmark: any) => {
+  if (bookmark.navigation) {
+    try {
+      return generateJobUrl(bookmark.requisition_id.toString(), bookmark.navigation);
+    } catch (error) {
+      console.warn('Failed to generate SEO URL for bookmark, falling back to external URL:', error);
+      return bookmark.external_url;
+    }
+  }
+  return bookmark.external_url;
+};
+
+const getSourceDisplayName = (source: string) => {
+  const sourceMap: { [key: string]: string } = {
+    'bamboohr': 'BambooHR',
+    'greenhouseio': 'GreenhouseIO',
+    'workday': 'Workday',
+    'adp': 'ADP',
+    'jobvite': 'Jobvite',
+    'breezy': 'Breezy',
+    'lever': 'Lever',
+    'smartrecruiters': 'SmartRecruiters',
+    'dover': 'Dover'
+  };
+  return sourceMap[source] || source;
 };
 
 onMounted(async () => {
@@ -73,9 +107,9 @@ onMounted(async () => {
             <div class="flex-1">
               <div class="flex items-start justify-between mb-2">
                 <div>
-                  <a :href="bookmark.external_url" target="_blank" class="block mb-1">
+                  <router-link :to="getJobUrl(bookmark)" class="block mb-1">
                     <h3 class="text-xl font-semibold text-gray-900 hover:text-primary-600 transition-colors duration-200">{{ bookmark.title }}</h3>
-                  </a>
+                  </router-link>
                   <div class="mb-3">
                     <span class="font-medium text-gray-800">{{ bookmark.company_name }}</span>
                     <span class="mx-2 text-gray-400">•</span>
@@ -97,7 +131,7 @@ onMounted(async () => {
               <div class="mt-2 mb-4">
                 <div class="flex flex-wrap gap-2">
                   <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
-                    {{ bookmark.source === 'bamboohr' ? 'BambooHR' : bookmark.source === 'greenhouseio' ? 'GreenhouseIO' : 'Workday' }}
+                    {{ getSourceDisplayName(bookmark.source) }}
                   </span>
                   <span v-if="bookmark.remote" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                     Remote

@@ -35,6 +35,7 @@ export interface Job {
   benefits: string[];
   applicationCount: number;
   posted_at: any;
+  updated_at?: any;
   featured: boolean;
   country: string;
   external_url: string;

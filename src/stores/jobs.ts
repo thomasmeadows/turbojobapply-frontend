@@ -318,6 +318,7 @@ export const useJobsStore = defineStore('jobs', {
           requirements: [], // We'll need to parse these from the description
           benefits: [], // We'll need to parse these from the description
           posted_at: jobData.posted_at,
+          updated_at: jobData.updated_at,
           applicationCount: 0, // Default value since not provided in API
           featured: false, // Default value since not provided in API
           remote: jobData.remote,
