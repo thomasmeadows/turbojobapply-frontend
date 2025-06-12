@@ -4,6 +4,7 @@ import { format, formatDistanceToNow, parseISO } from 'date-fns';
 import { useJobsStore } from '../../stores/jobs';
 import { useAuthStore } from '../../stores/auth';
 import type { Job } from '../../types/job';
+import { generateJobUrl } from '../../utils/urlUtils';
 
 const props = defineProps<{
   job: Job;
@@ -35,6 +36,16 @@ const timeAgo = computed(() => {
   if (!props.job) return '';
   return formatDistanceToNow(parseISO(props.job.posted_at), { addSuffix: true });
 });
+
+const jobUrl = computed(() => {
+  try {
+    return generateJobUrl(props.job.id, props.job.navigation);
+  } catch (error) {
+    console.error('Error generating job URL:', error);
+    // Return a placeholder that won't break the UI
+    return '#';
+  }
+});
 </script>
 
 <template>
@@ -45,7 +56,7 @@ const timeAgo = computed(() => {
     
     <div class="flex flex-col sm:flex-row sm:items-start justify-between">
       <div>
-        <router-link :to="`/jobs/${job.id}`" class="block mb-1">
+        <router-link :to="jobUrl" class="block mb-1">
           <h3 class="text-xl font-semibold text-gray-900 hover:text-primary-600 transition-colors duration-200">{{ job.title }}</h3>
         </router-link>
         <div class="mb-3">
@@ -103,7 +114,7 @@ const timeAgo = computed(() => {
     
     <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
       <span class="text-xs text-gray-500">Job ID: {{ job.id }}</span>
-      <router-link :to="`/jobs/${job.id}`" class="inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors duration-200">
+      <router-link :to="jobUrl" class="inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors duration-200">
         View Details
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />

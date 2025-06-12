@@ -35,9 +35,58 @@ const routes = [
     component: SearchPage,
     meta: { title: 'Search Jobs - Turbo Job Apply' }
   },
+  // SEO-friendly job detail routes (only these routes are supported)
   {
-    path: '/jobs/:id',
-    name: 'JobDetails',
+    path: '/ats/adp/:urlSafeClientName/job/:urlSafeJobTitlePlusId',
+    name: 'ADPJobDetails',
+    component: JobDetailsPage,
+    meta: { title: 'Job Details - Turbo Job Apply' }
+  },
+  {
+    path: '/ats/bamboo/:clientName/job/:urlSafeJobTitlePlusId',
+    name: 'BambooJobDetails',
+    component: JobDetailsPage,
+    meta: { title: 'Job Details - Turbo Job Apply' }
+  },
+  {
+    path: '/ats/breezy/:clientName/job/:urlSafeJobTitlePlusId',
+    name: 'BreezyJobDetails',
+    component: JobDetailsPage,
+    meta: { title: 'Job Details - Turbo Job Apply' }
+  },
+  {
+    path: '/ats/dover/:urlSafeClientName/job/:urlSafeJobTitlePlusId',
+    name: 'DoverJobDetails',
+    component: JobDetailsPage,
+    meta: { title: 'Job Details - Turbo Job Apply' }
+  },
+  {
+    path: '/ats/greenhouse/:clientName/job/:urlSafeJobTitlePlusId',
+    name: 'GreenhouseJobDetails',
+    component: JobDetailsPage,
+    meta: { title: 'Job Details - Turbo Job Apply' }
+  },
+  {
+    path: '/ats/jobvite/:clientName/job/:urlSafeJobTitlePlusId',
+    name: 'JobviteJobDetails',
+    component: JobDetailsPage,
+    meta: { title: 'Job Details - Turbo Job Apply' }
+  },
+  {
+    path: '/ats/lever/:clientName/job/:urlSafeJobTitlePlusId',
+    name: 'LeverJobDetails',
+    component: JobDetailsPage,
+    meta: { title: 'Job Details - Turbo Job Apply' }
+  },
+  {
+    path: '/ats/smartrecruiters/:clientName/job/:urlSafeJobTitlePlusId',
+    name: 'SmartRecruitersJobDetails',
+    component: JobDetailsPage,
+    meta: { title: 'Job Details - Turbo Job Apply' }
+  },
+  {
+    path: '/ats/workday/:domain/:clientName/:clientProject/job/:urlSafeJobTitlePlusId',
+    name: 'WorkdayJobDetails',
     component: JobDetailsPage,
     meta: { title: 'Job Details - Turbo Job Apply' }
   },

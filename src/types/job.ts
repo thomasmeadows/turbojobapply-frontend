@@ -3,11 +3,26 @@ import englishList from 'i18n-iso-countries/langs/en.json';
 
 countries.registerLocale(englishList);
 
+export interface JobNavigation {
+  atsType: string;
+  urlSafeClientName?: string;
+  clientName?: string;
+  domain?: string;
+  clientProject?: string;
+  urlSafeJobTitle: string;
+}
+
 export interface Job {
   remote: boolean;
   bamboohr_requisition_id: any;
   greenhouseio_requisition_id: any;
   workday_requisition_id: any;
+  adp_requisition_id: any;
+  jobvite_requisition_id: any;
+  breezy_requisition_id: any;
+  lever_requisition_id: any;
+  smartrecruiters_requisition_id: any;
+  dover_requisition_id: any;
   id: string;
   title: string;
   company: string;
@@ -24,6 +39,7 @@ export interface Job {
   country: string;
   external_url: string;
   source: string;
+  navigation: JobNavigation;
 }
 
 export interface LocationOption {

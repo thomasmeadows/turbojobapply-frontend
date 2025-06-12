@@ -13,7 +13,19 @@ const authStore = useAuthStore();
 const loading = ref(true);
 const relatedJobs = ref<Job[]>([]);
 
-const jobId = computed(() => route.params.id as string);
+// Extract job ID from the urlSafeJobTitlePlusId parameter (SEO-friendly routes only)
+const jobId = computed(() => {
+  const urlSafeJobTitlePlusId = route.params.urlSafeJobTitlePlusId as string;
+  if (urlSafeJobTitlePlusId) {
+    // Extract job ID from the end of the URL-safe title (format: "job-title-123")
+    const parts = urlSafeJobTitlePlusId.split('-');
+    const lastPart = parts[parts.length - 1];
+    // Check if the last part is a valid number
+    const id = parseInt(lastPart, 10);
+    return !isNaN(id) ? id.toString() : '';
+  }
+  return '';
+});
 const job = computed(() => jobsStore.currentJob);
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const isPremium = computed(() => authStore.isPremium);
@@ -34,7 +46,8 @@ const isSaved = false;
 onMounted(async () => {
   loading.value = true;
   try {
-    await jobsStore.fetchJobById(jobId.value);
+    // Only use SEO-friendly routes
+    await jobsStore.fetchJobBySeoRoute(route);
     
     // Get all jobs if not already fetched
     if (jobsStore.jobs.length === 0) {

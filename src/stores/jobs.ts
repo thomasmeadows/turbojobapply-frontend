@@ -97,6 +97,25 @@ export const useJobsStore = defineStore('jobs', {
         if (job.workday_requisition_id) {
           return 'Workday';
         }
+        if (job.adp_requisition_id) {
+          return 'ADP';
+        }
+        if (job.jobvite_requisition_id) {
+          return 'Jobvite';
+        }
+        if (job.breezy_requisition_id) {
+          return 'Breezy';
+        }
+        if (job.lever_requisition_id) {
+          return 'Lever';
+        }
+        if (job.smartrecruiters_requisition_id) {
+          return 'SmartRecruiters';
+        }
+        if (job.dover_requisition_id) {
+          return 'Dover';
+        }
+        return 'Unknown';
       };
     },
 
@@ -110,6 +129,24 @@ export const useJobsStore = defineStore('jobs', {
         }
         if (job.workday_requisition_id) {
           return 'workday';
+        }
+        if (job.adp_requisition_id) {
+          return 'adp';
+        }
+        if (job.jobvite_requisition_id) {
+          return 'jobvite';
+        }
+        if (job.breezy_requisition_id) {
+          return 'breezy';
+        }
+        if (job.lever_requisition_id) {
+          return 'lever';
+        }
+        if (job.smartrecruiters_requisition_id) {
+          return 'smartrecruiters';
+        }
+        if (job.dover_requisition_id) {
+          return 'dover';
         }
         return '';
       };
@@ -125,6 +162,24 @@ export const useJobsStore = defineStore('jobs', {
         }
         if (job.workday_requisition_id) {
           return job.workday_requisition_id;
+        }
+        if (job.adp_requisition_id) {
+          return job.adp_requisition_id;
+        }
+        if (job.jobvite_requisition_id) {
+          return job.jobvite_requisition_id;
+        }
+        if (job.breezy_requisition_id) {
+          return job.breezy_requisition_id;
+        }
+        if (job.lever_requisition_id) {
+          return job.lever_requisition_id;
+        }
+        if (job.smartrecruiters_requisition_id) {
+          return job.smartrecruiters_requisition_id;
+        }
+        if (job.dover_requisition_id) {
+          return job.dover_requisition_id;
         }
         return null;
       };
@@ -179,7 +234,14 @@ export const useJobsStore = defineStore('jobs', {
         if (this.offset) params.append('offset', this.offset.toString());
 
         const response = await axios.get(`${API_URL}/api/requisitions/search?${params.toString()}`);
-        this.jobs = response.data.data;
+        // Map the search results to include navigation data
+        this.jobs = response.data.data.map((job: any) => ({
+          ...job,
+          navigation: job.navigation || {
+            atsType: 'unknown',
+            urlSafeJobTitle: `job-${job.id}`
+          }
+        }));
         this.totalJobs = response.data.total;
         this.limit = response.data.limit;
         this.offset = response.data.offset;
@@ -197,29 +259,62 @@ export const useJobsStore = defineStore('jobs', {
       this.isRemote = isRemote;
     },
     
-    async fetchJobById(id: string) {
-      if (!id) {
-        return;
-      }
+    // Fetch job details using SEO-friendly routes
+    async fetchJobBySeoRoute(route: any) {
       this.loading = true;
       this.error = null;
       
       try {
-        const response = await axios.get(`${API_URL}/api/requisitions/${id}`);
-        const jobData = response.data.data;
+        let apiUrl = '';
+        
+        // Construct API URL based on route parameters
+        if (route.name === 'ADPJobDetails') {
+          apiUrl = `${API_URL}/api/ats/adp/${route.params.urlSafeClientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+        } else if (route.name === 'BambooJobDetails') {
+          apiUrl = `${API_URL}/api/ats/bamboo/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+        } else if (route.name === 'BreezyJobDetails') {
+          apiUrl = `${API_URL}/api/ats/breezy/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+        } else if (route.name === 'DoverJobDetails') {
+          apiUrl = `${API_URL}/api/ats/dover/${route.params.urlSafeClientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+        } else if (route.name === 'GreenhouseJobDetails') {
+          apiUrl = `${API_URL}/api/ats/greenhouse/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+        } else if (route.name === 'JobviteJobDetails') {
+          apiUrl = `${API_URL}/api/ats/jobvite/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+        } else if (route.name === 'LeverJobDetails') {
+          apiUrl = `${API_URL}/api/ats/lever/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+        } else if (route.name === 'SmartRecruitersJobDetails') {
+          apiUrl = `${API_URL}/api/ats/smartrecruiters/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+        } else if (route.name === 'WorkdayJobDetails') {
+          apiUrl = `${API_URL}/api/ats/workday/${route.params.domain}/${route.params.clientName}/${route.params.clientProject}/job/${route.params.urlSafeJobTitlePlusId}`;
+        } else {
+          throw new Error('Unknown route type for SEO job fetching');
+        }
+        
+        const response = await axios.get(apiUrl);
+        const jobData = response.data.job;
+        const clientData = response.data.client;
+        
         // Map the API response to our frontend job structure
         this.currentJob = {
-          bamboohr_requisition_id: jobData.bamboohr_requisition_id,
-          greenhouseio_requisition_id: jobData.greenhouseio_requisition_id,
-          workday_requisition_id: jobData.workday_requisition_id,
+          bamboohr_requisition_id: jobData.atsType === 'bamboo' ? jobData.id : null,
+          greenhouseio_requisition_id: jobData.atsType === 'greenhouse' ? jobData.id : null,
+          workday_requisition_id: jobData.atsType === 'workday' ? jobData.id : null,
+          adp_requisition_id: jobData.atsType === 'adp' ? jobData.id : null,
+          jobvite_requisition_id: jobData.atsType === 'jobvite' ? jobData.id : null,
+          breezy_requisition_id: jobData.atsType === 'breezy' ? jobData.id : null,
+          lever_requisition_id: jobData.atsType === 'lever' ? jobData.id : null,
+          smartrecruiters_requisition_id: jobData.atsType === 'smartrecruiters' ? jobData.id : null,
+          dover_requisition_id: jobData.atsType === 'dover' ? jobData.id : null,
           id: jobData.id.toString(),
           title: jobData.title,
-          company: jobData.source, // Using source as company for now
+          company: clientData.client_name || clientData.name || 'Unknown Company',
           location: jobData.location,
           type: 'Full-time', // Default value since not provided in API
-          salary: 'Competitive', // Default value since not provided in API
+          salary: jobData.salary_min && jobData.salary_max ? 
+            `${jobData.salary_currency || '$'}${jobData.salary_min} - ${jobData.salary_currency || '$'}${jobData.salary_max}` : 
+            'Competitive',
           category: 'Software Development', // Default value since not provided in API
-          description: jobData.full_description,
+          description: jobData.description,
           requirements: [], // We'll need to parse these from the description
           benefits: [], // We'll need to parse these from the description
           posted_at: jobData.posted_at,
@@ -228,13 +323,23 @@ export const useJobsStore = defineStore('jobs', {
           remote: jobData.remote,
           country: jobData.country,
           external_url: jobData.external_url,
-          source: jobData.source // Added source to match the expected structure
+          source: response.data.atsType,
+          navigation: {
+            atsType: response.data.atsType,
+            urlSafeClientName: route.params.urlSafeClientName,
+            clientName: route.params.clientName,
+            domain: route.params.domain,
+            clientProject: route.params.clientProject,
+            urlSafeJobTitle: route.params.urlSafeJobTitlePlusId
+          }
         };
+        
         if (!this.currentJob) {
           throw new Error('Job not found');
         }
       } catch (error) {
         this.error = 'Failed to fetch job details. Please try again.';
+        console.error('Error fetching job via SEO route:', error);
       } finally {
         this.loading = false;
       }

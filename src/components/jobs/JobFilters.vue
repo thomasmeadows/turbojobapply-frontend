@@ -84,9 +84,15 @@ const countries = computed(() => jobsStore.countries);
             class="form-input"
             v-model="jobsStore.jobSource"
           >
-            <option value="">Job Source</option>
+            <option value="">All Job Sources</option>
+            <option value="4">ADP</option>
             <option value="1">BambooHR</option>
+            <option value="6">Breezy</option>
+            <option value="9">Dover</option>
             <option value="3">GreenhouseIO</option>
+            <option value="5">Jobvite</option>
+            <option value="7">Lever</option>
+            <option value="8">SmartRecruiters</option>
             <option value="2">Workday</option>
           </select>
         </div>
