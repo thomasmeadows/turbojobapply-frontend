@@ -160,7 +160,8 @@ export const useAuthStore = defineStore('auth', {
       }
       
       try {
-        const response = await axios.post(`${API_URL}/api/auth/refresh`, {
+        const axiosRefresh = axios.create();
+        const response = await axiosRefresh.post(`${API_URL}/api/auth/refresh`, {
           refresh_token: this.refreshToken
         });
         
@@ -185,6 +186,7 @@ export const useAuthStore = defineStore('auth', {
           
           return true;
         } else {
+          this.logout();
           throw new Error('Invalid refresh response');
         }
       } catch (error: any) {
@@ -262,14 +264,18 @@ export const useAuthStore = defineStore('auth', {
           const originalRequest = error.config;
           
           if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
+            originalRequest._retry = false;
             
-            const refreshSuccess = await this.refreshAccessToken();
-            
-            if (refreshSuccess) {
-              originalRequest.headers['Authorization'] = `Bearer ${this.accessToken}`;
-              return axios(originalRequest);
+            try {
+              const refreshSuccess = await this.refreshAccessToken();
+              if (refreshSuccess) {
+                originalRequest.headers['Authorization'] = `Bearer ${this.accessToken}`;
+                return axios(originalRequest);
+              }
+            } catch (e) {
+              return this.logout();
             }
+            
           }
           
           return Promise.reject(error);

@@ -172,6 +172,169 @@
                   </button>
                 </li>
               </ul>
+              
+              <!-- ATS Settings Section -->
+              <div class="mt-8 pt-6 border-t border-gray-200">
+                <h4 class="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">ATS Settings</h4>
+                <p class="text-xs text-gray-500 mb-4">
+                  Configure specific settings for each ATS. These settings may be required for individual job applications.
+                </p>
+                <ul class="space-y-1">
+                  <li>
+                    <button
+                      @click="activeSection = 'ats-bamboohr'"
+                      :class="[
+                        'w-full text-left px-3 py-2 text-sm rounded-lg transition-colors',
+                        activeSection === 'ats-bamboohr' 
+                          ? 'bg-blue-100 text-blue-700 font-medium' 
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ]"
+                    >
+                      <svg class="inline-block w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      BambooHR
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      @click="activeSection = 'ats-workday'"
+                      :class="[
+                        'w-full text-left px-3 py-2 text-sm rounded-lg transition-colors',
+                        activeSection === 'ats-workday' 
+                          ? 'bg-blue-100 text-blue-700 font-medium' 
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ]"
+                    >
+                      <svg class="inline-block w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      Workday
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      @click="activeSection = 'ats-greenhouse'"
+                      :class="[
+                        'w-full text-left px-3 py-2 text-sm rounded-lg transition-colors',
+                        activeSection === 'ats-greenhouse' 
+                          ? 'bg-blue-100 text-blue-700 font-medium' 
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ]"
+                    >
+                      <svg class="inline-block w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      GreenhouseIO
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      @click="activeSection = 'ats-adp'"
+                      :class="[
+                        'w-full text-left px-3 py-2 text-sm rounded-lg transition-colors',
+                        activeSection === 'ats-adp' 
+                          ? 'bg-blue-100 text-blue-700 font-medium' 
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ]"
+                    >
+                      <svg class="inline-block w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      ADP
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      @click="activeSection = 'ats-jobvite'"
+                      :class="[
+                        'w-full text-left px-3 py-2 text-sm rounded-lg transition-colors',
+                        activeSection === 'ats-jobvite' 
+                          ? 'bg-blue-100 text-blue-700 font-medium' 
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ]"
+                    >
+                      <svg class="inline-block w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      Jobvite
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      @click="activeSection = 'ats-breezy'"
+                      :class="[
+                        'w-full text-left px-3 py-2 text-sm rounded-lg transition-colors',
+                        activeSection === 'ats-breezy' 
+                          ? 'bg-blue-100 text-blue-700 font-medium' 
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ]"
+                    >
+                      <svg class="inline-block w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      Breezy
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      @click="activeSection = 'ats-lever'"
+                      :class="[
+                        'w-full text-left px-3 py-2 text-sm rounded-lg transition-colors',
+                        activeSection === 'ats-lever' 
+                          ? 'bg-blue-100 text-blue-700 font-medium' 
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ]"
+                    >
+                      <svg class="inline-block w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      Lever
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      @click="activeSection = 'ats-smartrecruiters'"
+                      :class="[
+                        'w-full text-left px-3 py-2 text-sm rounded-lg transition-colors',
+                        activeSection === 'ats-smartrecruiters' 
+                          ? 'bg-blue-100 text-blue-700 font-medium' 
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ]"
+                    >
+                      <svg class="inline-block w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      SmartRecruiters
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      @click="activeSection = 'ats-dover'"
+                      :class="[
+                        'w-full text-left px-3 py-2 text-sm rounded-lg transition-colors',
+                        activeSection === 'ats-dover' 
+                          ? 'bg-blue-100 text-blue-700 font-medium' 
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ]"
+                    >
+                      <svg class="inline-block w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      Dover
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
             
             <!-- Profile Actions -->
@@ -236,6 +399,133 @@
               v-model="selectedProfile"
               @update="handleProfileUpdate"
             />
+            
+            <!-- ATS Settings Sections -->
+            <div v-if="activeSection === 'ats-adp'">
+              <div class="max-w-3xl">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">ADP Settings</h2>
+                <p class="text-gray-600 mb-6">
+                  Configure specific settings for ADP job applications. These settings may be required when applying to jobs through ADP's Workforce Now system.
+                </p>
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <p class="text-gray-500 text-center">
+                    ADP-specific settings will be available here in a future update.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div v-if="activeSection === 'ats-bamboohr'">
+              <div class="max-w-3xl">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">BambooHR Settings</h2>
+                <p class="text-gray-600 mb-6">
+                  Configure specific settings for BambooHR job applications. These settings may be required when applying to jobs through BambooHR's system.
+                </p>
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <p class="text-gray-500 text-center">
+                    BambooHR-specific settings will be available here in a future update.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div v-if="activeSection === 'ats-breezy'">
+              <div class="max-w-3xl">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Breezy Settings</h2>
+                <p class="text-gray-600 mb-6">
+                  Configure specific settings for Breezy job applications. These settings may be required when applying to jobs through Breezy's system.
+                </p>
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <p class="text-gray-500 text-center">
+                    Breezy-specific settings will be available here in a future update.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div v-if="activeSection === 'ats-dover'">
+              <div class="max-w-3xl">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Dover Settings</h2>
+                <p class="text-gray-600 mb-6">
+                  Configure specific settings for Dover job applications. These settings may be required when applying to jobs through Dover's system.
+                </p>
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <p class="text-gray-500 text-center">
+                    Dover-specific settings will be available here in a future update.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div v-if="activeSection === 'ats-greenhouse'">
+              <div class="max-w-3xl">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">GreenhouseIO Settings</h2>
+                <p class="text-gray-600 mb-6">
+                  Configure specific settings for GreenhouseIO job applications. These settings may be required when applying to jobs through Greenhouse's system.
+                </p>
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <p class="text-gray-500 text-center">
+                    GreenhouseIO-specific settings will be available here in a future update.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div v-if="activeSection === 'ats-jobvite'">
+              <div class="max-w-3xl">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Jobvite Settings</h2>
+                <p class="text-gray-600 mb-6">
+                  Configure specific settings for Jobvite job applications. These settings may be required when applying to jobs through Jobvite's system.
+                </p>
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <p class="text-gray-500 text-center">
+                    Jobvite-specific settings will be available here in a future update.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div v-if="activeSection === 'ats-lever'">
+              <div class="max-w-3xl">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Lever Settings</h2>
+                <p class="text-gray-600 mb-6">
+                  Configure specific settings for Lever job applications. These settings may be required when applying to jobs through Lever's system.
+                </p>
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <p class="text-gray-500 text-center">
+                    Lever-specific settings will be available here in a future update.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div v-if="activeSection === 'ats-smartrecruiters'">
+              <div class="max-w-3xl">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">SmartRecruiters Settings</h2>
+                <p class="text-gray-600 mb-6">
+                  Configure specific settings for SmartRecruiters job applications. These settings may be required when applying to jobs through SmartRecruiters' system.
+                </p>
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <p class="text-gray-500 text-center">
+                    SmartRecruiters-specific settings will be available here in a future update.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div v-if="activeSection === 'ats-workday'">
+              <div class="max-w-3xl">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Workday Settings</h2>
+                <p class="text-gray-600 mb-6">
+                  Configure specific settings for Workday job applications. These settings may be required when applying to jobs through Workday's system.
+                </p>
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <p class="text-gray-500 text-center">
+                    Workday-specific settings will be available here in a future update.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -267,7 +557,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 
@@ -283,10 +573,23 @@ import DeleteProfileModal from '@/components/job-profiles/DeleteProfileModal.vue
 const authStore = useAuthStore()
 const router = useRouter()
 
+// Define types
+interface JobProfile {
+  id: string
+  profile_name: string
+  desired_job_title?: string
+  skills?: Array<{ skill_name: string }>
+  experience?: Array<{ job_title: string }>
+  first_name?: string
+  last_name?: string
+  email?: string
+  phone?: string
+}
+
 // Reactive state
-const profiles = ref([])
+const profiles = ref<JobProfile[]>([])
 const selectedProfileId = ref('')
-const selectedProfile = ref(null)
+const selectedProfile = ref<JobProfile | null>(null)
 const activeSection = ref('contact')
 const loading = ref(true)
 const saving = ref(false)
@@ -352,8 +655,10 @@ const handleProfileChange = () => {
   }
 }
 
-const handleProfileUpdate = (updatedProfile: any) => {
-  selectedProfile.value = { ...selectedProfile.value, ...updatedProfile }
+const handleProfileUpdate = (updatedProfile: Partial<JobProfile>) => {
+  if (selectedProfile.value) {
+    selectedProfile.value = { ...selectedProfile.value, ...updatedProfile }
+  }
 }
 
 const saveProfile = async () => {
@@ -385,7 +690,7 @@ const saveProfile = async () => {
   }
 }
 
-const handleProfileCreated = (newProfile: any) => {
+const handleProfileCreated = (newProfile: JobProfile) => {
   profiles.value.push(newProfile)
   selectedProfileId.value = newProfile.id
   selectedProfile.value = newProfile

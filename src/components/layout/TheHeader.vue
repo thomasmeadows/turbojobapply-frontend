@@ -88,6 +88,7 @@ const logout = () => {
                 <router-link to="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">Dashboard</router-link>
                 <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">Profile</router-link>
                 <router-link to="/job-profiles" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">Job Profiles</router-link>
+                <router-link to="/job-applications" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">Application History</router-link>
                 <router-link to="/subscription" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">
                   <span v-if="isPremium">Premium Account</span>
                   <span v-else">Upgrade to Premium</span>

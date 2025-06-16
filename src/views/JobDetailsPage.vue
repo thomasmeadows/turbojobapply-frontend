@@ -5,6 +5,7 @@ import { format, formatDistanceToNow, parseISO, differenceInDays } from 'date-fn
 import { useJobsStore } from '../stores/jobs';
 import { useAuthStore } from '../stores/auth';
 import type { Job } from '../types/job';
+import TurboApplyModal from '../components/job-applications/TurboApplyModal.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -12,6 +13,7 @@ const jobsStore = useJobsStore();
 const authStore = useAuthStore();
 const loading = ref(true);
 const relatedJobs = ref<Job[]>([]);
+const showTurboApplyModal = ref(false);
 
 // Extract job ID from the urlSafeJobTitlePlusId parameter (SEO-friendly routes only)
 const jobId = computed(() => {
@@ -29,6 +31,22 @@ const jobId = computed(() => {
 const job = computed(() => jobsStore.currentJob);
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const isPremium = computed(() => authStore.isPremium);
+
+// Turbo Apply functionality
+const canTurboApply = computed(() => {
+  if (!job.value || !isAuthenticated.value) return false;
+  // Only enable for BambooHR jobs for now
+  return job.value.navigation?.atsType === 'bamboo';
+});
+
+const getRequisitionId = computed(() => {
+  if (!job.value) return null;
+  // Extract requisition ID based on ATS type
+  if (job.value.navigation?.atsType === 'bamboo') {
+    return job.value.bamboohr_requisition_id;
+  }
+  return null;
+});
 
 const formattedDate = computed(() => {
   if (!job.value) return '';
@@ -105,6 +123,122 @@ const applyToJob = () => {
   } else {
     console.error('No external URL provided for this job');
   }
+};
+
+const openTurboApply = () => {
+  if (!isAuthenticated.value) {
+    router.push({ name: 'Login', query: { redirect: route.fullPath } });
+    return;
+  }
+  showTurboApplyModal.value = true;
+};
+
+const closeTurboApply = () => {
+  showTurboApplyModal.value = false;
+};
+
+// Lightning bolt animation management
+const lightningBolts = ref<HTMLElement[]>([]);
+let lightningInterval: NodeJS.Timeout | null = null;
+
+const createLightningBolt = () => {
+  const bolt = document.createElement('div');
+  bolt.innerHTML = '⚡';
+  bolt.className = 'lightning-bolt';
+  
+  bolt.style.color = Math.random() > 0.5 ? '#fbbf24' : '#eab308'; // Random yellow shade
+  bolt.style.fontSize = `${12 + Math.random() * 6}px`; // Random size 12-18px
+  bolt.style.animation = 'lightningFade 1.5s ease-in-out';
+  bolt.style.pointerEvents = 'none';
+  bolt.style.userSelect = 'none';
+  bolt.style.zIndex = '1000';
+  
+  return bolt;
+};
+
+const startLightningEffect = (buttonElement: HTMLElement) => {
+  if (lightningInterval) return; // Already running
+  
+  const showLightning = () => {
+    // Create 2-4 random lightning bolts
+    const boltCount = 2 + Math.floor(Math.random() * 3);
+    
+    for (let i = 0; i < boltCount; i++) {
+      setTimeout(() => {
+        const bolt = createLightningBolt();
+        
+        // Get button position relative to viewport
+        const buttonRect = buttonElement.getBoundingClientRect();
+        const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+        const buttonCenterY = buttonRect.top + buttonRect.height / 2;
+        
+        // Calculate button radius (half the diagonal to ensure we clear the entire button)
+        const buttonRadius = Math.sqrt(
+          Math.pow(buttonRect.width / 2, 2) + Math.pow(buttonRect.height / 2, 2)
+        );
+        
+        // Random positioning around the button (with minimum distance from button edge)
+        const minDistance = buttonRadius + 20; // Button radius + extra clearance
+        const maxDistance = buttonRadius + 60; // Button radius + max distance
+        
+        const angle = Math.random() * 2 * Math.PI; // Random angle around button
+        const distance = minDistance + Math.random() * (maxDistance - minDistance);
+        
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+        
+        // Position relative to viewport
+        bolt.style.position = 'fixed';
+        bolt.style.left = `${buttonCenterX + x}px`;
+        bolt.style.top = `${buttonCenterY + y}px`;
+        bolt.style.transform = 'translate(-50%, -50%)';
+        
+        // Add to document body instead of button
+        document.body.appendChild(bolt);
+        lightningBolts.value.push(bolt);
+        
+        // Remove after animation completes
+        setTimeout(() => {
+          if (bolt.parentNode) {
+            bolt.parentNode.removeChild(bolt);
+          }
+          const index = lightningBolts.value.indexOf(bolt);
+          if (index > -1) {
+            lightningBolts.value.splice(index, 1);
+          }
+        }, 1500); // Animation duration
+      }, i * 100); // Stagger the bolts
+    }
+  };
+  
+  // Show lightning immediately and then repeat
+  showLightning();
+  lightningInterval = setInterval(showLightning, 1800);
+};
+
+const stopLightningEffect = () => {
+  if (lightningInterval) {
+    clearInterval(lightningInterval);
+    lightningInterval = null;
+  }
+  
+  // Clean up existing bolts
+  lightningBolts.value.forEach(bolt => {
+    if (bolt.parentNode) {
+      bolt.parentNode.removeChild(bolt);
+    }
+  });
+  lightningBolts.value = [];
+};
+
+// Turbo Apply button hover handlers
+const handleTurboApplyHover = (event: MouseEvent) => {
+  const button = event.currentTarget as HTMLElement;
+  startLightningEffect(button);
+};
+
+const handleTurboApplyLeave = () => {
+  stopLightningEffect();
 };
 </script>
 
@@ -218,7 +352,7 @@ const applyToJob = () => {
               </div>
             </div>
             
-            <div class="flex mt-6 md:mt-0 space-x-3">
+            <div class="flex mt-6 md:mt-0 space-x-4">
               <button 
                 @click="toggleSave" 
                 class="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
@@ -230,11 +364,28 @@ const applyToJob = () => {
                 {{ isSaved ? 'Saved' : 'Save' }}
               </button>
               
+              <!-- Turbo Apply Button (BambooHR only for now) -->
+              <button 
+                v-if="canTurboApply"
+                @click="openTurboApply"
+                @mouseenter="handleTurboApplyHover"
+                @mouseleave="handleTurboApplyLeave"
+                class="turbo-apply-button flex items-center justify-center px-4 py-2 border border-green-700 rounded-md shadow-sm text-sm font-medium text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span class="turbo-apply-text">Turbo Apply</span>
+              </button>
+              
               <button 
                 @click="applyToJob" 
                 class="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
               >
-                Apply Now
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18 9c0-1.66-1.34-3-3-3s-3 1.34-3 3 1.34 3 3 3 3-1.34 3-3zm-3-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM5 12c-1.1 0-2 .9-2 2v1c0 1.1.9 2 2 2s2-.9 2-2v-1c0-1.1-.9-2-2-2zm13 5H8c-1.1 0-2-.9-2-2v-3c0-1.1.9-2 2-2h3.5L15 6.5c.28-.28.72-.28 1 0L19.5 10c.28.28.28.72 0 1L16 14.5V15c0 1.1.9 2 2 2z"/>
+                </svg>
+                Snail Apply
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
@@ -260,7 +411,10 @@ const applyToJob = () => {
               @click="applyToJob" 
               class="btn w-full sm:w-auto flex items-center justify-center bg-primary-600 hover:bg-primary-700 text-white"
             >
-              Apply Now
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18 9c0-1.66-1.34-3-3-3s-3 1.34-3 3 1.34 3 3 3 3-1.34 3-3zm-3-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM5 12c-1.1 0-2 .9-2 2v1c0 1.1.9 2 2 2s2-.9 2-2v-1c0-1.1-.9-2-2-2zm13 5H8c-1.1 0-2-.9-2-2v-3c0-1.1.9-2 2-2h3.5L15 6.5c.28-.28.72-.28 1 0L19.5 10c.28.28.28.72 0 1L16 14.5V15c0 1.1.9 2 2 2z"/>
+              </svg>
+              Snail Apply
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
@@ -284,6 +438,109 @@ const applyToJob = () => {
           </div>
         </div>
       </div>
+      
+      <!-- Turbo Apply Modal -->
+      <TurboApplyModal
+        v-if="showTurboApplyModal && job"
+        :show="showTurboApplyModal"
+        :job="job"
+        :requisitionId="getRequisitionId || 0"
+        :atsSource="job.navigation?.atsType || 'bamboo'"
+        @close="closeTurboApply"
+      />
     </div>
   </div>
 </template>
+
+<style scoped>
+@keyframes turboButtonPulse {
+  0% {
+    transform: scale(1);
+    background-color: rgb(21, 128, 61); /* bg-green-700 */
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); /* green-500 with opacity */
+  }
+  50% {
+    transform: scale(1.05);
+    background-color: rgb(22, 163, 74); /* bg-green-600 */
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    background-color: rgb(21, 128, 61); /* bg-green-700 */
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+@keyframes turboTextPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.turbo-apply-button {
+  animation: turboButtonPulse 5s ease-in-out infinite;
+  transform-origin: center;
+  position: relative;
+  overflow: visible;
+}
+
+.turbo-apply-text {
+  animation: turboTextPulse 5s ease-in-out infinite;
+  transform-origin: center;
+  display: inline-block;
+}
+
+/* Pause animation on hover for better UX */
+.turbo-apply-button:hover {
+  animation-play-state: paused;
+}
+
+.turbo-apply-button:hover .turbo-apply-text {
+  animation-play-state: paused;
+}
+
+/* Lightning bolt hover effect - JavaScript controlled */
+.turbo-apply-button {
+  position: relative;
+  overflow: visible;
+}
+
+.turbo-apply-button:hover {
+  animation-play-state: paused;
+}
+
+.turbo-apply-button:hover .turbo-apply-text {
+  animation-play-state: paused;
+}
+
+/* Lightning bolt styles for dynamically created elements */
+.lightning-bolt {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  font-size: 16px;
+  user-select: none;
+}
+
+/* Lightning bolt fade animation */
+@keyframes lightningFade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
+</style>

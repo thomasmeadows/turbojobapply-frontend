@@ -20,6 +20,7 @@ import TermsOfServicePage from '../views/TermsOfServicePage.vue';
 import CareersPage from '../views/CareersPage.vue';
 import EmployerIntegrationsPage from '../views/EmployerIntegrationsPage.vue';
 import CancelSubscriptionPage from '../views/CancelSubscriptionPage.vue';
+import JobApplicationHistoryPage from '../views/JobApplicationHistoryPage.vue';
 import NotFoundPage from '../views/NotFoundPage.vue';
 
 const routes = [
@@ -149,6 +150,12 @@ const routes = [
     name: 'JobProfiles',
     component: JobProfilePage,
     meta: { title: 'Job Profiles - Turbo Job Apply', requiresAuth: true }
+  },
+  {
+    path: '/job-applications',
+    name: 'JobApplicationHistory',
+    component: JobApplicationHistoryPage,
+    meta: { title: 'Application History - Turbo Job Apply', requiresAuth: true }
   },
   {
     path: '/subscription',

@@ -449,6 +449,26 @@ const fetchData = async () => {
 }
 ```
 
+## TypeScript Validation Protocol
+**🚨 MANDATORY**: All frontend development MUST follow the TypeScript validation protocol:
+
+1. **Pre-Development**: Check existing component patterns and type definitions
+2. **During Development**: Use proper TypeScript interfaces for props, emits, and data
+3. **Post-Development**: Run `npx tsc --noEmit` to verify compilation
+4. **Error Resolution**: Fix all TypeScript errors before task completion
+
+### Component TypeScript Requirements
+- All props MUST use TypeScript interfaces with `defineProps<PropsInterface>()`
+- All emits MUST use TypeScript interfaces with `defineEmits<EmitsInterface>()`
+- Use proper type annotations for reactive refs and computed properties
+- Import types from existing models when available
+
+### Vue 3 Composition API Patterns
+- Use `<script setup lang="ts">` for all components
+- Define interfaces above the script setup block
+- Use proper null checking and optional chaining
+- Handle async operations with proper error typing
+
 ## Best Practices
 
 ### Component Design

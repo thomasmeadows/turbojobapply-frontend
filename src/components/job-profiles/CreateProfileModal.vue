@@ -5,8 +5,8 @@
         <h3 class="text-lg font-medium text-gray-900 mb-4">Create New Job Profile</h3>
         
         <form @submit.prevent="createProfile">
-          <div class="mb-4">
-            <label for="profile-name" class="block text-sm font-medium text-gray-700 mb-2">
+          <div class="mb-6">
+            <label for="profile-name" class="block text-sm font-medium text-gray-700 mb-3">
               Profile Name *
             </label>
             <input
@@ -15,7 +15,7 @@
               type="text"
               required
               maxlength="100"
-              class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
               placeholder="e.g., Software Engineer, Marketing Manager"
             />
             <p class="mt-1 text-xs text-gray-500">
@@ -23,8 +23,8 @@
             </p>
           </div>
 
-          <div class="mb-4">
-            <label for="desired-job-title" class="block text-sm font-medium text-gray-700 mb-2">
+          <div class="mb-6">
+            <label for="desired-job-title" class="block text-sm font-medium text-gray-700 mb-3">
               Desired Job Title
             </label>
             <input
@@ -32,7 +32,7 @@
               v-model="desiredJobTitle"
               type="text"
               maxlength="200"
-              class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
               placeholder="e.g., Senior Software Engineer"
             />
             <p class="mt-1 text-xs text-gray-500">
@@ -44,11 +44,11 @@
             <p class="text-sm text-red-600">{{ error }}</p>
           </div>
 
-          <div class="flex gap-3">
+          <div class="flex gap-4 mt-8">
             <button
               type="submit"
               :disabled="loading || !profileName.trim()"
-              class="flex-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              class="flex-1 px-6 py-3 bg-blue-600 text-white text-base font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200"
             >
               <span v-if="loading" class="flex items-center justify-center">
                 <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
@@ -63,7 +63,7 @@
               type="button"
               @click="$emit('close')"
               :disabled="loading"
-              class="flex-1 px-4 py-2 bg-gray-300 text-gray-800 text-sm font-medium rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:cursor-not-allowed"
+              class="flex-1 px-6 py-3 bg-gray-300 text-gray-800 text-base font-medium rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:cursor-not-allowed transition-colors duration-200"
             >
               Cancel
             </button>
