@@ -1,45 +1,45 @@
-import { defineStore } from 'pinia';
-import type { Job, LocationOption, CountryOption } from '../types/job';
-import { COUNTRIES } from '../types/job';
-const API_URL = import.meta.env.VITE_API_URL;
-import axios from 'axios';
+import { defineStore } from 'pinia'
+import type { Job, LocationOption, CountryOption } from '../types/job'
+import { COUNTRIES } from '../types/job'
+const API_URL = import.meta.env.VITE_API_URL
+import axios from 'axios'
 
 interface UserConfig {
   ipLocation: {
-    country: string | null;
-    city: string | null;
-    state: string | null;
+    country: string | null
+    city: string | null
+    state: string | null
   }
 }
 
 interface JobStatistics {
-  total: number;
-  usJobs: number;
-  remoteUsJobs: number;
+  total: number
+  usJobs: number
+  remoteUsJobs: number
 }
 
 interface JobsState {
-  jobs: Job[];
-  firstSearch: boolean;
-  limit: number;
-  offset: number;
-  currentPage: number;
-  totalPages: number;
-  totalJobs: number;
-  savedJobs: string[];
-  bookmarkedJobs: any[];
-  bookmarkedJobIds: Set<number>;
-  currentJob: Job | null;
-  loading: boolean;
-  bookmarksLoading: boolean;
-  error: string | null;
-  query: string;
-  location: string;
-  isRemote: string;
-  country: string;
-  userConfig: UserConfig | null;
-  jobSource: string;
-  statistics: JobStatistics | null;
+  jobs: Job[]
+  firstSearch: boolean
+  limit: number
+  offset: number
+  currentPage: number
+  totalPages: number
+  totalJobs: number
+  savedJobs: string[]
+  bookmarkedJobs: any[]
+  bookmarkedJobIds: Set<number>
+  currentJob: Job | null
+  loading: boolean
+  bookmarksLoading: boolean
+  error: string | null
+  query: string
+  location: string
+  isRemote: string
+  country: string
+  userConfig: UserConfig | null
+  jobSource: string
+  statistics: JobStatistics | null
 }
 
 export const useJobsStore = defineStore('jobs', {
@@ -64,150 +64,150 @@ export const useJobsStore = defineStore('jobs', {
     country: 'US',
     userConfig: null,
     jobSource: '',
-    statistics: null
+    statistics: null,
   }),
-  
+
   getters: {
     locations(): LocationOption[] {
-      const locations = new Set<string>();
-      this.jobs.forEach(job => locations.add(job.location));
-      return Array.from(locations).map(loc => ({ 
-        value: loc, 
+      const locations = new Set<string>()
+      this.jobs.forEach((job) => locations.add(job.location))
+      return Array.from(locations).map((loc) => ({
+        value: loc,
         label: loc,
-        count: this.jobs.filter(job => job.location === loc).length
-      }));
+        count: this.jobs.filter((job) => job.location === loc).length,
+      }))
     },
-    
+
     countries(): CountryOption[] {
-      return COUNTRIES;
+      return COUNTRIES
     },
-    
+
     savedJobsList(): Job[] {
-      return this.jobs.filter(job => this.savedJobs.includes(job.id));
+      return this.jobs.filter((job) => this.savedJobs.includes(job.id))
     },
 
     getSourceName() {
       return (job: Job) => {
         if (job.bamboohr_requisition_id) {
-          return 'BambooHR';
+          return 'BambooHR'
         }
         if (job.greenhouseio_requisition_id) {
-          return 'GreenhouseIO';
+          return 'GreenhouseIO'
         }
         if (job.workday_requisition_id) {
-          return 'Workday';
+          return 'Workday'
         }
         if (job.adp_requisition_id) {
-          return 'ADP';
+          return 'ADP'
         }
         if (job.jobvite_requisition_id) {
-          return 'Jobvite';
+          return 'Jobvite'
         }
         if (job.breezy_requisition_id) {
-          return 'Breezy';
+          return 'Breezy'
         }
         if (job.lever_requisition_id) {
-          return 'Lever';
+          return 'Lever'
         }
         if (job.smartrecruiters_requisition_id) {
-          return 'SmartRecruiters';
+          return 'SmartRecruiters'
         }
         if (job.dover_requisition_id) {
-          return 'Dover';
+          return 'Dover'
         }
-        return 'Unknown';
-      };
+        return 'Unknown'
+      }
     },
 
     getJobSource() {
       return (job: Job) => {
         if (job.bamboohr_requisition_id) {
-          return 'bamboohr';
+          return 'bamboohr'
         }
         if (job.greenhouseio_requisition_id) {
-          return 'greenhouseio';
+          return 'greenhouseio'
         }
         if (job.workday_requisition_id) {
-          return 'workday';
+          return 'workday'
         }
         if (job.adp_requisition_id) {
-          return 'adp';
+          return 'adp'
         }
         if (job.jobvite_requisition_id) {
-          return 'jobvite';
+          return 'jobvite'
         }
         if (job.breezy_requisition_id) {
-          return 'breezy';
+          return 'breezy'
         }
         if (job.lever_requisition_id) {
-          return 'lever';
+          return 'lever'
         }
         if (job.smartrecruiters_requisition_id) {
-          return 'smartrecruiters';
+          return 'smartrecruiters'
         }
         if (job.dover_requisition_id) {
-          return 'dover';
+          return 'dover'
         }
-        return '';
-      };
+        return ''
+      }
     },
 
     getJobRequisitionId() {
       return (job: Job) => {
         if (job.bamboohr_requisition_id) {
-          return job.bamboohr_requisition_id;
+          return job.bamboohr_requisition_id
         }
         if (job.greenhouseio_requisition_id) {
-          return job.greenhouseio_requisition_id;
+          return job.greenhouseio_requisition_id
         }
         if (job.workday_requisition_id) {
-          return job.workday_requisition_id;
+          return job.workday_requisition_id
         }
         if (job.adp_requisition_id) {
-          return job.adp_requisition_id;
+          return job.adp_requisition_id
         }
         if (job.jobvite_requisition_id) {
-          return job.jobvite_requisition_id;
+          return job.jobvite_requisition_id
         }
         if (job.breezy_requisition_id) {
-          return job.breezy_requisition_id;
+          return job.breezy_requisition_id
         }
         if (job.lever_requisition_id) {
-          return job.lever_requisition_id;
+          return job.lever_requisition_id
         }
         if (job.smartrecruiters_requisition_id) {
-          return job.smartrecruiters_requisition_id;
+          return job.smartrecruiters_requisition_id
         }
         if (job.dover_requisition_id) {
-          return job.dover_requisition_id;
+          return job.dover_requisition_id
         }
-        return null;
-      };
+        return null
+      }
     },
 
     isJobBookmarked() {
       return (job: Job) => {
-        const requisitionId = this.getJobRequisitionId(job);
-        return requisitionId ? this.bookmarkedJobIds.has(requisitionId) : false;
-      };
-    }
+        const requisitionId = this.getJobRequisitionId(job)
+        return requisitionId ? this.bookmarkedJobIds.has(requisitionId) : false
+      }
+    },
   },
-  
+
   actions: {
     async fetchUserConfig() {
       try {
-        const response = await axios.get(`${API_URL}/api/users/config`);
-        this.userConfig = response.data;
-        
+        const response = await axios.get(`${API_URL}/api/users/config`)
+        this.userConfig = response.data
+
         // If we have country info from IP, update the country filter
         if (this.userConfig?.ipLocation?.country) {
-          this.country = this.userConfig.ipLocation.country;
+          this.country = this.userConfig.ipLocation.country
         }
-        if(!this.country) {
-          this.country = 'US';
+        if (!this.country) {
+          this.country = 'US'
         }
       } catch (error) {
-        console.error('Failed to fetch user config:', error);
+        console.error('Failed to fetch user config:', error)
       }
     },
 
@@ -215,85 +215,85 @@ export const useJobsStore = defineStore('jobs', {
       if (!this.query) {
         return
       }
-      this.loading = true;
-      this.firstSearch = false;
-      this.currentPage = currentPage || 1;
-      this.offset = (currentPage - 1) * this.limit;
-      this.totalJobs = 0;
-      this.jobs = [];
-      this.error = null;
-      
+      this.loading = true
+      this.firstSearch = false
+      this.currentPage = currentPage || 1
+      this.offset = (currentPage - 1) * this.limit
+      this.totalJobs = 0
+      this.jobs = []
+      this.error = null
+
       try {
         // Build query parameters from filters
-        const params = new URLSearchParams();
-        if (this.query) params.append('q', this.query);
-        if (this.location) params.append('location', this.location);
-        if (this.isRemote) params.append('isRemote', this.isRemote);
-        if (this.country) params.append('country', this.country);
-        if (this.jobSource) params.append('source', this.jobSource);
-        if (this.offset) params.append('offset', this.offset.toString());
+        const params = new URLSearchParams()
+        if (this.query) params.append('q', this.query)
+        if (this.location) params.append('location', this.location)
+        if (this.isRemote) params.append('isRemote', this.isRemote)
+        if (this.country) params.append('country', this.country)
+        if (this.jobSource) params.append('source', this.jobSource)
+        if (this.offset) params.append('offset', this.offset.toString())
 
-        const response = await axios.get(`${API_URL}/api/requisitions/search?${params.toString()}`);
+        const response = await axios.get(`${API_URL}/api/requisitions/search?${params.toString()}`)
         // Map the search results to include navigation data
         this.jobs = response.data.data.map((job: any) => ({
           ...job,
           navigation: job.navigation || {
             atsType: 'unknown',
-            urlSafeJobTitle: `job-${job.id}`
-          }
-        }));
-        this.totalJobs = response.data.total;
-        this.limit = response.data.limit;
-        this.offset = response.data.offset;
-        this.totalPages = Math.floor(this.totalJobs / this.limit) + 1;
-      } catch (error) {
-        this.error = 'Failed to fetch jobs. Please try again.';
+            urlSafeJobTitle: `job-${job.id}`,
+          },
+        }))
+        this.totalJobs = response.data.total
+        this.limit = response.data.limit
+        this.offset = response.data.offset
+        this.totalPages = Math.floor(this.totalJobs / this.limit) + 1
+      } catch (_error: any) {
+        this.error = 'Failed to fetch jobs. Please try again. ' + _error.message
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
 
-    async updateSearchOptions(query: string, country: string, isRemote: string) {
-      this.query = query;
-      this.country = country;
-      this.isRemote = isRemote;
+    updateSearchOptions(query: string, country: string, isRemote: string) {
+      this.query = query
+      this.country = country
+      this.isRemote = isRemote
     },
-    
+
     // Fetch job details using SEO-friendly routes
     async fetchJobBySeoRoute(route: any) {
-      this.loading = true;
-      this.error = null;
-      
+      this.loading = true
+      this.error = null
+
       try {
-        let apiUrl = '';
-        
+        let apiUrl = ''
+
         // Construct API URL based on route parameters
         if (route.name === 'ADPJobDetails') {
-          apiUrl = `${API_URL}/api/ats/adp/${route.params.urlSafeClientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+          apiUrl = `${API_URL}/api/ats/adp/${route.params.urlSafeClientName}/job/${route.params.urlSafeJobTitlePlusId}`
         } else if (route.name === 'BambooJobDetails') {
-          apiUrl = `${API_URL}/api/ats/bamboo/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+          apiUrl = `${API_URL}/api/ats/bamboo/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`
         } else if (route.name === 'BreezyJobDetails') {
-          apiUrl = `${API_URL}/api/ats/breezy/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+          apiUrl = `${API_URL}/api/ats/breezy/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`
         } else if (route.name === 'DoverJobDetails') {
-          apiUrl = `${API_URL}/api/ats/dover/${route.params.urlSafeClientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+          apiUrl = `${API_URL}/api/ats/dover/${route.params.urlSafeClientName}/job/${route.params.urlSafeJobTitlePlusId}`
         } else if (route.name === 'GreenhouseJobDetails') {
-          apiUrl = `${API_URL}/api/ats/greenhouse/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+          apiUrl = `${API_URL}/api/ats/greenhouse/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`
         } else if (route.name === 'JobviteJobDetails') {
-          apiUrl = `${API_URL}/api/ats/jobvite/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+          apiUrl = `${API_URL}/api/ats/jobvite/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`
         } else if (route.name === 'LeverJobDetails') {
-          apiUrl = `${API_URL}/api/ats/lever/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+          apiUrl = `${API_URL}/api/ats/lever/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`
         } else if (route.name === 'SmartRecruitersJobDetails') {
-          apiUrl = `${API_URL}/api/ats/smartrecruiters/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`;
+          apiUrl = `${API_URL}/api/ats/smartrecruiters/${route.params.clientName}/job/${route.params.urlSafeJobTitlePlusId}`
         } else if (route.name === 'WorkdayJobDetails') {
-          apiUrl = `${API_URL}/api/ats/workday/${route.params.domain}/${route.params.clientName}/${route.params.clientProject}/job/${route.params.urlSafeJobTitlePlusId}`;
+          apiUrl = `${API_URL}/api/ats/workday/${route.params.domain}/${route.params.clientName}/${route.params.clientProject}/job/${route.params.urlSafeJobTitlePlusId}`
         } else {
-          throw new Error('Unknown route type for SEO job fetching');
+          throw new Error('Unknown route type for SEO job fetching')
         }
-        
-        const response = await axios.get(apiUrl);
-        const jobData = response.data.job;
-        const clientData = response.data.client;
-        
+
+        const response = await axios.get(apiUrl)
+        const jobData = response.data.job
+        const clientData = response.data.client
+
         // Map the API response to our frontend job structure
         this.currentJob = {
           bamboohr_requisition_id: jobData.atsType === 'bamboo' ? jobData.id : null,
@@ -310,9 +310,7 @@ export const useJobsStore = defineStore('jobs', {
           company: clientData.client_name || clientData.name || 'Unknown Company',
           location: jobData.location,
           type: 'Full-time', // Default value since not provided in API
-          salary: jobData.salary_min && jobData.salary_max ? 
-            `${jobData.salary_currency || '$'}${jobData.salary_min} - ${jobData.salary_currency || '$'}${jobData.salary_max}` : 
-            'Competitive',
+          salary: jobData.salary_min && jobData.salary_max ? `${jobData.salary_currency || '$'}${jobData.salary_min} - ${jobData.salary_currency || '$'}${jobData.salary_max}` : 'Competitive',
           category: 'Software Development', // Default value since not provided in API
           description: jobData.description,
           requirements: [], // We'll need to parse these from the description
@@ -331,172 +329,170 @@ export const useJobsStore = defineStore('jobs', {
             clientName: route.params.clientName,
             domain: route.params.domain,
             clientProject: route.params.clientProject,
-            urlSafeJobTitle: route.params.urlSafeJobTitlePlusId
-          }
-        };
-        
+            urlSafeJobTitle: route.params.urlSafeJobTitlePlusId,
+          },
+        }
+
         if (!this.currentJob) {
-          throw new Error('Job not found');
+          throw new Error('Job not found')
         }
       } catch (error) {
-        this.error = 'Failed to fetch job details. Please try again.';
-        console.error('Error fetching job via SEO route:', error);
+        this.error = 'Failed to fetch job details. Please try again.'
+        console.error('Error fetching job via SEO route:', error)
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
-    
+
     toggleSaveJob(jobId: string) {
-      const index = this.savedJobs.indexOf(jobId);
+      const index = this.savedJobs.indexOf(jobId)
       if (index === -1) {
         // Save job
-        this.savedJobs.push(jobId);
+        this.savedJobs.push(jobId)
       } else {
         // Unsave job
-        this.savedJobs.splice(index, 1);
+        this.savedJobs.splice(index, 1)
       }
-      
+
       // Update localStorage
-      localStorage.setItem('savedJobs', JSON.stringify(this.savedJobs));
+      localStorage.setItem('savedJobs', JSON.stringify(this.savedJobs))
     },
 
     // Fetch all bookmarked jobs for the user
     async fetchBookmarks() {
-      this.bookmarksLoading = true;
-      this.error = null;
-      
+      this.bookmarksLoading = true
+      this.error = null
+
       try {
-        const response = await axios.get(`${API_URL}/api/bookmarks`);
-        this.bookmarkedJobs = response.data.bookmarks;
-        
+        const response = await axios.get(`${API_URL}/api/bookmarks`)
+        this.bookmarkedJobs = response.data.bookmarks
+
         // Update bookmarked job IDs set for quick lookup
-        this.bookmarkedJobIds.clear();
-        this.bookmarkedJobs.forEach(bookmark => {
-          this.bookmarkedJobIds.add(bookmark.requisition_id);
-        });
+        this.bookmarkedJobIds.clear()
+        this.bookmarkedJobs.forEach((bookmark) => {
+          this.bookmarkedJobIds.add(bookmark.requisition_id)
+        })
       } catch (error: any) {
         if (error.response?.status !== 401) {
-          this.error = 'Failed to fetch bookmarks';
-          console.error('Failed to fetch bookmarks:', error);
+          this.error = 'Failed to fetch bookmarks'
+          console.error('Failed to fetch bookmarks:', error)
         }
       } finally {
-        this.bookmarksLoading = false;
+        this.bookmarksLoading = false
       }
     },
 
     // Add a bookmark for a job
     async addBookmark(job: Job) {
-      const source = this.getJobSource(job);
-      const requisitionId = this.getJobRequisitionId(job);
-      
+      const source = this.getJobSource(job)
+      const requisitionId = this.getJobRequisitionId(job)
+
       if (!source || !requisitionId) {
-        this.error = 'Invalid job data for bookmarking';
-        return false;
+        this.error = 'Invalid job data for bookmarking'
+        return false
       }
 
       try {
         await axios.post(`${API_URL}/api/bookmarks`, {
           source,
-          requisition_id: requisitionId
-        });
-        
+          requisition_id: requisitionId,
+        })
+
         // Add to local state
-        this.bookmarkedJobIds.add(requisitionId);
-        
+        this.bookmarkedJobIds.add(requisitionId)
+
         // Refresh bookmarks to get full job details
-        await this.fetchBookmarks();
-        
-        return true;
+        await this.fetchBookmarks()
+
+        return true
       } catch (error: any) {
         if (error.response?.data?.error) {
-          this.error = error.response.data.error;
+          this.error = error.response.data.error
         } else {
-          this.error = 'Failed to bookmark job';
+          this.error = 'Failed to bookmark job'
         }
-        console.error('Failed to bookmark job:', error);
-        return false;
+        console.error('Failed to bookmark job:', error)
+        return false
       }
     },
 
     // Remove a bookmark for a job
     async removeBookmark(job: Job) {
-      const source = this.getJobSource(job);
-      const requisitionId = this.getJobRequisitionId(job);
-      
+      const source = this.getJobSource(job)
+      const requisitionId = this.getJobRequisitionId(job)
+
       if (!source || !requisitionId) {
-        this.error = 'Invalid job data for removing bookmark';
-        return false;
+        this.error = 'Invalid job data for removing bookmark'
+        return false
       }
 
       try {
         await axios.delete(`${API_URL}/api/bookmarks`, {
           data: {
             source,
-            requisition_id: requisitionId
-          }
-        });
-        
+            requisition_id: requisitionId,
+          },
+        })
+
         // Remove from local state
-        this.bookmarkedJobIds.delete(requisitionId);
-        
+        this.bookmarkedJobIds.delete(requisitionId)
+
         // Remove from bookmarked jobs array
-        this.bookmarkedJobs = this.bookmarkedJobs.filter(
-          bookmark => bookmark.requisition_id !== requisitionId
-        );
-        
-        return true;
+        this.bookmarkedJobs = this.bookmarkedJobs.filter((bookmark) => bookmark.requisition_id !== requisitionId)
+
+        return true
       } catch (error: any) {
         if (error.response?.data?.error) {
-          this.error = error.response.data.error;
+          this.error = error.response.data.error
         } else {
-          this.error = 'Failed to remove bookmark';
+          this.error = 'Failed to remove bookmark'
         }
-        console.error('Failed to remove bookmark:', error);
-        return false;
+        console.error('Failed to remove bookmark:', error)
+        return false
       }
     },
 
     // Toggle bookmark status for a job
     async toggleBookmark(job: Job) {
-      const isBookmarked = this.isJobBookmarked(job);
-      
+      const isBookmarked = this.isJobBookmarked(job)
+
       if (isBookmarked) {
-        return await this.removeBookmark(job);
+        return await this.removeBookmark(job)
       } else {
-        return await this.addBookmark(job);
+        return await this.addBookmark(job)
       }
     },
 
     // Clear all bookmarks
     async clearAllBookmarks() {
       try {
-        await axios.delete(`${API_URL}/api/bookmarks/clear`);
-        
+        await axios.delete(`${API_URL}/api/bookmarks/clear`)
+
         // Clear local state
-        this.bookmarkedJobs = [];
-        this.bookmarkedJobIds.clear();
-        
-        return true;
+        this.bookmarkedJobs = []
+        this.bookmarkedJobIds.clear()
+
+        return true
       } catch (error: any) {
         if (error.response?.data?.error) {
-          this.error = error.response.data.error;
+          this.error = error.response.data.error
         } else {
-          this.error = 'Failed to clear bookmarks';
+          this.error = 'Failed to clear bookmarks'
         }
-        console.error('Failed to clear bookmarks:', error);
-        return false;
+        console.error('Failed to clear bookmarks:', error)
+        return false
       }
     },
 
     // Fetch job statistics for homepage display
     async fetchJobStatistics() {
       try {
-        const response = await axios.get(`${API_URL}/api/requisitions/statistics`);
-        this.statistics = response.data.data;
+        const response = await axios.get(`${API_URL}/api/requisitions/statistics`)
+        this.statistics = response.data.data
       } catch (error) {
-        console.error('Failed to fetch job statistics:', error);
-        this.statistics = { total: 0, usJobs: 0, remoteUsJobs: 0 };
+        console.error('Failed to fetch job statistics:', error)
+        this.statistics = { total: 0, usJobs: 0, remoteUsJobs: 0 }
       }
-    }
-  }
-});
+    },
+  },
+})

@@ -1,6 +1,7 @@
 <template>
   <div class="quill-editor-wrapper">
-    <div ref="quillContainer" class="quill-editor"></div>
+    <div ref="quillContainer"
+class="quill-editor" />
   </div>
 </template>
 
@@ -19,26 +20,22 @@ const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
-const quillContainer = ref<HTMLElement>()
+const quillContainer = ref<HTMLDivElement | null>(null)
 let quill: Quill | null = null
 
 onMounted(async () => {
   await nextTick()
   if (quillContainer.value) {
     // Custom toolbar configuration
-    const toolbarOptions = [
-      ['bold', 'italic'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['clean']
-    ]
+    const toolbarOptions = [['bold', 'italic'], [{ list: 'ordered' }, { list: 'bullet' }], ['clean']]
 
     quill = new Quill(quillContainer.value, {
       theme: 'snow',
       placeholder: props.placeholder || 'Enter text here...',
       readOnly: props.readOnly || false,
       modules: {
-        toolbar: toolbarOptions
-      }
+        toolbar: toolbarOptions,
+      },
     })
 
     // Set initial content
@@ -57,18 +54,24 @@ onMounted(async () => {
 })
 
 // Watch for external changes
-watch(() => props.modelValue, (newValue) => {
-  if (quill && newValue !== quill.root.innerHTML) {
-    quill.root.innerHTML = newValue || ''
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (quill && newValue !== quill.root.innerHTML) {
+      quill.root.innerHTML = newValue || ''
+    }
   }
-})
+)
 
 // Watch for readonly changes
-watch(() => props.readOnly, (newValue) => {
-  if (quill) {
-    quill.enable(!newValue)
+watch(
+  () => props.readOnly,
+  (newValue) => {
+    if (quill) {
+      quill.enable(!newValue)
+    }
   }
-})
+)
 
 onBeforeUnmount(() => {
   if (quill) {

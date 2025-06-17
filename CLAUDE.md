@@ -59,6 +59,7 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your-stripe-publishable-key
 ### Stores (Pinia)
 - `src/stores/auth.ts` - Authentication state and methods
 - `src/stores/jobs.ts` - Job search and bookmark state
+- `src/stores/jobProfiles.ts` - Job profiles management and CRUD operations
 
 ### Views (Pages)
 - `src/views/HomePage.vue` - Landing page
@@ -325,6 +326,37 @@ const loading = ref<boolean>(false)
 - **Cross-ATS Support**: Bookmarks work across all ATS sources
 - **Bulk Operations**: Clear all bookmarks functionality
 
+## Job Profiles Store (`jobProfiles.ts`)
+
+### State Management
+```typescript
+// Job profiles state
+const profiles = ref<JobProfile[]>([])
+const selectedProfileId = ref<string>('')
+const loading = ref(false)
+const saving = ref(false)
+const error = ref<string>('')
+
+// Profile selection and validation
+const selectedProfile = computed(() => profiles.value.find(p => p.id === selectedProfileId.value))
+const canCreateProfile = computed(() => authStore.isPremium || profiles.value.length === 0)
+```
+
+### Key Methods
+- `fetchProfiles()` - Load all user job profiles
+- `fetchProfile(id: string)` - Load specific profile with full details
+- `createProfile(data: ProfileData)` - Create new job profile
+- `updateProfile(id: string, updates: Partial<JobProfile>)` - Update existing profile
+- `deleteProfile(id: string)` - Delete job profile
+- `selectProfile(id: string)` - Set active profile for editing
+
+### Profile Management
+- **Multiple Profiles**: Support for multiple career-focused profiles
+- **Auto-Selection**: Automatically selects first profile when loading
+- **Premium Limitations**: Free users limited to 1 profile
+- **Real-time Updates**: Profile changes reflected across all components
+- **Full CRUD Support**: Complete create, read, update, delete operations
+
 ## Routing Configuration
 
 ### Public Routes
@@ -447,6 +479,102 @@ const fetchData = async () => {
 .font-glacial {
   font-family: 'Glacial Indifference', sans-serif;
 }
+```
+
+## Pinia Store Creation Protocol
+**🚨 MANDATORY**: Claude MUST create a new Pinia store for new features with new API routes. If uncertain whether a feature warrants a new store, Claude MUST ask clarifying questions before beginning work.
+
+### When to Create a New Pinia Store
+Create a new store when the feature involves:
+
+1. **New API Routes**: Features that interact with new backend API endpoints
+2. **Complex State Management**: Features requiring multiple pieces of related state (loading, error, data arrays/objects)
+3. **Cross-Component Data Sharing**: Data that needs to be accessed by multiple components or pages
+4. **CRUD Operations**: Features involving Create, Read, Update, Delete operations on a specific data entity
+5. **User-Specific Data**: Features that manage user-specific data that persists across sessions
+6. **Role-Based Features**: Features that have different behavior based on user roles (admin, premium, etc.)
+
+### When NOT to Create a New Store
+Do NOT create a store for:
+
+1. **Simple Local State**: Component-specific state that doesn't need sharing
+2. **Static Configuration**: Data that doesn't change or come from APIs
+3. **One-Time Operations**: Simple API calls that don't require state management
+4. **Pure UI State**: Modal visibility, form validation states, etc.
+
+### Mandatory Pre-Development Questions
+Before creating a new store, Claude MUST ask:
+
+1. **API Scope**: What specific API routes will this feature use?
+2. **Data Relationships**: Does this data relate to existing stores (auth, jobs, jobProfiles)?
+3. **Component Scope**: Which components/pages will need access to this data?
+4. **CRUD Requirements**: What operations will users perform (create, read, update, delete)?
+5. **Role Requirements**: Are there role-based access controls or limitations?
+6. **State Persistence**: Does this state need to persist across page navigations?
+
+### Store Creation Requirements
+When creating a new store, it MUST include:
+
+1. **TypeScript Interfaces**: Proper type definitions for all data structures
+2. **Standard State Pattern**: `loading`, `error`, and main data state variables
+3. **CRUD Methods**: Appropriate create, read, update, delete operations
+4. **Error Handling**: Comprehensive error handling with user-friendly messages
+5. **Authentication Integration**: Use `useAuthStore()` for protected API calls
+6. **Loading States**: Proper loading state management for all async operations
+
+### Store Template Structure
+```typescript
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import { useAuthStore } from './auth'
+
+export interface [FeatureName] {
+  id: string
+  // Add other properties
+}
+
+export const use[FeatureName]Store = defineStore('[featureName]', () => {
+  // State
+  const items = ref<[FeatureName][]>([])
+  const selectedItem = ref<[FeatureName] | null>(null)
+  const loading = ref(false)
+  const error = ref<string>('')
+
+  // Getters
+  const hasItems = computed(() => items.value.length > 0)
+
+  // Actions
+  const fetchItems = async (): Promise<void> => {
+    // Implementation
+  }
+
+  const createItem = async (data: Partial<[FeatureName]>): Promise<[FeatureName] | null> => {
+    // Implementation
+  }
+
+  const updateItem = async (id: string, updates: Partial<[FeatureName]>): Promise<boolean> => {
+    // Implementation
+  }
+
+  const deleteItem = async (id: string): Promise<boolean> => {
+    // Implementation
+  }
+
+  return {
+    // State
+    items,
+    selectedItem,
+    loading,
+    error,
+    // Getters
+    hasItems,
+    // Actions
+    fetchItems,
+    createItem,
+    updateItem,
+    deleteItem
+  }
+})
 ```
 
 ## TypeScript Validation Protocol
