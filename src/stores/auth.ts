@@ -274,13 +274,12 @@ export const useAuthStore = defineStore('auth', {
                 originalRequest.headers['Authorization'] = `Bearer ${this.accessToken}`
                 return axios(originalRequest)
               }
+              return this.logout()
             } catch (_e:any) {
               console.error(_e)
               return this.logout()
             }
           }
-
-          throw error
         }
       )
     },

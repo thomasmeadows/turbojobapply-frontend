@@ -40,7 +40,6 @@ export interface JobProfile {
 }
 
 const API_URL = import.meta.env.VITE_API_URL
-const authStore = useAuthStore()
 
 export const useJobProfilesStore = defineStore('jobProfiles', () => {
   // State
@@ -61,6 +60,7 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
 
   // Actions
   const fetchProfiles = async (): Promise<void> => {
+    const authStore = useAuthStore()
     try {
       loading.value = true
       error.value = ''
@@ -93,6 +93,7 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
   }
 
   const fetchProfile = async (profileId: string): Promise<void> => {
+    const authStore = useAuthStore()
     try {
       const response = await fetch(`${API_URL}/api/job-profiles/${profileId}`, {
         headers: {
@@ -122,6 +123,7 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
   }
 
   const createProfile = async (profileData: { profile_name: string; desired_job_title?: string }): Promise<JobProfile | null> => {
+    const authStore = useAuthStore()
     try {
       loading.value = true
       error.value = ''
@@ -155,6 +157,7 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
   }
 
   const updateProfile = async (profileId: string, updates: Partial<JobProfile>): Promise<boolean> => {
+    const authStore = useAuthStore()
     try {
       saving.value = true
       error.value = ''
@@ -200,6 +203,7 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
   }
 
   const deleteProfile = async (profileId: string): Promise<boolean> => {
+    const authStore = useAuthStore()
     try {
       loading.value = true
       error.value = ''
@@ -245,6 +249,7 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
   }
 
   const validateProfile = async () => {
+    const authStore = useAuthStore()
     const atsSource: any = null;
     const requisitionId: any = null;
     validating.value = true
