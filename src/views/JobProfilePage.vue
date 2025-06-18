@@ -355,16 +355,16 @@
         <div class="flex-1">
           <div class="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
             <!-- Contact Information Section -->
-            <ContactInformationSection v-if="activeSection === 'contact'" v-model="selectedProfile" @update="handleProfileUpdate" />
+            <ContactInformationSection v-if="activeSection === 'contact'" v-model="selectedProfile" />
 
             <!-- Job Information Section -->
-            <JobInformationSection v-if="activeSection === 'job-info'" v-model="selectedProfile" @update="handleProfileUpdate" />
+            <JobInformationSection v-if="activeSection === 'job-info'" v-model="selectedProfile" />
 
             <!-- Skills Section -->
-            <SkillsSection v-if="activeSection === 'skills'" v-model="selectedProfile" @update="handleProfileUpdate" />
+            <SkillsSection v-if="activeSection === 'skills'" v-model="selectedProfile" />
 
             <!-- Experience Section -->
-            <ExperienceSection v-if="activeSection === 'experience'" v-model="selectedProfile" @update="handleProfileUpdate" />
+            <ExperienceSection v-if="activeSection === 'experience'" v-model="selectedProfile" />
 
             <!-- ATS Settings Sections -->
             <div v-if="activeSection === 'ats-adp'">
@@ -516,12 +516,6 @@ const canCreateProfile = computed(() => jobProfilesStore.canCreateProfile);
 const handleProfileChange = () => {
   if (selectedProfileId.value) {
     jobProfilesStore.selectProfile(selectedProfileId.value);
-  }
-};
-
-const handleProfileUpdate = async (updatedProfile: Partial<typeof selectedProfile.value>) => {
-  if (selectedProfile.value && updatedProfile) {
-    await jobProfilesStore.updateProfile(selectedProfile.value.id, updatedProfile);
   }
 };
 
