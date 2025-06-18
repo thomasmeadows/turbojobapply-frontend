@@ -1,132 +1,132 @@
 /* eslint-disable max-lines-per-function */
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import { useAuthStore } from './auth'
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+import { useAuthStore } from './auth';
 
 export interface JobProfile {
-  id: string
-  profile_name: string
-  desired_job_title?: string
-  first_name?: string
-  last_name?: string
-  email?: string
-  phone?: string
-  country_code?: string
-  address_line_1?: string
-  address_line_2?: string
-  city?: string
-  state?: string
-  zip_code?: string
-  country?: string
-  availability_date?: string
-  salary_expectation?: string
-  linkedin_url?: string
-  portfolio_url?: string
-  skills?: Array<{ id: string; skill_name: string }>
+  id: string;
+  profile_name: string;
+  desired_job_title?: string;
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  phone?: string;
+  country_code?: string;
+  address_line_1?: string;
+  address_line_2?: string;
+  city?: string;
+  state?: string;
+  zip_code?: string;
+  country?: string;
+  availability_date?: string;
+  salary_expectation?: string;
+  linkedin_url?: string;
+  portfolio_url?: string;
+  skills?: Array<{ id: string; skill_name: string }>;
   experience?: Array<{
-    id: string
-    job_title: string
-    company_name: string
-    start_date: string
-    end_date?: string
-    is_current_job: boolean
-    description?: string
-  }>
-  resume_file_name?: string
-  cover_letter_file_name?: string
-  created_at?: string
-  updated_at?: string
-  validating: boolean
+    id: string;
+    job_title: string;
+    company_name: string;
+    start_date: string;
+    end_date?: string;
+    is_current_job: boolean;
+    description?: string;
+  }>;
+  resume_file_name?: string;
+  cover_letter_file_name?: string;
+  created_at?: string;
+  updated_at?: string;
+  validating: boolean;
 }
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const useJobProfilesStore = defineStore('jobProfiles', () => {
   // State
-  const profiles = ref<JobProfile[]>([])
-  const selectedProfileId = ref<string>('')
-  const loading = ref(false)
-  const validating = ref(false)
-  const saving = ref(false)
-  const error = ref<string>('')
+  const profiles = ref<JobProfile[]>([]);
+  const selectedProfileId = ref<string>('');
+  const loading = ref(false);
+  const validating = ref(false);
+  const saving = ref(false);
+  const error = ref<string>('');
 
   // Getters
-  const selectedProfile = computed(() => profiles.value.find((p) => p.id === selectedProfileId.value) || null)
+  const selectedProfile = computed(() => profiles.value.find((p) => p.id === selectedProfileId.value) || null);
 
   const canCreateProfile = computed(() => {
-    const authStore = useAuthStore()
-    return authStore.isPremium || profiles.value.length === 0
-  })
+    const authStore = useAuthStore();
+    return authStore.isPremium || profiles.value.length === 0;
+  });
 
   // Actions
   const fetchProfiles = async (): Promise<void> => {
-    const authStore = useAuthStore()
+    const authStore = useAuthStore();
     try {
-      loading.value = true
-      error.value = ''
+      loading.value = true;
+      error.value = '';
 
       const response = await fetch(`${API_URL}/api/job-profiles`, {
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
           'Content-Type': 'application/json',
         },
-      })
+      });
 
       if (response.ok) {
-        profiles.value = await response.json()
+        profiles.value = await response.json();
 
         // Auto-select first profile if none selected
         if (profiles.value.length > 0 && !selectedProfileId.value) {
-          selectedProfileId.value = profiles.value[0].id
-          await fetchProfile(selectedProfileId.value)
+          selectedProfileId.value = profiles.value[0].id;
+          await fetchProfile(selectedProfileId.value);
         }
       } else {
-        const errorData = await response.json()
-        error.value = errorData.error || 'Failed to load profiles'
+        const errorData = await response.json();
+        error.value = errorData.error || 'Failed to load profiles';
       }
     } catch (err: any) {
-      console.error('Error fetching profiles:', err)
-      error.value = 'Failed to load profiles. Please try again.'
+      console.error('Error fetching profiles:', err);
+      error.value = 'Failed to load profiles. Please try again.';
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  }
+  };
 
   const fetchProfile = async (profileId: string): Promise<void> => {
-    const authStore = useAuthStore()
+    const authStore = useAuthStore();
     try {
       const response = await fetch(`${API_URL}/api/job-profiles/${profileId}`, {
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
           'Content-Type': 'application/json',
         },
-      })
+      });
 
       if (response.ok) {
-        const profile = await response.json()
+        const profile = await response.json();
 
         // Update the profile in the profiles array
-        const index = profiles.value.findIndex((p) => p.id === profileId)
+        const index = profiles.value.findIndex((p) => p.id === profileId);
         if (index !== -1) {
-          profiles.value[index] = profile
+          profiles.value[index] = profile;
         } else {
-          profiles.value.push(profile)
+          profiles.value.push(profile);
         }
       } else {
-        const errorData = await response.json()
-        error.value = errorData.error || 'Failed to load profile'
+        const errorData = await response.json();
+        error.value = errorData.error || 'Failed to load profile';
       }
     } catch (err: any) {
-      console.error('Error fetching profile:', err)
-      error.value = 'Failed to load profile. Please try again.'
+      console.error('Error fetching profile:', err);
+      error.value = 'Failed to load profile. Please try again.';
     }
-  }
+  };
 
   const createProfile = async (profileData: { profile_name: string; desired_job_title?: string }): Promise<JobProfile | null> => {
-    const authStore = useAuthStore()
+    const authStore = useAuthStore();
     try {
-      loading.value = true
-      error.value = ''
+      loading.value = true;
+      error.value = '';
 
       const response = await fetch(`${API_URL}/api/job-profiles`, {
         method: 'POST',
@@ -135,38 +135,38 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(profileData),
-      })
+      });
 
       if (response.ok) {
-        const newProfile = await response.json()
-        profiles.value.push(newProfile)
-        selectedProfileId.value = newProfile.id
-        return newProfile
+        const newProfile = await response.json();
+        profiles.value.push(newProfile);
+        selectedProfileId.value = newProfile.id;
+        return newProfile;
       } else {
-        const errorData = await response.json()
-        error.value = errorData.error || 'Failed to create profile'
-        return null
+        const errorData = await response.json();
+        error.value = errorData.error || 'Failed to create profile';
+        return null;
       }
     } catch (err: any) {
-      console.error('Error creating profile:', err)
-      error.value = 'Failed to create profile. Please try again.'
-      return null
+      console.error('Error creating profile:', err);
+      error.value = 'Failed to create profile. Please try again.';
+      return null;
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  }
+  };
 
   const updateProfile = async (profileId: string, updates: Partial<JobProfile>): Promise<boolean> => {
-    const authStore = useAuthStore()
+    const authStore = useAuthStore();
     try {
-      saving.value = true
-      error.value = ''
+      saving.value = true;
+      error.value = '';
 
       // Find the current profile
-      const currentProfile = profiles.value.find((p) => p.id === profileId)
+      const currentProfile = profiles.value.find((p) => p.id === profileId);
       if (!currentProfile) {
-        error.value = 'Profile not found'
-        return false
+        error.value = 'Profile not found';
+        return false;
       }
 
       const response = await fetch(`${API_URL}/api/job-profiles/${profileId}`, {
@@ -176,37 +176,37 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ ...currentProfile, ...updates }),
-      })
+      });
 
       if (response.ok) {
-        const updatedProfile = await response.json()
+        const updatedProfile = await response.json();
 
         // Update the profile in the profiles array
-        const index = profiles.value.findIndex((p) => p.id === profileId)
+        const index = profiles.value.findIndex((p) => p.id === profileId);
         if (index !== -1) {
-          profiles.value[index] = updatedProfile
+          profiles.value[index] = updatedProfile;
         }
 
-        return true
+        return true;
       } else {
-        const errorData = await response.json()
-        error.value = errorData.error || 'Failed to save profile'
-        return false
+        const errorData = await response.json();
+        error.value = errorData.error || 'Failed to save profile';
+        return false;
       }
     } catch (err: any) {
-      console.error('Error saving profile:', err)
-      error.value = 'Failed to save profile. Please try again.'
-      return false
+      console.error('Error saving profile:', err);
+      error.value = 'Failed to save profile. Please try again.';
+      return false;
     } finally {
-      saving.value = false
+      saving.value = false;
     }
-  }
+  };
 
   const deleteProfile = async (profileId: string): Promise<boolean> => {
-    const authStore = useAuthStore()
+    const authStore = useAuthStore();
     try {
-      loading.value = true
-      error.value = ''
+      loading.value = true;
+      error.value = '';
 
       const response = await fetch(`${API_URL}/api/job-profiles/${profileId}`, {
         method: 'DELETE',
@@ -214,49 +214,49 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
           Authorization: `Bearer ${authStore.accessToken}`,
           'Content-Type': 'application/json',
         },
-      })
+      });
 
       if (response.ok) {
         // Remove from profiles array
-        profiles.value = profiles.value.filter((p) => p.id !== profileId)
+        profiles.value = profiles.value.filter((p) => p.id !== profileId);
 
         // Update selected profile if needed
         if (selectedProfileId.value === profileId) {
           if (profiles.value.length > 0) {
-            selectedProfileId.value = profiles.value[0].id
+            selectedProfileId.value = profiles.value[0].id;
           } else {
-            selectedProfileId.value = ''
+            selectedProfileId.value = '';
           }
         }
 
-        return true
+        return true;
       } else {
-        const errorData = await response.json()
-        error.value = errorData.error || 'Failed to delete profile'
-        return false
+        const errorData = await response.json();
+        error.value = errorData.error || 'Failed to delete profile';
+        return false;
       }
     } catch (err: any) {
-      console.error('Error deleting profile:', err)
-      error.value = 'Failed to delete profile. Please try again.'
-      return false
+      console.error('Error deleting profile:', err);
+      error.value = 'Failed to delete profile. Please try again.';
+      return false;
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  }
+  };
 
   const selectProfile = (profileId: string) => {
-    selectedProfileId.value = profileId
-  }
+    selectedProfileId.value = profileId;
+  };
 
   const validateProfile = async () => {
-    const authStore = useAuthStore()
+    const authStore = useAuthStore();
     const atsSource: any = null;
     const requisitionId: any = null;
-    validating.value = true
-    if (!selectedProfileId.value) return
+    validating.value = true;
+    if (!selectedProfileId.value) return;
 
     try {
-      error.value = ''
+      error.value = '';
 
       // Validate the profile first
       const validateResponse = await fetch(`${API_URL}/api/job-applications/validate`, {
@@ -270,20 +270,20 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
           requisitionId: requisitionId,
           atsSource: atsSource,
         }),
-      })
+      });
 
       if (validateResponse.ok) {
-        await validateResponse.json()
+        await validateResponse.json();
       }
     } catch (_error: any) {
-      console.error('Error validating profile:', _error)
-      error.value = _error.response?.data?.message || 'Failed to validate profile'
+      console.error('Error validating profile:', _error);
+      error.value = _error.response?.data?.message || 'Failed to validate profile';
     }
-  }
+  };
 
   const submitApplication = () => {
     try {
-      error.value = ''
+      error.value = '';
 
       // const response = await axios.post(`${API_URL}/api/job-applications/submit`, {
       //   jobProfileId: selectedProfileId.value,
@@ -305,22 +305,22 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
       //   alert('Application submitted successfully! You can view your application history in your dashboard.');
       // }
     } catch (error: any) {
-      console.error('Error submitting application:', error)
-      error.value = error.response?.data?.message || 'Failed to submit application'
+      console.error('Error submitting application:', error);
+      error.value = error.response?.data?.message || 'Failed to submit application';
     }
-  }
+  };
 
   const clearError = (): void => {
-    error.value = ''
-  }
+    error.value = '';
+  };
 
   const resetStore = (): void => {
-    profiles.value = []
-    selectedProfileId.value = ''
-    loading.value = false
-    saving.value = false
-    error.value = ''
-  }
+    profiles.value = [];
+    selectedProfileId.value = '';
+    loading.value = false;
+    saving.value = false;
+    error.value = '';
+  };
 
   return {
     // State
@@ -346,5 +346,5 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
     submitApplication,
     clearError,
     resetStore,
-  }
-})
+  };
+});

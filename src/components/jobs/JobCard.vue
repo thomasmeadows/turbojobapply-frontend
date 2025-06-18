@@ -1,66 +1,62 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { format, formatDistanceToNow, parseISO } from 'date-fns'
-import { useJobsStore } from '../../stores/jobs'
-import { useAuthStore } from '../../stores/auth'
-import type { Job } from '../../types/job'
-import { generateJobUrl } from '../../utils/urlUtils'
+import { computed } from 'vue';
+import { format, formatDistanceToNow, parseISO } from 'date-fns';
+import { useJobsStore } from '../../stores/jobs';
+import { useAuthStore } from '../../stores/auth';
+import type { Job } from '../../types/job';
+import { generateJobUrl } from '../../utils/urlUtils';
 
 const props = defineProps<{
-  job: Job
-}>()
+  job: Job;
+}>();
 
-const jobsStore = useJobsStore()
-const authStore = useAuthStore()
+const jobsStore = useJobsStore();
+const authStore = useAuthStore();
 
 const isBookmarked = computed(() => {
-  return jobsStore.isJobBookmarked(props.job)
-})
+  return jobsStore.isJobBookmarked(props.job);
+});
 
 const toggleBookmark = async () => {
   if (!authStore.isAuthenticated) {
     // You could redirect to login here
-    return
+    return;
   }
 
-  await jobsStore.toggleBookmark(props.job)
-}
+  await jobsStore.toggleBookmark(props.job);
+};
 
 const formattedDate = computed(() => {
-  if (!props.job.posted_at) return ''
-  const date = parseISO(props.job.posted_at)
-  return format(date, 'MMMM d, yyyy')
-})
+  if (!props.job.posted_at) return '';
+  const date = parseISO(props.job.posted_at);
+  return format(date, 'MMMM d, yyyy');
+});
 
 const timeAgo = computed(() => {
-  if (!props.job) return ''
-  return formatDistanceToNow(parseISO(props.job.posted_at), { addSuffix: true })
-})
+  if (!props.job) return '';
+  return formatDistanceToNow(parseISO(props.job.posted_at), { addSuffix: true });
+});
 
 const jobUrl = computed(() => {
   try {
-    return generateJobUrl(props.job.id, props.job.navigation)
+    return generateJobUrl(props.job.id, props.job.navigation);
   } catch (error) {
-    console.error('Error generating job URL:', error)
+    console.error('Error generating job URL:', error);
     // Return a placeholder that won't break the UI
-    return '#'
+    return '#';
   }
-})
+});
 </script>
 
 <template>
-  <div class="card relative mb-4 border border-gray-100 p-6 transition-all duration-300 hover:border-primary-100"
-:class="{ 'border-l-4 border-l-primary-500': job.featured }"
->
-    <div v-if="job.featured"
-class="absolute -right-2 -top-2">
+  <div class="card relative mb-4 border border-gray-100 p-6 transition-all duration-300 hover:border-primary-100" :class="{ 'border-l-4 border-l-primary-500': job.featured }">
+    <div v-if="job.featured" class="absolute -right-2 -top-2">
       <span class="premium-badge">Featured</span>
     </div>
 
     <div class="flex flex-col justify-between sm:flex-row sm:items-start">
       <div>
-        <router-link :to="jobUrl"
-class="mb-1 block">
+        <router-link :to="jobUrl" class="mb-1 block">
           <h3 class="text-xl font-semibold text-gray-900 transition-colors duration-200 hover:text-primary-600">
             {{ job.title }}
           </h3>
@@ -79,12 +75,8 @@ class="mb-1 block">
           :disabled="jobsStore.bookmarksLoading"
           @click="toggleBookmark"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="size-6"
-:class="isBookmarked ? 'text-primary-500 fill-current' : 'text-gray-400'" viewBox="0 0 24 24" stroke="currentColor" :fill="isBookmarked ? 'currentColor' : 'none'"
->
-            <path stroke-linecap="round" stroke-linejoin="round"
-stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-/>
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-6" :class="isBookmarked ? 'fill-current text-primary-500' : 'text-gray-400'" viewBox="0 0 24 24" stroke="currentColor" :fill="isBookmarked ? 'currentColor' : 'none'">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
           </svg>
         </button>
       </div>
@@ -102,23 +94,15 @@ stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
 
     <div class="mt-2 flex flex-col justify-between text-sm sm:flex-row sm:items-center">
       <div class="mb-2 flex items-center sm:mb-0">
-        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 size-4 text-gray-400"
-fill="none" viewBox="0 0 24 24" stroke="currentColor"
->
-          <path stroke-linecap="round" stroke-linejoin="round"
-stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-/>
+        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 size-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <span class="text-gray-500">Posted {{ timeAgo }} ({{ formattedDate }})</span>
       </div>
 
       <div class="flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 size-4 text-gray-400"
-fill="none" viewBox="0 0 24 24" stroke="currentColor"
->
-          <path stroke-linecap="round" stroke-linejoin="round"
-stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-/>
+        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 size-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
         <span class="text-gray-500">{{ job.remote ? 'Remote' : 'On-site' }}</span>
       </div>
@@ -126,15 +110,10 @@ stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-
 
     <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
       <span class="text-xs text-gray-500">Job ID: {{ job.id }}</span>
-      <router-link :to="jobUrl"
-class="inline-flex items-center text-sm font-medium text-primary-600 transition-colors duration-200 hover:text-primary-700"
->
+      <router-link :to="jobUrl" class="inline-flex items-center text-sm font-medium text-primary-600 transition-colors duration-200 hover:text-primary-700">
         View Details
-        <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 size-4"
-fill="none" viewBox="0 0 24 24" stroke="currentColor"
->
-          <path stroke-linecap="round"
-stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </router-link>
     </div>

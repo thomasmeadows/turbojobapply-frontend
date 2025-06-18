@@ -1,27 +1,27 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
+import { createRouter, createWebHistory } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 
-import HomePage from '../views/HomePage.vue'
-import SearchPage from '../views/SearchPage.vue'
-import JobDetailsPage from '../views/JobDetailsPage.vue'
-import LoginPage from '../views/LoginPage.vue'
-import EmailVerificationPage from '../views/EmailVerificationPage.vue'
-import DashboardPage from '../views/DashboardPage.vue'
-import SavedJobsPage from '../views/SavedJobsPage.vue'
-import ProfilePage from '../views/ProfilePage.vue'
-import JobProfilePage from '../views/JobProfilePage.vue'
-import SubscriptionPage from '../views/SubscriptionPage.vue'
-import PricingPage from '../views/PricingPage.vue'
-import AboutPage from '../views/AboutPage.vue'
-import PrivacyPolicyPage from '../views/PrivacyPolicyPage.vue'
-import CookiePolicyPage from '../views/CookiePolicyPage.vue'
-import AccessibilityPage from '../views/AccessibilityPage.vue'
-import TermsOfServicePage from '../views/TermsOfServicePage.vue'
-import CareersPage from '../views/CareersPage.vue'
-import EmployerIntegrationsPage from '../views/EmployerIntegrationsPage.vue'
-import CancelSubscriptionPage from '../views/CancelSubscriptionPage.vue'
-import JobApplicationHistoryPage from '../views/JobApplicationHistoryPage.vue'
-import NotFoundPage from '../views/NotFoundPage.vue'
+import HomePage from '../views/HomePage.vue';
+import SearchPage from '../views/SearchPage.vue';
+import JobDetailsPage from '../views/JobDetailsPage.vue';
+import LoginPage from '../views/LoginPage.vue';
+import EmailVerificationPage from '../views/EmailVerificationPage.vue';
+import DashboardPage from '../views/DashboardPage.vue';
+import SavedJobsPage from '../views/SavedJobsPage.vue';
+import ProfilePage from '../views/ProfilePage.vue';
+import JobProfilePage from '../views/JobProfilePage.vue';
+import SubscriptionPage from '../views/SubscriptionPage.vue';
+import PricingPage from '../views/PricingPage.vue';
+import AboutPage from '../views/AboutPage.vue';
+import PrivacyPolicyPage from '../views/PrivacyPolicyPage.vue';
+import CookiePolicyPage from '../views/CookiePolicyPage.vue';
+import AccessibilityPage from '../views/AccessibilityPage.vue';
+import TermsOfServicePage from '../views/TermsOfServicePage.vue';
+import CareersPage from '../views/CareersPage.vue';
+import EmployerIntegrationsPage from '../views/EmployerIntegrationsPage.vue';
+import CancelSubscriptionPage from '../views/CancelSubscriptionPage.vue';
+import JobApplicationHistoryPage from '../views/JobApplicationHistoryPage.vue';
+import NotFoundPage from '../views/NotFoundPage.vue';
 
 const routes = [
   {
@@ -199,38 +199,38 @@ const routes = [
     component: NotFoundPage,
     meta: { title: 'Page Not Found - Turbo Job Apply' },
   },
-]
+];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
-      return savedPosition
+      return savedPosition;
     } else {
-      return { top: 0 }
+      return { top: 0 };
     }
   },
-})
+});
 
 // Navigation guards
 router.beforeEach((to, from, next) => {
   // Update document title
-  document.title = (to.meta.title as string) || 'Turbo Job Apply'
+  document.title = (to.meta.title as string) || 'Turbo Job Apply';
 
-  const authStore = useAuthStore()
-  const isLoggedIn = authStore.isAuthenticated
+  const authStore = useAuthStore();
+  const isLoggedIn = authStore.isAuthenticated;
 
   // Handle protected routes
   if (to.meta.requiresAuth && !isLoggedIn) {
-    next({ name: 'Login', query: { redirect: to.fullPath } })
+    next({ name: 'Login', query: { redirect: to.fullPath } });
   }
   // Handle guest-only routes (prevent logged-in users from accessing login/register)
   else if (to.meta.guestOnly && isLoggedIn) {
-    next({ name: 'Dashboard' })
+    next({ name: 'Dashboard' });
   } else {
-    next()
+    next();
   }
-})
+});
 
-export default router
+export default router;

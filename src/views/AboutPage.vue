@@ -7,11 +7,9 @@
     <!-- Page header -->
     <div class="bg-white shadow">
       <div class="mx-auto flex max-w-7xl flex-col items-center px-4 py-16 sm:px-6 lg:px-8">
-        <img
-src="/turbojobapply.svg" alt="Turbo Job Apply Logo" class="mb-6 h-16 w-auto" />
+        <img src="/turbojobapply.svg" alt="Turbo Job Apply Logo" class="mb-6 h-16 w-auto" />
         <h1 class="text-center text-4xl font-extrabold tracking-tight text-gray-900">About Turbo Job Apply</h1>
-        <p class="mt-4 max-w-3xl text-center text-xl text-gray-500">We're on a mission to revolutionize how people find and apply to jobs, making the process faster, smarter, and more efficient.
-</p>
+        <p class="mt-4 max-w-3xl text-center text-xl text-gray-500">We're on a mission to revolutionize how people find and apply to jobs, making the process faster, smarter, and more efficient.</p>
       </div>
     </div>
 
@@ -32,38 +30,26 @@ src="/turbojobapply.svg" alt="Turbo Job Apply Logo" class="mb-6 h-16 w-auto" />
             <h3 class="mb-4 text-xl font-bold text-primary-900">What Sets Us Apart</h3>
             <ul class="space-y-4">
               <li class="flex">
-                <svg class="mr-3 size-6 text-primary-500"
-fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-/>
+                <svg class="mr-3 size-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span class="text-gray-700">One-click job applications with our Turbo Job Apply technology</span>
               </li>
               <li class="flex">
-                <svg class="mr-3 size-6 text-primary-500"
-fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-/>
+                <svg class="mr-3 size-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span class="text-gray-700">Automated job matching based on your skills and preferences</span>
               </li>
               <li class="flex">
-                <svg class="mr-3 size-6 text-primary-500"
-fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-/>
+                <svg class="mr-3 size-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span class="text-gray-700">Comprehensive application tracking and status updates</span>
               </li>
               <li class="flex">
-                <svg class="mr-3 size-6 text-primary-500"
-fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-/>
+                <svg class="mr-3 size-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span class="text-gray-700">Instant notifications for new relevant job postings</span>
               </li>
@@ -113,18 +99,10 @@ stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
         </h2>
         <div class="mt-8 flex lg:mt-0 lg:shrink-0">
           <div class="inline-flex rounded-md shadow">
-            <router-link to="/subscription"
-class="inline-flex items-center justify-center rounded-md border border-transparent bg-white px-5 py-3 text-base font-medium text-primary-600 hover:bg-primary-50"
->
-Sign up for free
-</router-link>
+            <router-link to="/subscription" class="inline-flex items-center justify-center rounded-md border border-transparent bg-white px-5 py-3 text-base font-medium text-primary-600 hover:bg-primary-50"> Sign up for free </router-link>
           </div>
           <div class="ml-3 inline-flex rounded-md shadow">
-            <router-link to="/pricing"
-class="inline-flex items-center justify-center rounded-md border border-transparent bg-primary-800 px-5 py-3 text-base font-medium text-white hover:bg-primary-700"
->
-View pricing
-</router-link>
+            <router-link to="/pricing" class="inline-flex items-center justify-center rounded-md border border-transparent bg-primary-800 px-5 py-3 text-base font-medium text-white hover:bg-primary-700"> View pricing </router-link>
           </div>
         </div>
       </div>

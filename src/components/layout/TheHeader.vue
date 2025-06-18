@@ -31,16 +31,8 @@ const logout = async () => {
       <div class="flex h-16 justify-between">
         <!-- Logo and primary navigation -->
         <div class="flex">
-          <router-link
-            to="/"
-            class="flex shrink-0 items-center"
-            @click="closeMobileMenu"
-          >
-            <img
-              src="/turbojobapply.svg"
-              alt="Turbo Job Apply Logo"
-              class="h-8 w-auto"
-            >
+          <router-link to="/" class="flex shrink-0 items-center" @click="closeMobileMenu">
+            <img src="/turbojobapply.svg" alt="Turbo Job Apply Logo" class="h-8 w-auto" />
           </router-link>
 
           <!-- Desktop Navigation -->
@@ -72,112 +64,40 @@ const logout = async () => {
         <!-- Auth Buttons / User Menu -->
         <div class="hidden sm:ml-6 sm:flex sm:items-center">
           <template v-if="isLoggedIn">
-            <router-link
-              to="/saved-jobs"
-              class="ml-4 rounded-md px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-100 focus:outline-none"
-            >
-              Saved Jobs
-            </router-link>
+            <router-link to="/saved-jobs" class="ml-4 rounded-md px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-100 focus:outline-none"> Saved Jobs </router-link>
 
             <div class="relative ml-3 flex items-center">
               <!-- User Icon - Click to go to dashboard -->
               <div class="relative">
-                <router-link
-                  to="/dashboard"
-                  class="flex rounded-full bg-white text-sm transition-colors duration-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-                >
+                <router-link to="/dashboard" class="flex rounded-full bg-white text-sm transition-colors duration-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
                   <span class="rounded-full bg-gray-100 p-2 text-gray-700">
                     <span class="sr-only">Go to dashboard</span>
-                    <svg
-                      class="size-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
+                    <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                   </span>
                 </router-link>
-                <span
-                  v-if="isPremium"
-                  class="absolute bottom-0 right-0 block size-2.5 rounded-full bg-accent-500 ring-2 ring-white"
-                />
+                <span v-if="isPremium" class="absolute bottom-0 right-0 block size-2.5 rounded-full bg-accent-500 ring-2 ring-white" />
               </div>
 
               <!-- Dropdown Arrow Button -->
-              <button
-                class="ml-1 rounded-md p-1 text-gray-700 transition-colors duration-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-                @click="toggleMobileMenu"
-              >
+              <button class="ml-1 rounded-md p-1 text-gray-700 transition-colors duration-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2" @click="toggleMobileMenu">
                 <span class="sr-only">Open user menu</span>
-                <svg
-                  class="size-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"
-                  />
+                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               <!-- Dropdown menu -->
-              <div
-                v-if="mobileMenuOpen"
-                class="absolute right-0 top-full z-50 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none"
-              >
-                <router-link
-                  to="/dashboard"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  @click="closeMobileMenu"
-                >
-                  Dashboard
-                </router-link>
-                <router-link
-                  to="/profile"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  @click="closeMobileMenu"
-                >
-                  Profile
-                </router-link>
-                <router-link
-                  to="/job-profiles"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  @click="closeMobileMenu"
-                >
-                  Job Profiles
-                </router-link>
-                <router-link
-                  to="/job-applications"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  @click="closeMobileMenu"
-                >
-                  Application History
-                </router-link>
-                <router-link
-                  to="/subscription"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  @click="closeMobileMenu"
-                >
+              <div v-if="mobileMenuOpen" class="absolute right-0 top-full z-50 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none">
+                <router-link to="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu"> Dashboard </router-link>
+                <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu"> Profile </router-link>
+                <router-link to="/job-profiles" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu"> Job Profiles </router-link>
+                <router-link to="/job-applications" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu"> Application History </router-link>
+                <router-link to="/subscription" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMobileMenu">
                   <span v-if="isPremium">Premium Account</span>
                   <span v-else>Upgrade to Premium</span>
                 </router-link>
-                <button
-                  class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-                  @click="logout"
-                >
-                  Sign out
-                </button>
+                <button class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" @click="logout">Sign out</button>
               </div>
             </div>
           </template>
@@ -203,20 +123,8 @@ const logout = async () => {
             @click="toggleMobileMenu"
           >
             <span class="sr-only">Open main menu</span>
-            <svg
-              class="size-6"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
+            <svg class="size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </div>
@@ -224,11 +132,7 @@ const logout = async () => {
     </div>
 
     <!-- Mobile menu -->
-    <div
-      v-if="mobileMenuOpen"
-      id="mobile-menu"
-      class="sm:hidden"
-    >
+    <div v-if="mobileMenuOpen" id="mobile-menu" class="sm:hidden">
       <div class="space-y-1 pb-3 pt-2">
         <router-link
           to="/search"
@@ -261,19 +165,8 @@ const logout = async () => {
           <div class="flex items-center px-4">
             <div class="shrink-0">
               <div class="flex size-10 items-center justify-center rounded-full bg-gray-100">
-                <svg
-                  class="size-6 text-gray-700"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
+                <svg class="size-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
             </div>
@@ -285,47 +178,17 @@ const logout = async () => {
                 {{ authStore.user?.email }}
               </div>
             </div>
-            <span
-              v-if="isPremium"
-              class="ml-3 rounded-full bg-accent-100 px-2 py-1 text-xs text-accent-800"
-            >Premium</span>
+            <span v-if="isPremium" class="ml-3 rounded-full bg-accent-100 px-2 py-1 text-xs text-accent-800">Premium</span>
           </div>
           <div class="mt-3 space-y-1">
-            <router-link
-              to="/dashboard"
-              class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
-              @click="closeMobileMenu"
-            >
-              Dashboard
-            </router-link>
-            <router-link
-              to="/saved-jobs"
-              class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
-              @click="closeMobileMenu"
-            >
-              Saved Jobs
-            </router-link>
-            <router-link
-              to="/profile"
-              class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
-              @click="closeMobileMenu"
-            >
-              Profile
-            </router-link>
-            <router-link
-              to="/subscription"
-              class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
-              @click="closeMobileMenu"
-            >
+            <router-link to="/dashboard" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800" @click="closeMobileMenu"> Dashboard </router-link>
+            <router-link to="/saved-jobs" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800" @click="closeMobileMenu"> Saved Jobs </router-link>
+            <router-link to="/profile" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800" @click="closeMobileMenu"> Profile </router-link>
+            <router-link to="/subscription" class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800" @click="closeMobileMenu">
               <span v-if="isPremium">Premium Account</span>
               <span v-else>Upgrade to Premium</span>
             </router-link>
-            <button
-              class="block w-full px-4 py-2 text-left text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
-              @click="logout"
-            >
-              Sign out
-            </button>
+            <button class="block w-full px-4 py-2 text-left text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800" @click="logout">Sign out</button>
           </div>
         </template>
         <template v-else>

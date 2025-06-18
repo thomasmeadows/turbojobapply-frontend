@@ -1,33 +1,32 @@
 <template>
   <div class="quill-editor-wrapper">
-    <div ref="quillContainer"
-class="quill-editor" />
+    <div ref="quillContainer" class="quill-editor" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
-import Quill from 'quill'
-import 'quill/dist/quill.snow.css'
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
 
 const props = defineProps<{
-  modelValue: string
-  placeholder?: string
-  readOnly?: boolean
-}>()
+  modelValue: string;
+  placeholder?: string;
+  readOnly?: boolean;
+}>();
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string]
-}>()
+  'update:modelValue': [value: string];
+}>();
 
-const quillContainer = ref<HTMLDivElement | null>(null)
-let quill: Quill | null = null
+const quillContainer = ref<HTMLDivElement | null>(null);
+let quill: Quill | null = null;
 
 onMounted(async () => {
-  await nextTick()
+  await nextTick();
   if (quillContainer.value) {
     // Custom toolbar configuration
-    const toolbarOptions = [['bold', 'italic'], [{ list: 'ordered' }, { list: 'bullet' }], ['clean']]
+    const toolbarOptions = [['bold', 'italic'], [{ list: 'ordered' }, { list: 'bullet' }], ['clean']];
 
     quill = new Quill(quillContainer.value, {
       theme: 'snow',
@@ -36,48 +35,48 @@ onMounted(async () => {
       modules: {
         toolbar: toolbarOptions,
       },
-    })
+    });
 
     // Set initial content
     if (props.modelValue) {
-      quill.root.innerHTML = props.modelValue
+      quill.root.innerHTML = props.modelValue;
     }
 
     // Listen for text changes
     quill.on('text-change', () => {
       if (quill) {
-        const html = quill.root.innerHTML
-        emit('update:modelValue', html)
+        const html = quill.root.innerHTML;
+        emit('update:modelValue', html);
       }
-    })
+    });
   }
-})
+});
 
 // Watch for external changes
 watch(
   () => props.modelValue,
   (newValue) => {
     if (quill && newValue !== quill.root.innerHTML) {
-      quill.root.innerHTML = newValue || ''
+      quill.root.innerHTML = newValue || '';
     }
-  }
-)
+  },
+);
 
 // Watch for readonly changes
 watch(
   () => props.readOnly,
   (newValue) => {
     if (quill) {
-      quill.enable(!newValue)
+      quill.enable(!newValue);
     }
-  }
-)
+  },
+);
 
 onBeforeUnmount(() => {
   if (quill) {
-    quill = null
+    quill = null;
   }
-})
+});
 </script>
 
 <style>

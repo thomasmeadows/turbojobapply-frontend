@@ -24,8 +24,7 @@
           <div class="my-6 border-l-4 border-red-400 bg-red-50 p-4">
             <div class="flex">
               <div class="shrink-0">
-                <svg class="size-5 text-red-400"
-viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <svg class="size-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path
                     fill-rule="evenodd"
                     d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
@@ -53,14 +52,12 @@ viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             Welcome to Turbo Job Apply. These Terms of Service ("Terms") govern your access to and use of the Turbo Job Apply website, applications, and services (collectively, the "Service"). By accessing or using the Service, you agree to be bound by
             these Terms. If you do not agree to these Terms, you may not access or use the Service.
           </p>
-          <p>Please read these Terms carefully. They contain important information about your legal rights, remedies, and obligations. By using the Service, you agree to these Terms and our Privacy Policy.
-</p>
+          <p>Please read these Terms carefully. They contain important information about your legal rights, remedies, and obligations. By using the Service, you agree to these Terms and our Privacy Policy.</p>
         </section>
 
         <section>
           <h2>2. Service Description</h2>
-          <p>Turbo Job Apply is a platform designed to assist users in applying for jobs. The Service may include features such as job listings, application tracking, resume building, and other job search tools.
-</p>
+          <p>Turbo Job Apply is a platform designed to assist users in applying for jobs. The Service may include features such as job listings, application tracking, resume building, and other job search tools.</p>
           <p>
             <strong>The Service is provided on an "as is" and "as available" basis.</strong> We do not guarantee that the Service will be uninterrupted, secure, or error-free. We reserve the right to modify, suspend, or discontinue the Service at any time
             without notice.
@@ -88,8 +85,7 @@ viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <p>
             <strong> Turbo Job Apply does not guarantee job placement or interviews. We are not responsible for the outcome of your job applications or your employment status. </strong>
           </p>
-          <p>The Service is designed to facilitate job applications, but the success of your job search depends on many factors beyond our control, including but not limited to:
-</p>
+          <p>The Service is designed to facilitate job applications, but the success of your job search depends on many factors beyond our control, including but not limited to:</p>
           <ul>
             <li>Your qualifications, skills, and experience</li>
             <li>The quality of your application materials</li>
@@ -108,8 +104,7 @@ viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 
         <section>
           <h2>5. Account Registration</h2>
-          <p>Some features of the Service may require you to register for an account. When you register, you agree to:
-</p>
+          <p>Some features of the Service may require you to register for an account. When you register, you agree to:</p>
           <ul>
             <li>Provide accurate, current, and complete information</li>
             <li>Maintain and promptly update your account information</li>
@@ -117,30 +112,23 @@ viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <li>Notify us immediately of any unauthorized use of your account</li>
             <li>Be responsible for all activities that occur under your account</li>
           </ul>
-          <p>We reserve the right to suspend or terminate your account if any information provided is inaccurate, out-of-date, or incomplete.
-</p>
+          <p>We reserve the right to suspend or terminate your account if any information provided is inaccurate, out-of-date, or incomplete.</p>
         </section>
 
         <section>
           <h2>6. Intellectual Property</h2>
-          <p>The Service and its original content, features, and functionality are owned by Turbo Job Apply and are protected by international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.
-</p>
-          <p>You may not copy, modify, create derivative works from, publicly display, publicly perform, republish, download, store, or transmit any of the material on our Service, except as follows:
-</p>
+          <p>The Service and its original content, features, and functionality are owned by Turbo Job Apply and are protected by international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.</p>
+          <p>You may not copy, modify, create derivative works from, publicly display, publicly perform, republish, download, store, or transmit any of the material on our Service, except as follows:</p>
           <ul>
-            <li>Your computer may temporarily store copies of such materials in RAM incidental to your accessing and viewing those materials
-</li>
-            <li>You may store files that are automatically cached by your Web browser for display enhancement purposes
-</li>
-            <li>You may print or download one copy of a reasonable number of pages of the website for your own personal, non-commercial use and not for further reproduction, publication, or distribution
-</li>
+            <li>Your computer may temporarily store copies of such materials in RAM incidental to your accessing and viewing those materials</li>
+            <li>You may store files that are automatically cached by your Web browser for display enhancement purposes</li>
+            <li>You may print or download one copy of a reasonable number of pages of the website for your own personal, non-commercial use and not for further reproduction, publication, or distribution</li>
           </ul>
         </section>
 
         <section>
           <h2>7. Subscription and Payment Terms</h2>
-          <p>Some features of the Service may require a subscription or payment. By subscribing to a paid tier or making a payment, you agree to the following:
-</p>
+          <p>Some features of the Service may require a subscription or payment. By subscribing to a paid tier or making a payment, you agree to the following:</p>
           <ul>
             <li>You authorize us to charge your chosen payment method for the subscription fees</li>
             <li>Subscription fees are billed in advance on a recurring basis, depending on your subscription plan</li>
@@ -163,8 +151,7 @@ viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <li>Your inability to use the Service</li>
             <li>Any interruption or cessation of transmission to or from the Service</li>
             <li>Any bugs, viruses, trojan horses, or the like that may be transmitted to or through the Service</li>
-            <li>Any errors or omissions in any content or for any loss or damage of any kind incurred as a result of your use of any content
-</li>
+            <li>Any errors or omissions in any content or for any loss or damage of any kind incurred as a result of your use of any content</li>
             <li>Your failure to obtain employment or positive outcomes from job applications</li>
           </ul>
         </section>
@@ -187,8 +174,7 @@ viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 
         <section>
           <h2>11. Governing Law</h2>
-          <p>These Terms shall be governed by and construed in accordance with the laws of the United States, without regard to its conflict of law provisions.
-</p>
+          <p>These Terms shall be governed by and construed in accordance with the laws of the United States, without regard to its conflict of law provisions.</p>
         </section>
 
         <section>
@@ -207,11 +193,11 @@ viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 
 <style scoped>
 .prose h2 {
-  @apply text-2xl font-bold text-gray-900 mt-8 mb-4;
+  @apply mb-4 mt-8 text-2xl font-bold text-gray-900;
 }
 
 .prose h3 {
-  @apply text-xl font-bold text-gray-800 mt-6 mb-3;
+  @apply mb-3 mt-6 text-xl font-bold text-gray-800;
 }
 
 .prose ul,

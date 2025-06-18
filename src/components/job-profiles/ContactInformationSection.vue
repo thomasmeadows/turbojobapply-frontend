@@ -8,8 +8,7 @@
     <div class="space-y-8">
       <!-- Profile Name -->
       <div>
-        <label for="profile-name"
-class="mb-2 block text-sm font-semibold text-gray-800"> Profile Name * </label>
+        <label for="profile-name" class="mb-2 block text-sm font-semibold text-gray-800"> Profile Name * </label>
         <input
           id="profile-name"
           v-model="localProfile.profile_name"
@@ -23,8 +22,7 @@ class="mb-2 block text-sm font-semibold text-gray-800"> Profile Name * </label>
 
       <!-- Desired Job Title -->
       <div>
-        <label for="desired-job-title"
-class="mb-2 block text-sm font-semibold text-gray-800"> Desired Job Title </label>
+        <label for="desired-job-title" class="mb-2 block text-sm font-semibold text-gray-800"> Desired Job Title </label>
         <input
           id="desired-job-title"
           v-model="localProfile.desired_job_title"
@@ -38,25 +36,18 @@ class="mb-2 block text-sm font-semibold text-gray-800"> Desired Job Title </labe
       <!-- Name Fields -->
       <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div>
-          <label for="first-name"
-class="mb-2 block text-sm font-semibold text-gray-800"> First Name </label>
-          <input id="first-name" v-model="localProfile.first_name"
-type="text" class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-/>
+          <label for="first-name" class="mb-2 block text-sm font-semibold text-gray-800"> First Name </label>
+          <input id="first-name" v-model="localProfile.first_name" type="text" class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500" />
         </div>
         <div>
-          <label for="last-name"
-class="mb-2 block text-sm font-semibold text-gray-800"> Last Name </label>
-          <input id="last-name" v-model="localProfile.last_name"
-type="text" class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-/>
+          <label for="last-name" class="mb-2 block text-sm font-semibold text-gray-800"> Last Name </label>
+          <input id="last-name" v-model="localProfile.last_name" type="text" class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500" />
         </div>
       </div>
 
       <!-- Address -->
       <div>
-        <label for="address"
-class="mb-2 block text-sm font-semibold text-gray-800"> Street Address </label>
+        <label for="address" class="mb-2 block text-sm font-semibold text-gray-800"> Street Address </label>
         <input
           id="address"
           v-model="localProfile.address"
@@ -69,32 +60,22 @@ class="mb-2 block text-sm font-semibold text-gray-800"> Street Address </label>
       <!-- City, State, Zip -->
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div>
-          <label for="city"
-class="mb-2 block text-sm font-semibold text-gray-800"> City </label>
-          <input id="city" v-model="localProfile.city"
-type="text" class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500" placeholder="New York"
-/>
+          <label for="city" class="mb-2 block text-sm font-semibold text-gray-800"> City </label>
+          <input id="city" v-model="localProfile.city" type="text" class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500" placeholder="New York" />
         </div>
         <div>
-          <label for="state"
-class="mb-2 block text-sm font-semibold text-gray-800"> State/Province </label>
-          <input id="state" v-model="localProfile.state"
-type="text" class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500" placeholder="NY"
-/>
+          <label for="state" class="mb-2 block text-sm font-semibold text-gray-800"> State/Province </label>
+          <input id="state" v-model="localProfile.state" type="text" class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500" placeholder="NY" />
         </div>
         <div>
-          <label for="zip"
-class="mb-2 block text-sm font-semibold text-gray-800"> ZIP/Postal Code </label>
-          <input id="zip" v-model="localProfile.zip"
-type="text" class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500" placeholder="10001"
-/>
+          <label for="zip" class="mb-2 block text-sm font-semibold text-gray-800"> ZIP/Postal Code </label>
+          <input id="zip" v-model="localProfile.zip" type="text" class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500" placeholder="10001" />
         </div>
       </div>
 
       <!-- Email -->
       <div>
-        <label for="email"
-class="mb-2 block text-sm font-semibold text-gray-800"> Email Address </label>
+        <label for="email" class="mb-2 block text-sm font-semibold text-gray-800"> Email Address </label>
         <input
           id="email"
           v-model="localProfile.email"
@@ -106,11 +87,8 @@ class="mb-2 block text-sm font-semibold text-gray-800"> Email Address </label>
 
       <!-- Country -->
       <div>
-        <label for="country"
-class="mb-2 block text-sm font-semibold text-gray-800"> Country </label>
-        <select id="country" v-model="localProfile.country"
-class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
->
+        <label for="country" class="mb-2 block text-sm font-semibold text-gray-800"> Country </label>
+        <select id="country" v-model="localProfile.country" class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
           <option value="">Select a country...</option>
           <option value="US">United States</option>
           <option value="CA">Canada</option>
@@ -127,11 +105,8 @@ class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-ba
       <!-- Phone -->
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div>
-          <label for="phone-country-code"
-class="mb-2 block text-sm font-semibold text-gray-800"> Country Code </label>
-          <select id="phone-country-code" v-model="localProfile.phone_country_code"
-class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
->
+          <label for="phone-country-code" class="mb-2 block text-sm font-semibold text-gray-800"> Country Code </label>
+          <select id="phone-country-code" v-model="localProfile.phone_country_code" class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
             <option value="">Select...</option>
             <option value="+1">+1 (US/CA)</option>
             <option value="+44">+44 (UK)</option>
@@ -144,8 +119,7 @@ class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-ba
           </select>
         </div>
         <div class="md:col-span-2">
-          <label for="phone"
-class="mb-2 block text-sm font-semibold text-gray-800"> Phone Number </label>
+          <label for="phone" class="mb-2 block text-sm font-semibold text-gray-800"> Phone Number </label>
           <input
             id="phone"
             v-model="localProfile.phone"
@@ -164,11 +138,8 @@ class="mb-2 block text-sm font-semibold text-gray-800"> Phone Number </label>
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
           <!-- Veteran Status -->
           <div>
-            <label for="veteran-status"
-class="mb-2 block text-sm font-semibold text-gray-800"> Veteran Status </label>
-            <select id="veteran-status" v-model="localProfile.veteran_status"
-class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
->
+            <label for="veteran-status" class="mb-2 block text-sm font-semibold text-gray-800"> Veteran Status </label>
+            <select id="veteran-status" v-model="localProfile.veteran_status" class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
               <option value="">Select...</option>
               <option value="None">None</option>
               <option value="Veteran">Veteran</option>
@@ -179,11 +150,8 @@ class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-ba
 
           <!-- Disability Status -->
           <div>
-            <label for="disability-status"
-class="mb-2 block text-sm font-semibold text-gray-800"> Disability Status </label>
-            <select id="disability-status" v-model="localProfile.disability_status"
-class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
->
+            <label for="disability-status" class="mb-2 block text-sm font-semibold text-gray-800"> Disability Status </label>
+            <select id="disability-status" v-model="localProfile.disability_status" class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
               <option value="">Select...</option>
               <option value="None">None</option>
               <option value="Yes">Yes</option>
@@ -193,11 +161,8 @@ class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-ba
 
           <!-- Gender -->
           <div>
-            <label for="gender"
-class="mb-2 block text-sm font-semibold text-gray-800"> Gender </label>
-            <select id="gender" v-model="localProfile.gender"
-class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
->
+            <label for="gender" class="mb-2 block text-sm font-semibold text-gray-800"> Gender </label>
+            <select id="gender" v-model="localProfile.gender" class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
               <option value="">Select...</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -213,33 +178,33 @@ class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-ba
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
-  modelValue: any
-}>()
+  modelValue: any;
+}>();
 
 const emit = defineEmits<{
-  update: [value: any]
-}>()
+  update: [value: any];
+}>();
 
-const localProfile = ref({ ...props.modelValue })
+const localProfile = ref({ ...props.modelValue });
 
 // Watch for external updates
 watch(
   () => props.modelValue,
   (newValue) => {
-    localProfile.value = { ...newValue }
+    localProfile.value = { ...newValue };
   },
-  { deep: true }
-)
+  { deep: true },
+);
 
 // Watch for local changes and emit updates
 watch(
   localProfile,
   (newValue) => {
-    emit('update', newValue)
+    emit('update', newValue);
   },
-  { deep: true }
-)
+  { deep: true },
+);
 </script>

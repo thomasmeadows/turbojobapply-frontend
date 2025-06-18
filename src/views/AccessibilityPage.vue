@@ -29,8 +29,7 @@
           <div class="my-6 border-l-4 border-yellow-400 bg-yellow-50 p-4">
             <div class="flex">
               <div class="shrink-0">
-                <svg class="size-5 text-yellow-400"
-viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <svg class="size-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path
                     fill-rule="evenodd"
                     d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
@@ -66,21 +65,18 @@ viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 
         <section>
           <h2>Feedback and Reporting Issues</h2>
-          <p>We welcome your feedback on the accessibility of the Turbo Job Apply website and services. If you encounter any barriers or have suggestions for improvement, please let us know by:
-</p>
+          <p>We welcome your feedback on the accessibility of the Turbo Job Apply website and services. If you encounter any barriers or have suggestions for improvement, please let us know by:</p>
           <ul>
             <li>Emailing us at <a href="mailto:accessibility@turbojobapply.com">accessibility@turbojobapply.com</a></li>
             <li>Using the feedback form on our website</li>
             <li>Contacting our support team</li>
           </ul>
-          <p>We take all feedback seriously and will respond as promptly as possible. Your input helps us identify areas for improvement and prioritize accessibility enhancements.
-</p>
+          <p>We take all feedback seriously and will respond as promptly as possible. Your input helps us identify areas for improvement and prioritize accessibility enhancements.</p>
         </section>
 
         <section>
           <h2>Known Issues</h2>
-          <p>As we grow and develop our platform, we are aware of the following accessibility issues that we are working to address:
-</p>
+          <p>As we grow and develop our platform, we are aware of the following accessibility issues that we are working to address:</p>
           <ul>
             <li>Some form controls may not have explicit labels</li>
             <li>Certain dynamic content updates may not be properly announced to screen reader users</li>
@@ -100,8 +96,7 @@ viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 
         <section>
           <h2>Continuous Improvement</h2>
-          <p>Accessibility is an ongoing process, and we are committed to continually improving the user experience for all visitors to our website. We regularly review our site for accessibility issues and work to address them as quickly as possible.
-</p>
+          <p>Accessibility is an ongoing process, and we are committed to continually improving the user experience for all visitors to our website. We regularly review our site for accessibility issues and work to address them as quickly as possible.</p>
           <p>Thank you for your support and understanding as we work to make Turbo Job Apply accessible to everyone.</p>
         </section>
 
@@ -121,11 +116,11 @@ viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 
 <style scoped>
 .prose h2 {
-  @apply text-2xl font-bold text-gray-900 mt-8 mb-4;
+  @apply mb-4 mt-8 text-2xl font-bold text-gray-900;
 }
 
 .prose h3 {
-  @apply text-xl font-bold text-gray-800 mt-6 mb-3;
+  @apply mb-3 mt-6 text-xl font-bold text-gray-800;
 }
 
 .prose ul,
