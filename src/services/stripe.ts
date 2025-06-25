@@ -11,7 +11,9 @@ let stripePromise: Promise<Stripe | null> | null = null;
 export const getStripe = (): Promise<Stripe | null> => {
   if (!stripePromise) {
     if (!STRIPE_PUBLISHABLE_KEY) {
-      console.error('VITE_STRIPE_PUBLISHABLE_KEY environment variable is required');
+      console.error(
+        'VITE_STRIPE_PUBLISHABLE_KEY environment variable is required'
+      );
       return Promise.resolve(null);
     }
     stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
@@ -48,35 +50,46 @@ export class StripeService {
   /**
    * Create a checkout session and redirect to Stripe
    */
-  static async createCheckoutSession(successUrl?: string, cancelUrl?: string): Promise<CreateCheckoutResponse> {
+  static async createCheckoutSession(
+    successUrl?: string,
+    cancelUrl?: string
+  ): Promise<CreateCheckoutResponse> {
     try {
       const response = await axios.post(
         `${API_URL}/api/subscription/create-checkout-session`,
         {
           success_url: successUrl,
-          cancel_url: cancelUrl,
+          cancel_url: cancelUrl
         },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       );
 
       return response.data;
     } catch (error: any) {
       console.error('Error creating checkout session:', error);
-      throw new Error(error.response?.data?.error || 'Failed to create checkout session');
+      throw new Error(
+        error.response?.data?.error || 'Failed to create checkout session'
+      );
     }
   }
 
   /**
    * Redirect to Stripe Checkout
    */
-  static async redirectToCheckout(successUrl?: string, cancelUrl?: string): Promise<void> {
+  static async redirectToCheckout(
+    successUrl?: string,
+    cancelUrl?: string
+  ): Promise<void> {
     try {
-      const { checkout_url } = await this.createCheckoutSession(successUrl, cancelUrl);
+      const { checkout_url } = await this.createCheckoutSession(
+        successUrl,
+        cancelUrl
+      );
       window.location.href = checkout_url;
     } catch (error) {
       console.error('Error redirecting to checkout:', error);
@@ -91,13 +104,15 @@ export class StripeService {
     try {
       const response = await axios.get(`${API_URL}/api/subscription/status`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        }
       });
       return response.data;
     } catch (error: any) {
       console.error('Error getting subscription status:', error);
-      throw new Error(error.response?.data?.error || 'Failed to get subscription status');
+      throw new Error(
+        error.response?.data?.error || 'Failed to get subscription status'
+      );
     }
   }
 
@@ -112,14 +127,16 @@ export class StripeService {
         {},
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          },
-        },
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        }
       );
       return response.data;
     } catch (error: any) {
       console.error('Error refreshing subscription status:', error);
-      throw new Error(error.response?.data?.error || 'Failed to refresh subscription status');
+      throw new Error(
+        error.response?.data?.error || 'Failed to refresh subscription status'
+      );
     }
   }
 
@@ -133,14 +150,16 @@ export class StripeService {
         {},
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          },
-        },
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        }
       );
       return response.data;
     } catch (error: any) {
       console.error('Error canceling subscription:', error);
-      throw new Error(error.response?.data?.error || 'Failed to cancel subscription');
+      throw new Error(
+        error.response?.data?.error || 'Failed to cancel subscription'
+      );
     }
   }
 
@@ -154,14 +173,16 @@ export class StripeService {
         {},
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          },
-        },
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        }
       );
       return response.data;
     } catch (error: any) {
       console.error('Error reactivating subscription:', error);
-      throw new Error(error.response?.data?.error || 'Failed to reactivate subscription');
+      throw new Error(
+        error.response?.data?.error || 'Failed to reactivate subscription'
+      );
     }
   }
 
@@ -175,15 +196,17 @@ export class StripeService {
         {},
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          },
-        },
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        }
       );
       const { portal_url } = response.data as CustomerPortalResponse;
       window.location.href = portal_url;
     } catch (error: any) {
       console.error('Error redirecting to customer portal:', error);
-      throw new Error(error.response?.data?.error || 'Failed to access customer portal');
+      throw new Error(
+        error.response?.data?.error || 'Failed to access customer portal'
+      );
     }
   }
 
@@ -214,7 +237,9 @@ export class StripeService {
   /**
    * Check if subscription allows premium features
    */
-  static isSubscriptionActive(subscription: SubscriptionStatus['subscription']): boolean {
+  static isSubscriptionActive(
+    subscription: SubscriptionStatus['subscription']
+  ): boolean {
     if (!subscription) return false;
 
     const activeStatuses = ['active', 'trialing'];
@@ -222,13 +247,18 @@ export class StripeService {
     const periodEnd = new Date(subscription.current_period_end);
 
     // Active subscription or canceled but still within billing period
-    return activeStatuses.includes(subscription.status) || (subscription.cancel_at_period_end && now < periodEnd);
+    return (
+      activeStatuses.includes(subscription.status) ||
+      (subscription.cancel_at_period_end && now < periodEnd)
+    );
   }
 
   /**
    * Get days remaining in current period
    */
-  static getDaysRemaining(subscription: SubscriptionStatus['subscription']): number {
+  static getDaysRemaining(
+    subscription: SubscriptionStatus['subscription']
+  ): number {
     if (!subscription) return 0;
 
     const now = new Date();
@@ -246,7 +276,7 @@ export class StripeService {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric',
+      day: 'numeric'
     });
   }
 }

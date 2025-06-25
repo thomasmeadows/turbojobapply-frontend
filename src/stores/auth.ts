@@ -28,7 +28,7 @@ export const useAuthStore = defineStore('auth', {
     accessToken: null,
     refreshToken: null,
     loading: false,
-    error: null,
+    error: null
   }),
 
   getters: {
@@ -48,7 +48,7 @@ export const useAuthStore = defineStore('auth', {
     },
     isPremium(): boolean {
       return this.user?.roles?.includes('premium') || false;
-    },
+    }
   },
 
   actions: {
@@ -74,7 +74,8 @@ export const useAuthStore = defineStore('auth', {
         }
 
         // Set up axios default authorization header
-        axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+        axios.defaults.headers.common['Authorization'] =
+          `Bearer ${accessToken}`;
       }
     },
 
@@ -84,13 +85,16 @@ export const useAuthStore = defineStore('auth', {
       this.error = null;
 
       try {
-        const response = await axios.post(`${API_URL}/api/auth/send-magic-link`, {
-          email,
-        });
+        const response = await axios.post(
+          `${API_URL}/api/auth/send-magic-link`,
+          {
+            email
+          }
+        );
 
         return {
           success: true,
-          message: response.data.message,
+          message: response.data.message
         };
       } catch (error: any) {
         if (error.response?.data?.error) {
@@ -101,7 +105,7 @@ export const useAuthStore = defineStore('auth', {
         console.error('Magic link error:', error);
         return {
           success: false,
-          message: this.error,
+          message: this.error
         };
       } finally {
         this.loading = false;
@@ -114,7 +118,9 @@ export const useAuthStore = defineStore('auth', {
       this.error = null;
 
       try {
-        const response = await axios.get(`${API_URL}/api/auth/verify?token=${token}`);
+        const response = await axios.get(
+          `${API_URL}/api/auth/verify?token=${token}`
+        );
 
         if (response.data && response.data.access_token) {
           const { access_token, refresh_token, user } = response.data;
@@ -135,7 +141,8 @@ export const useAuthStore = defineStore('auth', {
           localStorage.setItem('user', JSON.stringify(user));
 
           // Set up axios default authorization header
-          axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+          axios.defaults.headers.common['Authorization'] =
+            `Bearer ${access_token}`;
 
           return true;
         } else {
@@ -163,9 +170,12 @@ export const useAuthStore = defineStore('auth', {
 
       try {
         const axiosRefresh = axios.create();
-        const response = await axiosRefresh.post(`${API_URL}/api/auth/refresh`, {
-          refresh_token: this.refreshToken,
-        });
+        const response = await axiosRefresh.post(
+          `${API_URL}/api/auth/refresh`,
+          {
+            refresh_token: this.refreshToken
+          }
+        );
 
         if (response.data && response.data.access_token) {
           const { access_token, user } = response.data;
@@ -184,7 +194,8 @@ export const useAuthStore = defineStore('auth', {
           localStorage.setItem('user', JSON.stringify(user));
 
           // Update axios header
-          axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+          axios.defaults.headers.common['Authorization'] =
+            `Bearer ${access_token}`;
 
           return true;
         } else {
@@ -271,7 +282,8 @@ export const useAuthStore = defineStore('auth', {
             try {
               const refreshSuccess = await this.refreshAccessToken();
               if (refreshSuccess) {
-                originalRequest.headers['Authorization'] = `Bearer ${this.accessToken}`;
+                originalRequest.headers['Authorization'] =
+                  `Bearer ${this.accessToken}`;
                 return axios(originalRequest);
               }
               return this.logout();
@@ -280,7 +292,7 @@ export const useAuthStore = defineStore('auth', {
               return this.logout();
             }
           }
-        },
+        }
       );
     },
 
@@ -331,7 +343,9 @@ export const useAuthStore = defineStore('auth', {
         // Clear stored state
         sessionStorage.removeItem('linkedin_oauth_state');
 
-        const response = await axios.get(`${API_URL}/api/auth/linkedin/callback?code=${code}&state=${state || ''}`);
+        const response = await axios.get(
+          `${API_URL}/api/auth/linkedin/callback?code=${code}&state=${state || ''}`
+        );
 
         if (response.data && response.data.access_token) {
           const { access_token, refresh_token, user } = response.data;
@@ -352,7 +366,8 @@ export const useAuthStore = defineStore('auth', {
           localStorage.setItem('user', JSON.stringify(user));
 
           // Set up axios default authorization header
-          axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+          axios.defaults.headers.common['Authorization'] =
+            `Bearer ${access_token}`;
 
           return true;
         } else {
@@ -393,14 +408,19 @@ export const useAuthStore = defineStore('auth', {
     },
 
     // Comprehensive refresh after subscription changes
-    async refreshAfterSubscriptionChange(pollForChanges = false, maxAttempts = 5) {
+    async refreshAfterSubscriptionChange(
+      pollForChanges = false,
+      maxAttempts = 5
+    ) {
       try {
         let attempts = 0;
         const previousPremiumStatus = this.isPremium;
 
         while (attempts < maxAttempts) {
           attempts++;
-          console.log(`Refreshing user data after subscription change - attempt ${attempts}`);
+          console.log(
+            `Refreshing user data after subscription change - attempt ${attempts}`
+          );
 
           // Wait before checking (except first attempt)
           if (attempts > 1) {
@@ -425,9 +445,12 @@ export const useAuthStore = defineStore('auth', {
         console.warn('Max attempts reached for subscription refresh');
         return false;
       } catch (error) {
-        console.error('Error refreshing user data after subscription change:', error);
+        console.error(
+          'Error refreshing user data after subscription change:',
+          error
+        );
         return false;
       }
-    },
-  },
+    }
+  }
 });

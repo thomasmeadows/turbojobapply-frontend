@@ -26,15 +26,19 @@ onMounted(async () => {
   await nextTick();
   if (quillContainer.value) {
     // Custom toolbar configuration
-    const toolbarOptions = [['bold', 'italic'], [{ list: 'ordered' }, { list: 'bullet' }], ['clean']];
+    const toolbarOptions = [
+      ['bold', 'italic'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['clean']
+    ];
 
     quill = new Quill(quillContainer.value, {
       theme: 'snow',
       placeholder: props.placeholder || 'Enter text here...',
       readOnly: props.readOnly || false,
       modules: {
-        toolbar: toolbarOptions,
-      },
+        toolbar: toolbarOptions
+      }
     });
 
     // Set initial content
@@ -59,7 +63,7 @@ watch(
     if (quill && newValue !== quill.root.innerHTML) {
       quill.root.innerHTML = newValue || '';
     }
-  },
+  }
 );
 
 // Watch for readonly changes
@@ -69,7 +73,7 @@ watch(
     if (quill) {
       quill.enable(!newValue);
     }
-  },
+  }
 );
 
 onBeforeUnmount(() => {

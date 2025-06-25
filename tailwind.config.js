@@ -14,7 +14,7 @@ export default {
           600: '#08529B',
           700: '#063D75',
           800: '#04294E',
-          900: '#021427',
+          900: '#021427'
         },
         secondary: {
           50: '#ECFDF5',
@@ -26,7 +26,7 @@ export default {
           600: '#057A55',
           700: '#046C4E',
           800: '#03543F',
-          900: '#014737',
+          900: '#014737'
         },
         accent: {
           50: '#FFFBEB',
@@ -38,35 +38,36 @@ export default {
           600: '#D97706',
           700: '#B45309',
           800: '#92400E',
-          900: '#78350F',
+          900: '#78350F'
         },
         success: {
-          500: '#10B981',
+          500: '#10B981'
         },
         warning: {
-          500: '#F59E0B',
+          500: '#F59E0B'
         },
         error: {
-          500: '#EF4444',
-        },
+          500: '#EF4444'
+        }
       },
       fontFamily: {
-        sans: ['Glacial Indifference', 'Helvetica', 'Arial', 'sans-serif'],
+        sans: ['Glacial Indifference', 'Helvetica', 'Arial', 'sans-serif']
       },
       spacing: {
-        4.5: '1.125rem',
+        4.5: '1.125rem'
       },
       boxShadow: {
         soft: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-        hover: '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
+        hover:
+          '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03)'
       },
       animation: {
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
       },
       transitionProperty: {
-        height: 'height',
-      },
-    },
+        height: 'height'
+      }
+    }
   },
-  plugins: [],
+  plugins: []
 };

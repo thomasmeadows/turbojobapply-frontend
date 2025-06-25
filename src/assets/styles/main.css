@@ -6,23 +6,23 @@
   html {
     @apply text-gray-800;
   }
-  
+
   body {
     @apply bg-gray-50;
   }
-  
+
   h1 {
     @apply text-3xl font-bold text-gray-900 md:text-4xl;
   }
-  
+
   h2 {
     @apply text-2xl font-bold text-gray-900 md:text-3xl;
   }
-  
+
   h3 {
     @apply text-xl font-bold text-gray-900 md:text-2xl;
   }
-  
+
   h4 {
     @apply text-lg font-bold text-gray-900;
   }
@@ -30,37 +30,37 @@
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded-md transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply rounded-md px-4 py-2 font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
   }
-  
+
   .btn-primary {
     @apply btn bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500;
   }
-  
+
   .btn-secondary {
     @apply btn bg-secondary-500 text-white hover:bg-secondary-600 focus:ring-secondary-500;
   }
-  
+
   .btn-accent {
     @apply btn bg-accent-500 text-white hover:bg-accent-600 focus:ring-accent-500;
   }
-  
+
   .btn-outline {
     @apply btn border border-gray-300 text-gray-700 hover:bg-gray-50;
   }
-  
+
   .form-input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500;
+    @apply w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500;
   }
-  
+
   .card {
-    @apply bg-white rounded-lg shadow-soft transition-all duration-300 hover:shadow-hover;
+    @apply rounded-lg bg-white shadow-soft transition-all duration-300 hover:shadow-hover;
   }
-  
+
   .premium-badge {
-    @apply bg-accent-100 text-accent-800 text-xs font-medium px-2.5 py-0.5 rounded-full;
+    @apply rounded-full bg-accent-100 px-2.5 py-0.5 text-xs font-medium text-accent-800;
   }
-  
+
   .animate-fade-in {
     @apply transition-opacity duration-300 ease-in-out;
   }

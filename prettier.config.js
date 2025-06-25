@@ -4,11 +4,12 @@
  */
 const config = {
   plugins: ['prettier-plugin-tailwindcss'],
-  trailingComma: 'es5',
+  trailingComma: 'none',
+  printWidth: 80,
   tabWidth: 2,
-  semi: false,
+  semi: true,
   singleQuote: true,
-  endOfLine: 'CRLF',
+  endOfLine: 'crlf'
 };
 
 export default config;

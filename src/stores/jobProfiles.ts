@@ -52,7 +52,9 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
   const error = ref<string>('');
 
   // Getters
-  const selectedProfile = computed(() => profiles.value.find((p) => p.id === selectedProfileId.value) || null);
+  const selectedProfile = computed(
+    () => profiles.value.find((p) => p.id === selectedProfileId.value) || null
+  );
 
   const canCreateProfile = computed(() => {
     const authStore = useAuthStore();
@@ -69,8 +71,8 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
       const response = await fetch(`${API_URL}/api/job-profiles`, {
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.ok) {
@@ -99,8 +101,8 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
       const response = await fetch(`${API_URL}/api/job-profiles/${profileId}`, {
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.ok) {
@@ -123,7 +125,10 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
     }
   };
 
-  const createProfile = async (profileData: { profile_name: string; desired_job_title?: string }): Promise<JobProfile | null> => {
+  const createProfile = async (profileData: {
+    profile_name: string;
+    desired_job_title?: string;
+  }): Promise<JobProfile | null> => {
     const authStore = useAuthStore();
     try {
       loading.value = true;
@@ -133,9 +138,9 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(profileData),
+        body: JSON.stringify(profileData)
       });
 
       if (response.ok) {
@@ -157,7 +162,10 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
     }
   };
 
-  const updateProfile = async (profileId: string, updates: Partial<JobProfile>): Promise<boolean> => {
+  const updateProfile = async (
+    profileId: string,
+    updates: Partial<JobProfile>
+  ): Promise<boolean> => {
     const authStore = useAuthStore();
     try {
       saving.value = true;
@@ -174,9 +182,9 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ ...currentProfile, ...updates }),
+        body: JSON.stringify({ ...currentProfile, ...updates })
       });
 
       if (response.ok) {
@@ -213,8 +221,8 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.ok) {
@@ -260,25 +268,29 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
       error.value = '';
 
       // Validate the profile first
-      const validateResponse = await fetch(`${API_URL}/api/job-applications/validate`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          jobProfileId: selectedProfileId.value,
-          requisitionId: requisitionId,
-          atsSource: atsSource,
-        }),
-      });
+      const validateResponse = await fetch(
+        `${API_URL}/api/job-applications/validate`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${authStore.accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            jobProfileId: selectedProfileId.value,
+            requisitionId: requisitionId,
+            atsSource: atsSource
+          })
+        }
+      );
 
       if (validateResponse.ok) {
         await validateResponse.json();
       }
     } catch (_error: any) {
       console.error('Error validating profile:', _error);
-      error.value = _error.response?.data?.message || 'Failed to validate profile';
+      error.value =
+        _error.response?.data?.message || 'Failed to validate profile';
     }
   };
 
@@ -307,7 +319,8 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
       // }
     } catch (error: any) {
       console.error('Error submitting application:', error);
-      error.value = error.response?.data?.message || 'Failed to submit application';
+      error.value =
+        error.response?.data?.message || 'Failed to submit application';
     }
   };
 
@@ -346,6 +359,6 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
     validateProfile,
     submitApplication,
     clearError,
-    resetStore,
+    resetStore
   };
 });

@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { format, formatDistanceToNow, parseISO, differenceInDays } from 'date-fns';
+import {
+  format,
+  formatDistanceToNow,
+  parseISO,
+  differenceInDays
+} from 'date-fns';
 import { useJobsStore } from '../stores/jobs';
 import { useAuthStore } from '../stores/auth';
 import type { Job } from '../types/job';
@@ -56,7 +61,9 @@ const formattedDate = computed(() => {
 
 const timeAgo = computed(() => {
   if (!job.value) return '';
-  return formatDistanceToNow(parseISO(job.value.posted_at), { addSuffix: true });
+  return formatDistanceToNow(parseISO(job.value.posted_at), {
+    addSuffix: true
+  });
 });
 
 // Job freshness alert logic
@@ -70,12 +77,14 @@ const jobFreshnessAlert = computed(() => {
   if (daysSinceUpdate >= 14) {
     return {
       type: 'error',
-      message: 'An update has not been found for this job in over 2 weeks. It is likely the job has been taken down and has been queued for potential deletion.',
+      message:
+        'An update has not been found for this job in over 2 weeks. It is likely the job has been taken down and has been queued for potential deletion.'
     };
   } else if (daysSinceUpdate >= 7) {
     return {
       type: 'warning',
-      message: 'An update was not found for this job in the last week, we have queued it to review if the job is still available.',
+      message:
+        'An update was not found for this job in the last week, we have queued it to review if the job is still available.'
     };
   }
 
@@ -97,7 +106,11 @@ onMounted(async () => {
 
     // Get related jobs based on category
     if (job.value) {
-      relatedJobs.value = jobsStore.jobs.filter((j) => j.category === job.value?.category && j.id !== job.value?.id).slice(0, 3);
+      relatedJobs.value = jobsStore.jobs
+        .filter(
+          (j) => j.category === job.value?.category && j.id !== job.value?.id
+        )
+        .slice(0, 3);
     }
   } catch (error) {
     console.error('Error fetching job details:', error);
@@ -170,14 +183,17 @@ const startLightningEffect = (buttonElement: HTMLElement) => {
         const buttonCenterY = buttonRect.top + buttonRect.height / 2;
 
         // Calculate button radius (half the diagonal to ensure we clear the entire button)
-        const buttonRadius = Math.sqrt(Math.pow(buttonRect.width / 2, 2) + Math.pow(buttonRect.height / 2, 2));
+        const buttonRadius = Math.sqrt(
+          Math.pow(buttonRect.width / 2, 2) + Math.pow(buttonRect.height / 2, 2)
+        );
 
         // Random positioning around the button (with minimum distance from button edge)
         const minDistance = buttonRadius + 20; // Button radius + extra clearance
         const maxDistance = buttonRadius + 60; // Button radius + max distance
 
         const angle = Math.random() * 2 * Math.PI; // Random angle around button
-        const distance = minDistance + Math.random() * (maxDistance - minDistance);
+        const distance =
+          minDistance + Math.random() * (maxDistance - minDistance);
 
         const x = Math.cos(angle) * distance;
         const y = Math.sin(angle) * distance;
@@ -241,18 +257,42 @@ const handleTurboApplyLeave = () => {
   <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
     <!-- Loading State -->
     <div v-if="loading" class="flex items-center justify-center py-16">
-      <svg xmlns="http://www.w3.org/2000/svg" class="size-10 animate-spin text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="size-10 animate-spin text-primary-500"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+        />
       </svg>
     </div>
 
     <!-- Error State -->
     <div v-else-if="!job" class="rounded-lg bg-white p-8 text-center shadow">
-      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 size-12 text-error-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="mx-auto mb-4 size-12 text-error-500"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+        />
       </svg>
       <h3 class="mb-2 text-lg font-medium text-gray-900">Job Not Found</h3>
-      <p class="mb-4 text-gray-600">The job listing you're looking for doesn't exist or has been removed.</p>
+      <p class="mb-4 text-gray-600">
+        The job listing you're looking for doesn't exist or has been removed.
+      </p>
       <router-link to="/search" class="btn-primary"> Browse Jobs </router-link>
     </div>
 
@@ -260,9 +300,23 @@ const handleTurboApplyLeave = () => {
     <div v-else>
       <!-- Back Button -->
       <div class="mb-6">
-        <button class="flex items-center text-primary-600 transition-colors duration-200 hover:text-primary-700" @click="router.back()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        <button
+          class="flex items-center text-primary-600 transition-colors duration-200 hover:text-primary-700"
+          @click="router.back()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="mr-1 size-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
           </svg>
           Back to results
         </button>
@@ -271,15 +325,31 @@ const handleTurboApplyLeave = () => {
       <!-- Job Freshness Alerts -->
       <div v-if="jobFreshnessAlert" class="mb-6">
         <!-- Error Alert (2+ weeks old) -->
-        <div v-if="jobFreshnessAlert.type === 'error'" class="rounded-md border border-red-200 bg-red-50 p-4">
+        <div
+          v-if="jobFreshnessAlert.type === 'error'"
+          class="rounded-md border border-red-200 bg-red-50 p-4"
+        >
           <div class="flex">
             <div class="shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="size-5 text-red-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
               </svg>
             </div>
             <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-800">Job Listing May Be Outdated</h3>
+              <h3 class="text-sm font-medium text-red-800">
+                Job Listing May Be Outdated
+              </h3>
               <div class="mt-2 text-sm text-red-700">
                 <p>{{ jobFreshnessAlert.message }}</p>
               </div>
@@ -288,15 +358,31 @@ const handleTurboApplyLeave = () => {
         </div>
 
         <!-- Warning Alert (1+ week old) -->
-        <div v-if="jobFreshnessAlert.type === 'warning'" class="rounded-md border border-yellow-200 bg-yellow-50 p-4">
+        <div
+          v-if="jobFreshnessAlert.type === 'warning'"
+          class="rounded-md border border-yellow-200 bg-yellow-50 p-4"
+        >
           <div class="flex">
             <div class="shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="size-5 text-yellow-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
             <div class="ml-3">
-              <h3 class="text-sm font-medium text-yellow-800">Job Listing Under Review</h3>
+              <h3 class="text-sm font-medium text-yellow-800">
+                Job Listing Under Review
+              </h3>
               <div class="mt-2 text-sm text-yellow-700">
                 <p>{{ jobFreshnessAlert.message }}</p>
               </div>
@@ -309,7 +395,9 @@ const handleTurboApplyLeave = () => {
       <div class="overflow-hidden rounded-lg bg-white shadow-sm">
         <!-- Job Header -->
         <div class="border-b border-gray-200 p-6 sm:p-8">
-          <div class="flex flex-col md:flex-row md:items-start md:justify-between">
+          <div
+            class="flex flex-col md:flex-row md:items-start md:justify-between"
+          >
             <div>
               <div v-if="job.featured" class="mb-2">
                 <span class="premium-badge">Featured</span>
@@ -324,20 +412,37 @@ const handleTurboApplyLeave = () => {
               </div>
 
               <div class="mb-4 flex flex-wrap gap-2">
-                <span class="inline-flex items-center rounded-full bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800">
+                <span
+                  class="inline-flex items-center rounded-full bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800"
+                >
                   {{ job.type }}
                 </span>
-                <span class="inline-flex items-center rounded-full bg-secondary-100 px-2.5 py-0.5 text-xs font-medium text-secondary-800">
+                <span
+                  class="inline-flex items-center rounded-full bg-secondary-100 px-2.5 py-0.5 text-xs font-medium text-secondary-800"
+                >
                   {{ job.category }}
                 </span>
-                <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+                <span
+                  class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
+                >
                   {{ job.salary }}
                 </span>
               </div>
 
               <div class="flex items-center text-sm text-gray-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 size-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="mr-1 size-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 Posted {{ timeAgo }} ({{ formattedDate }})
               </div>
@@ -346,11 +451,28 @@ const handleTurboApplyLeave = () => {
             <div class="mt-6 flex space-x-4 md:mt-0">
               <button
                 class="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors duration-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-                :class="{ 'border-primary-500 text-primary-600': isSaved, 'text-gray-700': !isSaved }"
+                :class="{
+                  'border-primary-500 text-primary-600': isSaved,
+                  'text-gray-700': !isSaved
+                }"
                 @click="toggleSave"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 size-5" :class="isSaved ? 'fill-current text-primary-500' : 'text-gray-400'" viewBox="0 0 24 24" stroke="currentColor" :fill="isSaved ? 'currentColor' : 'none'">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="mr-2 size-5"
+                  :class="
+                    isSaved ? 'fill-current text-primary-500' : 'text-gray-400'
+                  "
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  :fill="isSaved ? 'currentColor' : 'none'"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                  />
                 </svg>
                 {{ isSaved ? 'Saved' : 'Save' }}
               </button>
@@ -363,8 +485,19 @@ const handleTurboApplyLeave = () => {
                 @mouseenter="handleTurboApplyHover"
                 @mouseleave="handleTurboApplyLeave"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="mr-2 size-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
                 </svg>
                 <span class="turbo-apply-text">Turbo Apply</span>
               </button>
@@ -373,7 +506,16 @@ const handleTurboApplyLeave = () => {
                 class="flex items-center justify-center rounded-md border border-transparent bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-200 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 @click="applyToJob"
               >
-                <svg class="mr-2 size-4" fill="currentColor" id="Layer_1" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                <svg
+                  class="mr-2 size-4"
+                  fill="currentColor"
+                  id="Layer_1"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  viewBox="0 0 512 512"
+                  xml:space="preserve"
+                >
                   <g>
                     <g>
                       <path
@@ -428,8 +570,19 @@ const handleTurboApplyLeave = () => {
                   </g>
                 </svg>
                 Snail Apply
-                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="ml-2 size-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  />
                 </svg>
               </button>
             </div>
@@ -438,38 +591,90 @@ const handleTurboApplyLeave = () => {
 
         <!-- Job Description -->
         <div class="border-b border-gray-200 p-6 sm:p-8">
-          <h2 class="mb-4 text-xl font-bold text-gray-900">Job Description - {{ job.company }}</h2>
-          <div class="prose mb-6 max-w-none text-gray-700" v-html="job.description" />
+          <h2 class="mb-4 text-xl font-bold text-gray-900">
+            Job Description - {{ job.company }}
+          </h2>
+          <div
+            class="prose mb-6 max-w-none text-gray-700"
+            v-html="job.description"
+          />
         </div>
 
         <!-- Apply Section -->
         <div class="bg-gray-50 p-6 sm:p-8">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div
+            class="flex flex-col sm:flex-row sm:items-center sm:justify-between"
+          >
             <div class="mb-4 sm:mb-0">
-              <h3 class="mb-1 text-lg font-medium text-gray-900">Interested in this job?</h3>
-              <p class="text-gray-600">Apply now and take the next step in your career</p>
+              <h3 class="mb-1 text-lg font-medium text-gray-900">
+                Interested in this job?
+              </h3>
+              <p class="text-gray-600">
+                Apply now and take the next step in your career
+              </p>
             </div>
-            <button class="btn flex w-full items-center justify-center bg-primary-600 text-white hover:bg-primary-700 sm:w-auto" @click="applyToJob">
-              <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 size-4" fill="currentColor" viewBox="0 0 24 24">
+            <button
+              class="btn flex w-full items-center justify-center bg-primary-600 text-white hover:bg-primary-700 sm:w-auto"
+              @click="applyToJob"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="mr-2 size-4"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   d="M18 9c0-1.66-1.34-3-3-3s-3 1.34-3 3 1.34 3 3 3 3-1.34 3-3zm-3-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM5 12c-1.1 0-2 .9-2 2v1c0 1.1.9 2 2 2s2-.9 2-2v-1c0-1.1-.9-2-2-2zm13 5H8c-1.1 0-2-.9-2-2v-3c0-1.1.9-2 2-2h3.5L15 6.5c.28-.28.72-.28 1 0L19.5 10c.28.28.28.72 0 1L16 14.5V15c0 1.1.9 2 2 2z"
                 />
               </svg>
               Snail Apply
-              <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="ml-2 size-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
               </svg>
             </button>
           </div>
 
-          <div v-if="!isPremium && isAuthenticated" class="mt-4 rounded-md border border-accent-100 bg-accent-50 p-4">
+          <div
+            v-if="!isPremium && isAuthenticated"
+            class="mt-4 rounded-md border border-accent-100 bg-accent-50 p-4"
+          >
             <div class="flex items-start">
-              <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 mt-0.5 size-5 shrink-0 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="mr-2 mt-0.5 size-5 shrink-0 text-accent-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
               </svg>
               <div>
-                <p class="text-sm text-gray-700"><span class="font-medium">Want to stand out?</span> Premium members get their applications processed faster.</p>
-                <router-link to="/subscription" class="mt-1 inline-block text-sm font-medium text-accent-600 hover:text-accent-700"> Upgrade for $10/month </router-link>
+                <p class="text-sm text-gray-700">
+                  <span class="font-medium">Want to stand out?</span> Premium
+                  members get their applications processed faster.
+                </p>
+                <router-link
+                  to="/subscription"
+                  class="mt-1 inline-block text-sm font-medium text-accent-600 hover:text-accent-700"
+                >
+                  Upgrade for $10/month
+                </router-link>
               </div>
             </div>
           </div>
@@ -477,7 +682,14 @@ const handleTurboApplyLeave = () => {
       </div>
 
       <!-- Turbo Apply Modal -->
-      <TurboApplyModal v-if="showTurboApplyModal && job" :show="showTurboApplyModal" :job="job" :requisition-id="getRequisitionId || 0" :ats-source="job.navigation?.atsType || 'bamboo'" @close="closeTurboApply" />
+      <TurboApplyModal
+        v-if="showTurboApplyModal && job"
+        :show="showTurboApplyModal"
+        :job="job"
+        :requisition-id="getRequisitionId || 0"
+        :ats-source="job.navigation?.atsType || 'bamboo'"
+        @close="closeTurboApply"
+      />
     </div>
   </div>
 </template>

@@ -64,7 +64,7 @@ export const useJobsStore = defineStore('jobs', {
     country: 'US',
     userConfig: null,
     jobSource: '',
-    statistics: null,
+    statistics: null
   }),
 
   getters: {
@@ -74,7 +74,7 @@ export const useJobsStore = defineStore('jobs', {
       return Array.from(locations).map((loc) => ({
         value: loc,
         label: loc,
-        count: this.jobs.filter((job) => job.location === loc).length,
+        count: this.jobs.filter((job) => job.location === loc).length
       }));
     },
 
@@ -190,7 +190,7 @@ export const useJobsStore = defineStore('jobs', {
         const requisitionId = this.getJobRequisitionId(job);
         return requisitionId ? this.bookmarkedJobIds.has(requisitionId) : false;
       };
-    },
+    }
   },
 
   actions: {
@@ -233,21 +233,24 @@ export const useJobsStore = defineStore('jobs', {
         if (this.jobSource) params.append('source', this.jobSource);
         if (this.offset) params.append('offset', this.offset.toString());
 
-        const response = await axios.get(`${API_URL}/api/requisitions/search?${params.toString()}`);
+        const response = await axios.get(
+          `${API_URL}/api/requisitions/search?${params.toString()}`
+        );
         // Map the search results to include navigation data
         this.jobs = response.data.data.map((job: any) => ({
           ...job,
           navigation: job.navigation || {
             atsType: 'unknown',
-            urlSafeJobTitle: `job-${job.id}`,
-          },
+            urlSafeJobTitle: `job-${job.id}`
+          }
         }));
         this.totalJobs = response.data.total;
         this.limit = response.data.limit;
         this.offset = response.data.offset;
         this.totalPages = Math.floor(this.totalJobs / this.limit) + 1;
       } catch (_error: any) {
-        this.error = 'Failed to fetch jobs. Please try again. ' + _error.message;
+        this.error =
+          'Failed to fetch jobs. Please try again. ' + _error.message;
       } finally {
         this.loading = false;
       }
@@ -296,21 +299,31 @@ export const useJobsStore = defineStore('jobs', {
 
         // Map the API response to our frontend job structure
         this.currentJob = {
-          bamboohr_requisition_id: jobData.atsType === 'bamboo' ? jobData.id : null,
-          greenhouseio_requisition_id: jobData.atsType === 'greenhouse' ? jobData.id : null,
-          workday_requisition_id: jobData.atsType === 'workday' ? jobData.id : null,
+          bamboohr_requisition_id:
+            jobData.atsType === 'bamboo' ? jobData.id : null,
+          greenhouseio_requisition_id:
+            jobData.atsType === 'greenhouse' ? jobData.id : null,
+          workday_requisition_id:
+            jobData.atsType === 'workday' ? jobData.id : null,
           adp_requisition_id: jobData.atsType === 'adp' ? jobData.id : null,
-          jobvite_requisition_id: jobData.atsType === 'jobvite' ? jobData.id : null,
-          breezy_requisition_id: jobData.atsType === 'breezy' ? jobData.id : null,
+          jobvite_requisition_id:
+            jobData.atsType === 'jobvite' ? jobData.id : null,
+          breezy_requisition_id:
+            jobData.atsType === 'breezy' ? jobData.id : null,
           lever_requisition_id: jobData.atsType === 'lever' ? jobData.id : null,
-          smartrecruiters_requisition_id: jobData.atsType === 'smartrecruiters' ? jobData.id : null,
+          smartrecruiters_requisition_id:
+            jobData.atsType === 'smartrecruiters' ? jobData.id : null,
           dover_requisition_id: jobData.atsType === 'dover' ? jobData.id : null,
           id: jobData.id.toString(),
           title: jobData.title,
-          company: clientData.client_name || clientData.name || 'Unknown Company',
+          company:
+            clientData.client_name || clientData.name || 'Unknown Company',
           location: jobData.location,
           type: 'Full-time', // Default value since not provided in API
-          salary: jobData.salary_min && jobData.salary_max ? `${jobData.salary_currency || '$'}${jobData.salary_min} - ${jobData.salary_currency || '$'}${jobData.salary_max}` : 'Competitive',
+          salary:
+            jobData.salary_min && jobData.salary_max
+              ? `${jobData.salary_currency || '$'}${jobData.salary_min} - ${jobData.salary_currency || '$'}${jobData.salary_max}`
+              : 'Competitive',
           category: 'Software Development', // Default value since not provided in API
           description: jobData.description,
           requirements: [], // We'll need to parse these from the description
@@ -329,8 +342,8 @@ export const useJobsStore = defineStore('jobs', {
             clientName: route.params.clientName,
             domain: route.params.domain,
             clientProject: route.params.clientProject,
-            urlSafeJobTitle: route.params.urlSafeJobTitlePlusId,
-          },
+            urlSafeJobTitle: route.params.urlSafeJobTitlePlusId
+          }
         };
 
         if (!this.currentJob) {
@@ -395,7 +408,7 @@ export const useJobsStore = defineStore('jobs', {
       try {
         await axios.post(`${API_URL}/api/bookmarks`, {
           source,
-          requisition_id: requisitionId,
+          requisition_id: requisitionId
         });
 
         // Add to local state
@@ -430,15 +443,17 @@ export const useJobsStore = defineStore('jobs', {
         await axios.delete(`${API_URL}/api/bookmarks`, {
           data: {
             source,
-            requisition_id: requisitionId,
-          },
+            requisition_id: requisitionId
+          }
         });
 
         // Remove from local state
         this.bookmarkedJobIds.delete(requisitionId);
 
         // Remove from bookmarked jobs array
-        this.bookmarkedJobs = this.bookmarkedJobs.filter((bookmark) => bookmark.requisition_id !== requisitionId);
+        this.bookmarkedJobs = this.bookmarkedJobs.filter(
+          (bookmark) => bookmark.requisition_id !== requisitionId
+        );
 
         return true;
       } catch (error: any) {
@@ -487,12 +502,14 @@ export const useJobsStore = defineStore('jobs', {
     // Fetch job statistics for homepage display
     async fetchJobStatistics() {
       try {
-        const response = await axios.get(`${API_URL}/api/requisitions/statistics`);
+        const response = await axios.get(
+          `${API_URL}/api/requisitions/statistics`
+        );
         this.statistics = response.data.data;
       } catch (error) {
         console.error('Failed to fetch job statistics:', error);
         this.statistics = { total: 0, usJobs: 0, remoteUsJobs: 0 };
       }
-    },
-  },
+    }
+  }
 });

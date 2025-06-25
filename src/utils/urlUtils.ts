@@ -4,12 +4,22 @@ import type { JobNavigation } from '../types/job';
  * Generate SEO-friendly URL for a job based on its navigation data
  * Navigation data is required for all job URLs
  */
-export function generateJobUrl(jobId: string, navigation: JobNavigation): string {
+export function generateJobUrl(
+  jobId: string,
+  navigation: JobNavigation
+): string {
   if (!navigation) {
     throw new Error('Navigation data is required to generate job URLs');
   }
 
-  const { atsType, urlSafeClientName, clientName, domain, clientProject, urlSafeJobTitle } = navigation;
+  const {
+    atsType,
+    urlSafeClientName,
+    clientName,
+    domain,
+    clientProject,
+    urlSafeJobTitle
+  } = navigation;
   console.log(navigation);
 
   switch (atsType) {
@@ -49,7 +59,8 @@ export function generateJobUrl(jobId: string, navigation: JobNavigation): string
  * Generate SEO-friendly client URL based on ATS type and navigation data
  */
 export function generateClientUrl(navigation: JobNavigation): string {
-  const { atsType, urlSafeClientName, clientName, domain, clientProject } = navigation;
+  const { atsType, urlSafeClientName, clientName, domain, clientProject } =
+    navigation;
 
   switch (atsType) {
     case 'adp':

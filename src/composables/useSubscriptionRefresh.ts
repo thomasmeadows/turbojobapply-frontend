@@ -15,7 +15,7 @@ export function useSubscriptionRefresh() {
       pollForChanges?: boolean;
       maxAttempts?: number;
       onProgress?: (_attempt: number, _maxAttempts: number) => void;
-    } = {},
+    } = {}
   ) => {
     const { pollForChanges = true, maxAttempts = 6, onProgress } = options;
 
@@ -59,11 +59,16 @@ export function useSubscriptionRefresh() {
           }
 
           // 4. Check if premium status is now active
-          hasActivePremium = authStore.isPremium || (refreshedData.subscription && StripeService.isSubscriptionActive(refreshedData.subscription));
+          hasActivePremium =
+            authStore.isPremium ||
+            (refreshedData.subscription &&
+              StripeService.isSubscriptionActive(refreshedData.subscription));
 
           if (hasActivePremium) {
             const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-            console.log(`Premium status confirmed after ${duration}s (${attempts} attempts)`);
+            console.log(
+              `Premium status confirmed after ${duration}s (${attempts} attempts)`
+            );
             return true;
           }
 
@@ -86,7 +91,9 @@ export function useSubscriptionRefresh() {
       }
 
       if (!hasActivePremium && pollForChanges) {
-        console.warn(`Premium status not activated after ${maxAttempts} attempts`);
+        console.warn(
+          `Premium status not activated after ${maxAttempts} attempts`
+        );
         return false;
       }
 
@@ -105,7 +112,7 @@ export function useSubscriptionRefresh() {
   const quickRefresh = async () => {
     return await refreshAfterPayment({
       pollForChanges: false,
-      maxAttempts: 1,
+      maxAttempts: 1
     });
   };
 
@@ -122,11 +129,15 @@ export function useSubscriptionRefresh() {
         if (onProgress) {
           onProgress(`Checking subscription status... (${attempt}/${max})`);
         }
-      },
+      }
     });
 
     if (onProgress) {
-      onProgress(success ? 'Subscription status updated!' : 'Unable to confirm subscription status');
+      onProgress(
+        success
+          ? 'Subscription status updated!'
+          : 'Unable to confirm subscription status'
+      );
     }
 
     return success;
@@ -136,6 +147,6 @@ export function useSubscriptionRefresh() {
     isRefreshing,
     refreshAfterPayment,
     quickRefresh,
-    manualRefresh,
+    manualRefresh
   };
 }

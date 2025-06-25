@@ -12,12 +12,12 @@ export default defineConfig(({ mode }) => {
     plugins: [vue()],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src'),
-      },
+        '@': path.resolve(__dirname, './src')
+      }
     },
     // Explicitly handle environment variables for configuration
     define: {
-      'process.env': env,
+      'process.env': env
     },
     server: {
       // Configure proxy for development if needed
@@ -25,9 +25,9 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: 'http://localhost:3000',
           changeOrigin: true,
-          secure: false,
-        },
-      },
-    },
+          secure: false
+        }
+      }
+    }
   };
 });
