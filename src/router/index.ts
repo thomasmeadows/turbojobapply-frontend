@@ -21,6 +21,7 @@ import CareersPage from '../views/CareersPage.vue';
 import EmployerIntegrationsPage from '../views/EmployerIntegrationsPage.vue';
 import CancelSubscriptionPage from '../views/CancelSubscriptionPage.vue';
 import JobApplicationHistoryPage from '../views/JobApplicationHistoryPage.vue';
+import FAQPage from '../views/FAQPage.vue';
 import NotFoundPage from '../views/NotFoundPage.vue';
 
 const routes = [
@@ -114,6 +115,12 @@ const routes = [
     name: 'About',
     component: AboutPage,
     meta: { title: 'About Us - Turbo Job Apply' }
+  },
+  {
+    path: '/faq',
+    name: 'FAQ',
+    component: FAQPage,
+    meta: { title: 'Frequently Asked Questions - Turbo Job Apply' }
   },
   {
     path: '/privacy-policy',

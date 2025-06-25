@@ -46,6 +46,17 @@ const logout = async () => {
           <!-- Desktop Navigation -->
           <nav class="hidden sm:ml-6 sm:flex sm:space-x-8">
             <router-link
+              to="/faq"
+              class="inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium transition-colors duration-200"
+              :class="[
+                $route.path === '/faq'
+                  ? 'border-primary-500 text-gray-900'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ]"
+            >
+              FAQ
+            </router-link>
+            <router-link
               to="/search"
               class="inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium transition-colors duration-200"
               :class="[
@@ -238,6 +249,18 @@ const logout = async () => {
     <!-- Mobile menu -->
     <div v-if="mobileMenuOpen" id="mobile-menu" class="sm:hidden">
       <div class="space-y-1 pb-3 pt-2">
+        <router-link
+          to="/faq"
+          class="block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors duration-200"
+          :class="[
+            $route.path === '/faq'
+              ? 'border-primary-500 bg-primary-50 text-primary-700'
+              : 'border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700'
+          ]"
+          @click="closeMobileMenu"
+        >
+          FAQ
+        </router-link>
         <router-link
           to="/search"
           class="block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors duration-200"
