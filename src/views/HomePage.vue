@@ -97,8 +97,10 @@ watch(tabFocus, (newVal) => {
 });
 
 const searchJobs = async () => {
-  await jobsStore.fetchJobs();
-  await router.push('/search');
+  return Promise.all([
+    jobsStore.fetchJobs(),
+    router.push('/search')
+  ]);
 };
 </script>
 

@@ -41,7 +41,7 @@ const isPremium = computed(() => authStore.isPremium);
 const canTurboApply = computed(() => {
   if (!job.value || !isAuthenticated.value) return false;
   // Only enable for BambooHR jobs for now
-  return job.value.navigation?.atsType === 'bamboo';
+  return false;
 });
 
 const getRequisitionId = computed(() => {
