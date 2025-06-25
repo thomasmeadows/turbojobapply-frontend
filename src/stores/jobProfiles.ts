@@ -22,6 +22,7 @@ export interface JobProfile {
   salary_expectation?: string;
   linkedin_url?: string;
   portfolio_url?: string;
+  optional_fields_handling?: string;
   skills?: Array<{ id: string; skill_name: string }>;
   experience?: Array<{
     id: string;

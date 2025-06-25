@@ -44,14 +44,14 @@ const custom = {
 };
 
 const config = defineConfigWithVueTs(
-  tailwind.configs['flat/recommended'],
-  pluginVue.configs['flat/essential'],
   globalIgnores([
     '!node_modules/', // unignore `node_modules/` directory
     'node_modules/*', // ignore its content
     '!node_modules/mylibrary/', // unignore `node_modules/mylibrary` directory
     'dist/*',
   ]),
+  tailwind.configs['flat/recommended'],
+  pluginVue.configs['flat/essential'],
 
   // prettier
   prettier,

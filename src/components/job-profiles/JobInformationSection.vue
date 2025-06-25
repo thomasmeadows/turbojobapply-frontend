@@ -58,6 +58,18 @@
         <p class="mt-2 text-sm text-gray-500">Your personal website, blog, or online portfolio</p>
       </div>
 
+      <!-- Optional Fields Handling -->
+      <div>
+        <label for="optional-fields-handling" class="mb-2 block text-sm font-semibold text-gray-800"> TurboApply Optional Fields Handling </label>
+        <select id="optional-fields-handling" v-model="localProfile.optional_fields_handling" class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+          <option value="fill_unanswered_questions">I want to fill out any questions I have not answered yet</option>
+          <option value="fill_only_necessary">I want to fill out only what is necessary to apply</option>
+          <option value="ai_autofill_with_prompt">Have AI auto fill my answer if I haven't seen it and prompt me</option>
+          <option value="ai_autofill_no_interference">Have AI auto fill the answer without my interference</option>
+        </select>
+        <p class="mt-2 text-sm text-gray-500">Choose how you want to handle optional fields when using TurboApply. You can access all the fields you have already answered on your job profile.</p>
+      </div>
+
       <!-- Resume Upload -->
       <div class="border-t border-gray-200 pt-8">
         <h3 class="mb-6 text-lg font-semibold text-gray-900">Documents</h3>
@@ -158,7 +170,11 @@ const emit = defineEmits<{
 }>();
 
 const authStore = useAuthStore();
-const localProfile = ref({ ...props.modelValue });
+const localProfile = ref({
+  ...props.modelValue,
+  // Set default value for optional_fields_handling if not present
+  optional_fields_handling: props.modelValue.optional_fields_handling || 'fill_unanswered_questions',
+});
 
 // Computed properties for URL handling
 const linkedinUrl = computed({
@@ -185,7 +201,11 @@ const websiteUrl = computed({
 watch(
   () => props.modelValue,
   (newValue) => {
-    localProfile.value = { ...newValue };
+    localProfile.value = {
+      ...newValue,
+      // Set default value for optional_fields_handling if not present
+      optional_fields_handling: newValue.optional_fields_handling || 'fill_unanswered_questions',
+    };
   },
   { deep: true },
 );
