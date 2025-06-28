@@ -68,6 +68,17 @@ const logout = async () => {
               Find Jobs
             </router-link>
             <router-link
+              to="/features"
+              class="inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium transition-colors duration-200"
+              :class="[
+                $route.path === '/features'
+                  ? 'border-primary-500 text-gray-900'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              ]"
+            >
+              Features
+            </router-link>
+            <router-link
               to="/pricing"
               class="inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium transition-colors duration-200"
               :class="[
@@ -272,6 +283,18 @@ const logout = async () => {
           @click="closeMobileMenu"
         >
           Find Jobs
+        </router-link>
+        <router-link
+          to="/features"
+          class="block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors duration-200"
+          :class="[
+            $route.path === '/features'
+              ? 'border-primary-500 bg-primary-50 text-primary-700'
+              : 'border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700'
+          ]"
+          @click="closeMobileMenu"
+        >
+          Features
         </router-link>
         <router-link
           to="/pricing"
