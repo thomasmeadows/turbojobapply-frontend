@@ -115,7 +115,7 @@ watch(
 
               <!-- Hover tooltip -->
               <div
-                class="absolute bottom-full right-0 z-50 mb-2 hidden group-hover:block"
+                class="absolute -left-8 bottom-full z-50 mb-2 hidden group-hover:block"
               >
                 <div
                   class="whitespace-nowrap rounded-lg bg-gray-900 px-3 py-2 text-xs text-white shadow-lg"
@@ -123,13 +123,11 @@ watch(
                   <div class="mb-1 font-medium">For best results use:</div>
                   <div>• ZIP code only (e.g., 90210)</div>
                   <div>• City and 2-letter state (e.g., Austin, TX)</div>
-                  <div>
-                    • Full state name (e.g., California, Florida, or Texas)
-                  </div>
+                  <div>• Full state name (e.g., California, or Texas)</div>
 
                   <!-- Tooltip arrow -->
                   <div
-                    class="absolute right-4 top-full size-0 border-x-4 border-t-4 border-transparent border-t-gray-900"
+                    class="absolute left-4 top-full size-0 border-x-4 border-t-4 border-transparent border-t-gray-900"
                   ></div>
                 </div>
               </div>
