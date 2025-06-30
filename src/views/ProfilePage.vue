@@ -177,7 +177,6 @@ const saveProfile = async () => {
             </div>
           </div>
 
-
           <!-- Notification Preferences -->
           <div class="mb-8">
             <h3 class="mb-4 text-lg font-medium text-gray-900">

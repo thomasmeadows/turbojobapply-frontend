@@ -16,7 +16,7 @@ const handleLocationSelect = (location: any) => {
     jobsStore.state = location.state || '';
     jobsStore.zip = location.zip || '';
     jobsStore.selectedLocation = location;
-    
+
     // Clear the legacy location field since we're using structured data
     jobsStore.location = '';
   } else {
@@ -30,9 +30,10 @@ const handleLocationSelect = (location: any) => {
 };
 
 // Watch for changes in selectedLocation and trigger search
-watch(() => jobsStore.selectedLocation, () => {
-  jobsStore.fetchJobs();
-});
+watch(
+  () => jobsStore.selectedLocation,
+  () => jobsStore.fetchJobs()
+);
 </script>
 
 <template>
@@ -95,7 +96,45 @@ watch(() => jobsStore.selectedLocation, () => {
 
         <!-- Location Filter -->
         <div class="border-b border-gray-200 p-4">
-          <h3 class="mb-3 text-sm font-medium text-gray-900">Location</h3>
+          <div class="mb-3 flex items-center gap-2">
+            <h3 class="text-sm font-medium text-gray-900">Location</h3>
+            <div class="group relative">
+              <svg
+                class="size-4 cursor-help text-gray-400 hover:text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+
+              <!-- Hover tooltip -->
+              <div
+                class="absolute bottom-full left-1/2 z-50 mb-2 hidden -translate-x-1/2 group-hover:block"
+              >
+                <div
+                  class="whitespace-nowrap rounded-lg bg-gray-900 px-3 py-2 text-xs text-white shadow-lg"
+                >
+                  <div class="mb-1 font-medium">For best results use:</div>
+                  <div>• ZIP code only (e.g., 90210)</div>
+                  <div>• City and 2-letter state (e.g., Austin, TX)</div>
+                  <div>
+                    • Full state name (e.g., California, Florida, or Texas)
+                  </div>
+
+                  <!-- Tooltip arrow -->
+                  <div
+                    class="absolute left-1/2 top-full size-0 -translate-x-1/2 border-x-4 border-t-4 border-transparent border-t-gray-900"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
           <LocationTypeahead
             :model-value="jobsStore.selectedLocation"
             :country="jobsStore.country"
