@@ -115,7 +115,7 @@ watch(
 
               <!-- Hover tooltip -->
               <div
-                class="absolute bottom-full left-1/2 z-50 mb-2 hidden -translate-x-1/2 group-hover:block"
+                class="absolute bottom-full right-0 z-50 mb-2 hidden group-hover:block"
               >
                 <div
                   class="whitespace-nowrap rounded-lg bg-gray-900 px-3 py-2 text-xs text-white shadow-lg"
@@ -129,7 +129,7 @@ watch(
 
                   <!-- Tooltip arrow -->
                   <div
-                    class="absolute left-1/2 top-full size-0 -translate-x-1/2 border-x-4 border-t-4 border-transparent border-t-gray-900"
+                    class="absolute right-4 top-full size-0 border-x-4 border-t-4 border-transparent border-t-gray-900"
                   ></div>
                 </div>
               </div>
