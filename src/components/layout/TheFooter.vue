@@ -74,6 +74,22 @@ const currentYear = new Date().getFullYear();
                     Pricing
                   </router-link>
                 </li>
+                <li>
+                  <router-link
+                    to="/features"
+                    class="text-base text-gray-600 hover:text-gray-900"
+                  >
+                    Features
+                  </router-link>
+                </li>
+                <li>
+                  <router-link
+                    to="/faq"
+                    class="text-base text-gray-600 hover:text-gray-900"
+                  >
+                    FAQ
+                  </router-link>
+                </li>
               </ul>
             </div>
             <div class="mt-12 md:mt-0">
