@@ -35,6 +35,10 @@ interface JobsState {
   error: string | null;
   query: string;
   location: string;
+  selectedLocation: any;
+  city: string;
+  state: string;
+  zip: string;
   isRemote: string;
   country: string;
   userConfig: UserConfig | null;
@@ -60,6 +64,10 @@ export const useJobsStore = defineStore('jobs', {
     error: null,
     query: '',
     location: '',
+    selectedLocation: null,
+    city: '',
+    state: '',
+    zip: '',
     isRemote: '',
     country: 'US',
     userConfig: null,
@@ -228,6 +236,9 @@ export const useJobsStore = defineStore('jobs', {
         const params = new URLSearchParams();
         if (this.query) params.append('q', this.query);
         if (this.location) params.append('location', this.location);
+        if (this.city) params.append('city', this.city);
+        if (this.state) params.append('state', this.state);
+        if (this.zip) params.append('zip', this.zip);
         if (this.isRemote) params.append('isRemote', this.isRemote);
         if (this.country) params.append('country', this.country);
         if (this.jobSource) params.append('source', this.jobSource);

@@ -1,11 +1,38 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useJobsStore } from '../../stores/jobs';
+import LocationTypeahead from '../common/LocationTypeahead.vue';
 
 const jobsStore = useJobsStore();
 
 // Get the location and category options from the store
 const countries = computed(() => jobsStore.countries);
+
+// Handle location selection from typeahead
+const handleLocationSelect = (location: any) => {
+  if (location) {
+    // Set the structured location data
+    jobsStore.city = location.city || '';
+    jobsStore.state = location.state || '';
+    jobsStore.zip = location.zip || '';
+    jobsStore.selectedLocation = location;
+    
+    // Clear the legacy location field since we're using structured data
+    jobsStore.location = '';
+  } else {
+    // Clear all location data
+    jobsStore.city = '';
+    jobsStore.state = '';
+    jobsStore.zip = '';
+    jobsStore.location = '';
+    jobsStore.selectedLocation = null;
+  }
+};
+
+// Watch for changes in selectedLocation and trigger search
+watch(() => jobsStore.selectedLocation, () => {
+  jobsStore.fetchJobs();
+});
 </script>
 
 <template>
@@ -69,11 +96,12 @@ const countries = computed(() => jobsStore.countries);
         <!-- Location Filter -->
         <div class="border-b border-gray-200 p-4">
           <h3 class="mb-3 text-sm font-medium text-gray-900">Location</h3>
-          <input
-            v-model="jobsStore.location"
-            type="text"
-            class="form-input"
-            placeholder="Enter city or state"
+          <LocationTypeahead
+            :model-value="jobsStore.selectedLocation"
+            :country="jobsStore.country"
+            placeholder="ZIP code preferred or City, State combo"
+            @update:model-value="handleLocationSelect"
+            @clear="handleLocationSelect(null)"
           />
         </div>
 
