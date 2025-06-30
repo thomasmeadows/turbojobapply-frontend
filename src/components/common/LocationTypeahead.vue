@@ -30,7 +30,7 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   modelValue: null,
   country: 'US',
-  placeholder: 'ZIP code preferred or City, State combo',
+  placeholder: 'ZIP, City, or Full State Name',
   disabled: false
 });
 
