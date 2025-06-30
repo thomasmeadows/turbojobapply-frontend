@@ -136,7 +136,7 @@ watch(
           <LocationTypeahead
             :model-value="jobsStore.selectedLocation"
             :country="jobsStore.country"
-            placeholder="ZIP code preferred or City, State combo"
+            placeholder="ZIP, City, or Full State Name"
             @update:model-value="handleLocationSelect"
             @clear="handleLocationSelect(null)"
           />
