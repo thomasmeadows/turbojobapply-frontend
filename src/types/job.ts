@@ -41,6 +41,22 @@ export interface Job {
   external_url: string;
   source: string;
   navigation: JobNavigation;
+  summary?: string | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+}
+
+export interface JobSummaryRequest {
+  ats_id: string;
+  ats_type: string;
+}
+
+export interface JobSummaryResponse {
+  ats_id: string;
+  ats_type: string;
+  summary: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
 }
 
 export interface LocationOption {

@@ -6,9 +6,16 @@ import { useAuthStore } from '../../stores/auth';
 import type { Job } from '../../types/job';
 import { generateJobUrl } from '../../utils/urlUtils';
 
-const props = defineProps<{
+interface Props {
   job: Job;
-}>();
+  jobSummary?: string | null;
+  summaryLoading?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  jobSummary: null,
+  summaryLoading: false,
+});
 
 const jobsStore = useJobsStore();
 const authStore = useAuthStore();
@@ -105,27 +112,21 @@ const jobUrl = computed(() => {
       </div>
     </div>
 
+    <!-- Summary Section -->
     <div class="mb-4 mt-2">
-      <div class="flex flex-wrap gap-2">
-        <span
-          class="inline-flex items-center rounded-full bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800"
-        >
-          type
-        </span>
-        <span
-          class="inline-flex items-center rounded-full bg-secondary-100 px-2.5 py-0.5 text-xs font-medium text-secondary-800"
-        >
-          category
-        </span>
-        <span
-          class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
-        >
-          salary
-        </span>
+      <div v-if="summaryLoading" class="space-y-2">
+        <!-- Loading skeleton animation -->
+        <div class="animate-pulse">
+          <div class="mb-2 h-3 rounded bg-gradient-to-r from-gray-200 via-blue-200 to-gray-200 bg-[length:200%_100%] animate-shimmer"></div>
+          <div class="h-3 w-3/4 rounded bg-gradient-to-r from-gray-200 via-blue-200 to-gray-200 bg-[length:200%_100%] animate-shimmer"></div>
+        </div>
+      </div>
+      <div v-else class="rounded-md bg-gray-50 p-3">
+        <p class="text-sm text-gray-700 leading-relaxed">
+          {{ jobSummary || 'Summary not available' }}
+        </p>
       </div>
     </div>
-
-    <p class="mb-4 line-clamp-2 text-gray-700" />
 
     <div
       class="mt-2 flex flex-col justify-between text-sm sm:flex-row sm:items-center"
@@ -198,3 +199,18 @@ const jobUrl = computed(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+</style>

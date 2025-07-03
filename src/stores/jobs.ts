@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia';
-import type { Job, LocationOption, CountryOption } from '../types/job';
+import type { Job, LocationOption, CountryOption, JobSummaryResponse } from '../types/job';
 import { COUNTRIES } from '../types/job';
 const API_URL = import.meta.env.VITE_API_URL;
 import axios from 'axios';
+import { SummaryService } from '../services/summaryService';
 
 interface UserConfig {
   ipLocation: {
@@ -32,6 +33,7 @@ interface JobsState {
   currentJob: Job | null;
   loading: boolean;
   bookmarksLoading: boolean;
+  summariesLoading: boolean;
   error: string | null;
   query: string;
   location: string;
@@ -44,6 +46,7 @@ interface JobsState {
   userConfig: UserConfig | null;
   jobSource: string;
   statistics: JobStatistics | null;
+  jobSummaries: Map<string, JobSummaryResponse>;
 }
 
 export const useJobsStore = defineStore('jobs', {
@@ -61,6 +64,7 @@ export const useJobsStore = defineStore('jobs', {
     totalJobs: 0,
     loading: false,
     bookmarksLoading: false,
+    summariesLoading: false,
     error: null,
     query: '',
     location: '',
@@ -72,7 +76,8 @@ export const useJobsStore = defineStore('jobs', {
     country: 'US',
     userConfig: null,
     jobSource: '',
-    statistics: null
+    statistics: null,
+    jobSummaries: new Map()
   }),
 
   getters: {
@@ -259,12 +264,38 @@ export const useJobsStore = defineStore('jobs', {
         this.limit = response.data.limit;
         this.offset = response.data.offset;
         this.totalPages = Math.floor(this.totalJobs / this.limit) + 1;
+
+        // Fetch summaries for the loaded jobs
+        this.fetchJobSummaries();
       } catch (_error: any) {
         this.error =
           'Failed to fetch jobs. Please try again. ' + _error.message;
       } finally {
         this.loading = false;
       }
+    },
+
+    async fetchJobSummaries() {
+      if (this.jobs.length === 0) {
+        return;
+      }
+
+      this.summariesLoading = true;
+      
+      try {
+        const summaryMap = await SummaryService.fetchJobSummaries(this.jobs);
+        this.jobSummaries = summaryMap;
+      } catch (error) {
+        console.error('Failed to fetch job summaries:', error);
+        // Don't show error to user for summaries - they're optional
+      } finally {
+        this.summariesLoading = false;
+      }
+    },
+
+    getJobSummary(job: Job): string | null {
+      const summary = this.jobSummaries.get(job.id);
+      return summary?.summary || null;
     },
 
     updateSearchOptions(query: string, country: string, isRemote: string) {
