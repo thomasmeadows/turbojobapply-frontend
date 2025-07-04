@@ -94,9 +94,9 @@ onMounted(() => {
 
         <!-- Job List -->
         <div v-if="!jobsStore.loading && jobsStore.jobs.length > 0">
-          <JobCard 
-            v-for="job in jobsStore.jobs" 
-            :key="job.id" 
+          <JobCard
+            v-for="job in jobsStore.jobs"
+            :key="job.id"
             :job="job"
             :job-summary="jobsStore.getJobSummary(job)"
             :summary-loading="jobsStore.summariesLoading"

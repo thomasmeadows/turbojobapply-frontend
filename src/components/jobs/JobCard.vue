@@ -14,7 +14,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   jobSummary: null,
-  summaryLoading: false,
+  summaryLoading: false
 });
 
 const jobsStore = useJobsStore();
@@ -112,17 +112,20 @@ const jobUrl = computed(() => {
       </div>
     </div>
 
-    <!-- Summary Section -->
     <div class="mb-4 mt-2">
       <div v-if="summaryLoading" class="space-y-2">
         <!-- Loading skeleton animation -->
         <div class="animate-pulse">
-          <div class="mb-2 h-3 rounded bg-gradient-to-r from-gray-200 via-blue-200 to-gray-200 bg-[length:200%_100%] animate-shimmer"></div>
-          <div class="h-3 w-3/4 rounded bg-gradient-to-r from-gray-200 via-blue-200 to-gray-200 bg-[length:200%_100%] animate-shimmer"></div>
+          <div
+            class="animate-shimmer mb-2 h-3 rounded bg-gradient-to-r from-gray-200 via-blue-200 to-gray-200 bg-[length:200%_100%]"
+          ></div>
+          <div
+            class="animate-shimmer h-3 w-3/4 rounded bg-gradient-to-r from-gray-200 via-blue-200 to-gray-200 bg-[length:200%_100%]"
+          ></div>
         </div>
       </div>
       <div v-else class="rounded-md bg-gray-50 p-3">
-        <p class="text-sm text-gray-700 leading-relaxed">
+        <p class="text-sm leading-relaxed text-gray-700">
           {{ jobSummary || 'Summary not available' }}
         </p>
       </div>

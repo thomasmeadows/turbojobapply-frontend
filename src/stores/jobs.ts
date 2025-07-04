@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia';
-import type { Job, LocationOption, CountryOption, JobSummaryResponse } from '../types/job';
+import type {
+  Job,
+  LocationOption,
+  CountryOption,
+  JobSummaryResponse
+} from '../types/job';
 import { COUNTRIES } from '../types/job';
 const API_URL = import.meta.env.VITE_API_URL;
 import axios from 'axios';
@@ -281,7 +286,7 @@ export const useJobsStore = defineStore('jobs', {
       }
 
       this.summariesLoading = true;
-      
+
       try {
         const summaryMap = await SummaryService.fetchJobSummaries(this.jobs);
         this.jobSummaries = summaryMap;

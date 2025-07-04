@@ -15,76 +15,78 @@ export class SummaryService {
         ats_type: 'bamboo'
       };
     }
-    
+
     if (job.workday_requisition_id) {
       return {
         ats_id: job.workday_requisition_id.toString(),
         ats_type: 'workday'
       };
     }
-    
+
     if (job.greenhouseio_requisition_id) {
       return {
         ats_id: job.greenhouseio_requisition_id.toString(),
         ats_type: 'greenhouse'
       };
     }
-    
+
     if (job.adp_requisition_id) {
       return {
         ats_id: job.adp_requisition_id.toString(),
         ats_type: 'adp'
       };
     }
-    
+
     if (job.jobvite_requisition_id) {
       return {
         ats_id: job.jobvite_requisition_id.toString(),
         ats_type: 'jobvite'
       };
     }
-    
+
     if (job.breezy_requisition_id) {
       return {
         ats_id: job.breezy_requisition_id.toString(),
         ats_type: 'breezy'
       };
     }
-    
+
     if (job.lever_requisition_id) {
       return {
         ats_id: job.lever_requisition_id.toString(),
         ats_type: 'lever'
       };
     }
-    
+
     if (job.smartrecruiters_requisition_id) {
       return {
         ats_id: job.smartrecruiters_requisition_id.toString(),
         ats_type: 'smartrecruiters'
       };
     }
-    
+
     if (job.dover_requisition_id) {
       return {
         ats_id: job.dover_requisition_id.toString(),
         ats_type: 'dover'
       };
     }
-    
+
     return null;
   }
 
   /**
    * Fetch summaries for multiple jobs
    */
-  static async fetchJobSummaries(jobs: Job[]): Promise<Map<string, JobSummaryResponse>> {
+  static async fetchJobSummaries(
+    jobs: Job[]
+  ): Promise<Map<string, JobSummaryResponse>> {
     try {
       // Extract ATS information from jobs
       const summaryRequests: JobSummaryRequest[] = [];
       const jobIdMap = new Map<string, string>(); // maps ats_id to job.id
-      
-      jobs.forEach(job => {
+
+      jobs.forEach((job) => {
         const request = this.extractJobSummaryRequest(job);
         if (request) {
           summaryRequests.push(request);
@@ -107,7 +109,7 @@ export class SummaryService {
 
       // Convert results to a map keyed by job.id for easy lookup
       const summaryMap = new Map<string, JobSummaryResponse>();
-      
+
       response.data.data.forEach((summaryResponse: JobSummaryResponse) => {
         const jobId = jobIdMap.get(summaryResponse.ats_id);
         if (jobId) {
