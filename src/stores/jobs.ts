@@ -271,7 +271,7 @@ export const useJobsStore = defineStore('jobs', {
         this.totalPages = Math.floor(this.totalJobs / this.limit) + 1;
 
         // Fetch summaries for the loaded jobs
-        this.fetchJobSummaries();
+        await this.fetchJobSummaries();
       } catch (_error: any) {
         this.error =
           'Failed to fetch jobs. Please try again. ' + _error.message;
@@ -390,7 +390,9 @@ export const useJobsStore = defineStore('jobs', {
             domain: route.params.domain,
             clientProject: route.params.clientProject,
             urlSafeJobTitle: route.params.urlSafeJobTitlePlusId
-          }
+          },
+          meta_title: jobData.meta_title,
+          meta_description: jobData.meta_description
         };
 
         if (!this.currentJob) {

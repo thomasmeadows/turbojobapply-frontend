@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useHead } from '@unhead/vue';
 import {
   format,
   formatDistanceToNow,
@@ -92,6 +93,54 @@ const jobFreshnessAlert = computed(() => {
 });
 
 const isSaved = false;
+
+// Set up dynamic meta tags based on job data
+useHead(
+  computed(() => {
+    if (!job.value) {
+      return {};
+    }
+
+    // Use meta_title and meta_description if available, otherwise generate defaults
+    const title = job.value?.meta_title || `${job.value?.title}`;
+    const description = job.value?.meta_description || 
+      `${title} position in ${job.value?.location?.substring(0, 130)}. Apply now through TurboJobApply.`;
+
+    return {
+      title,
+      meta: [
+        {
+          name: 'description',
+          content: description
+        },
+        {
+          name: 'title',
+          content: title
+        },
+        {
+          property: 'og:title',
+          content: title
+        },
+        {
+          property: 'og:description',
+          content: description
+        },
+        {
+          property: 'og:type',
+          content: 'website'
+        },
+        {
+          name: 'twitter:title',
+          content: title
+        },
+        {
+          name: 'twitter:description',
+          content: description
+        }
+      ]
+    };
+  })
+);
 
 onMounted(async () => {
   loading.value = true;
@@ -412,17 +461,17 @@ const handleTurboApplyLeave = () => {
               </div>
 
               <div class="mb-4 flex flex-wrap gap-2">
-                <span
+                <span v-if="job.type"
                   class="inline-flex items-center rounded-full bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800"
                 >
                   {{ job.type }}
                 </span>
-                <span
+                <span v-if="job.category"
                   class="inline-flex items-center rounded-full bg-secondary-100 px-2.5 py-0.5 text-xs font-medium text-secondary-800"
                 >
                   {{ job.category }}
                 </span>
-                <span
+                <span v-if="job.salary"
                   class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
                 >
                   {{ job.salary }}
