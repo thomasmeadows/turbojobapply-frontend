@@ -4,36 +4,44 @@
     <div class="border-b border-gray-200 bg-white shadow-sm">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="py-8">
-          <div class="flex items-center justify-between">
-            <div>
-              <h1 class="text-4xl font-bold text-gray-900">Job Profiles</h1>
-              <p class="mt-3 text-lg text-gray-600">
-                Create and manage profiles for different career paths
-              </p>
+          <!-- Header Section -->
+          <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">Job Profiles</h1>
+            <p class="mt-3 text-lg text-gray-600">
+              Create and manage profiles for different career paths
+            </p>
+          </div>
+
+          <!-- Profile Selector and Actions -->
+          <div class="flex items-center space-x-6 mb-6">
+            <!-- Profile Dropdown -->
+            <div v-if="profiles.length > 0" class="relative flex-1">
+              <select
+                v-model="selectedProfileId"
+                class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                @change="handleProfileChange"
+              >
+                <option value="">Select a profile...</option>
+                <option
+                  v-for="profile in profiles"
+                  :key="profile.id"
+                  :value="profile.id"
+                >
+                  {{ profile.profile_name }}
+                  <span v-if="profile.desired_job_title">
+                    - {{ profile.desired_job_title }}</span
+                  >
+                </option>
+              </select>
             </div>
 
-            <!-- Profile Selector and Actions -->
-            <div class="flex items-center space-x-6">
-              <!-- Profile Dropdown -->
-              <div v-if="profiles.length > 0" class="relative">
-                <select
-                  v-model="selectedProfileId"
-                  class="block w-[432px] rounded-lg border border-gray-300 bg-white px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  @change="handleProfileChange"
-                >
-                  <option value="">Select a profile...</option>
-                  <option
-                    v-for="profile in profiles"
-                    :key="profile.id"
-                    :value="profile.id"
-                  >
-                    {{ profile.profile_name }}
-                    <span v-if="profile.desired_job_title">
-                      - {{ profile.desired_job_title }}</span
-                    >
-                  </option>
-                </select>
-              </div>
+            <!-- Create New Profile Button Group -->
+            <div class="flex items-center space-x-3 flex-shrink-0">
+              <!-- Resume Upload Drop Box -->
+              <ResumeDropBox 
+                :can-create-profile="canCreateProfile"
+                @profile-created="handleResumeProfileCreated" 
+              />
 
               <!-- Create New Profile Button -->
               <button
@@ -99,32 +107,12 @@
 
     <!-- Main Content -->
     <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <div v-if="profiles.length === 0 && !loading" class="py-16 text-center">
-        <!-- Empty State -->
-        <svg
-          class="mx-auto size-12 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-          />
-        </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900">No job profiles</h3>
-        <p class="mt-1 text-sm text-gray-500">
-          Get started by creating your first job profile.
-        </p>
-        <div class="mt-6">
-          <button
-            class="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            @click="showCreateModal = true"
-          >
+      <div v-if="profiles.length === 0 && !loading" class="py-16">
+        <!-- Resume Upload Area -->
+        <div class="mx-auto max-w-lg">
+          <div class="mb-8 text-center">
             <svg
-              class="-ml-1 mr-2 size-5"
+              class="mx-auto h-16 w-16 text-blue-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -133,11 +121,222 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
               />
             </svg>
-            Create Job Profile
-          </button>
+            <h3 class="mt-4 text-xl font-semibold text-gray-900">
+              Upload Your Resume
+            </h3>
+            <p class="mt-2 text-gray-600">
+              Get started quickly by uploading your resume. We'll extract your
+              information and create a job profile automatically.
+            </p>
+          </div>
+
+          <!-- Upload Drop Zone -->
+          <div
+            class="cursor-pointer rounded-lg border-2 border-dashed border-gray-300 p-8 text-center transition-colors hover:border-blue-400"
+            :class="{
+              'border-blue-400 bg-blue-50': isDragOver,
+              'border-green-400 bg-green-50': uploadedFile
+            }"
+            @click="triggerFileInput"
+            @dragover.prevent="isDragOver = true"
+            @dragleave.prevent="isDragOver = false"
+            @drop.prevent="handleFileDrop"
+          >
+            <input
+              ref="fileInput"
+              type="file"
+              accept=".pdf"
+              class="hidden"
+              @change="handleFileSelect"
+            />
+
+            <div v-if="!uploadedFile">
+              <svg
+                class="mx-auto h-12 w-12 text-gray-400"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 48 48"
+              >
+                <path
+                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <div class="mt-4">
+                <p class="text-lg font-medium text-gray-900">
+                  Drop your resume here or
+                  <span class="text-blue-600">click to browse</span>
+                </p>
+                <p class="mt-1 text-sm text-gray-500">
+                  PDF files only, max 1MB
+                </p>
+              </div>
+            </div>
+
+            <div v-else class="flex items-center justify-center space-x-3">
+              <svg
+                class="h-8 w-8 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <div>
+                <p class="text-lg font-medium text-gray-900">
+                  {{ uploadedFile.name }}
+                </p>
+                <p class="text-sm text-gray-500">
+                  {{ formatFileSize(uploadedFile.size) }}
+                </p>
+              </div>
+              <button
+                type="button"
+                class="text-sm text-blue-600 hover:text-blue-500"
+                @click.stop="clearFile"
+              >
+                Change
+              </button>
+            </div>
+          </div>
+
+          <!-- Profile Name Input -->
+          <div v-if="uploadedFile" class="mt-6">
+            <label
+              for="profile-name"
+              class="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Profile Name
+            </label>
+            <input
+              id="profile-name"
+              v-model="profileName"
+              type="text"
+              placeholder="e.g., Software Engineer Profile"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+
+          <!-- Action Buttons -->
+          <div v-if="uploadedFile" class="mt-6 flex space-x-3">
+            <button
+              type="button"
+              :disabled="uploadLoading || !profileName.trim()"
+              class="inline-flex flex-1 items-center justify-center rounded-md border border-transparent bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400"
+              @click="handleResumeUpload"
+            >
+              <svg
+                v-if="uploadLoading"
+                class="-ml-1 mr-2 h-5 w-5 animate-spin text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                />
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+              {{
+                uploadLoading
+                  ? 'Creating Profile...'
+                  : 'Create Profile from Resume'
+              }}
+            </button>
+
+            <button
+              type="button"
+              class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-3 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              @click="showCreateModal = true"
+            >
+              Start from Scratch
+            </button>
+          </div>
+
+          <!-- Error Message -->
+          <div v-if="uploadError" class="mt-4 rounded-md bg-red-50 p-4">
+            <div class="flex">
+              <svg
+                class="h-5 w-5 text-red-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <div class="ml-3">
+                <p class="text-sm text-red-800">{{ uploadError }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Success Message -->
+          <div v-if="uploadSuccess" class="mt-4 rounded-md bg-green-50 p-4">
+            <div class="flex">
+              <svg
+                class="h-5 w-5 text-green-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <div class="ml-3">
+                <p class="text-sm text-green-800">{{ uploadSuccess }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alternative Option -->
+          <div v-if="!uploadedFile" class="mt-8 text-center">
+            <p class="mb-4 text-sm text-gray-500">
+              Don't have a resume ready? No problem.
+            </p>
+            <button
+              type="button"
+              class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              @click="showCreateModal = true"
+            >
+              <svg
+                class="-ml-1 mr-2 h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+              Create Profile from Scratch
+            </button>
+          </div>
         </div>
       </div>
 
@@ -898,6 +1097,7 @@ import SkillsSection from '@/components/job-profiles/SkillsSection.vue';
 import ExperienceSection from '@/components/job-profiles/ExperienceSection.vue';
 import CreateProfileModal from '@/components/job-profiles/CreateProfileModal.vue';
 import DeleteProfileModal from '@/components/job-profiles/DeleteProfileModal.vue';
+import ResumeDropBox from '@/components/job-profiles/ResumeDropBox.vue';
 
 // Stores and routing
 const authStore = useAuthStore();
@@ -908,6 +1108,17 @@ const router = useRouter();
 const activeSection = ref('contact');
 const showCreateModal = ref(false);
 const showDeleteModal = ref(false);
+
+// Resume upload state
+const uploadedFile = ref<File | null>(null);
+const profileName = ref('');
+const isDragOver = ref(false);
+const uploadLoading = ref(false);
+const uploadError = ref('');
+const uploadSuccess = ref('');
+
+// File input ref
+const fileInput = ref<HTMLInputElement>();
 
 // Computed properties using the store
 const profiles = computed(() => jobProfilesStore.profiles);
@@ -951,6 +1162,135 @@ const handleProfileCreated = () => {
 const handleProfileDeleted = () => {
   showDeleteModal.value = false;
   // The store will handle removing the profile and updating selection
+};
+
+const handleResumeProfileCreated = (profile: any) => {
+  // Refresh the profiles list to include the new profile
+  jobProfilesStore.fetchProfiles();
+  // Auto-select the new profile
+  jobProfilesStore.selectProfile(profile.id);
+};
+
+// Resume upload methods
+const triggerFileInput = () => {
+  fileInput.value?.click();
+};
+
+const handleFileDrop = (event: DragEvent) => {
+  isDragOver.value = false;
+  const files = event.dataTransfer?.files;
+  if (files && files.length > 0) {
+    handleFileSelection(files[0]);
+  }
+};
+
+const handleFileSelect = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    handleFileSelection(input.files[0]);
+  }
+};
+
+const handleFileSelection = (file: File) => {
+  uploadError.value = '';
+
+  // Validate file type
+  if (file.type !== 'application/pdf') {
+    uploadError.value = 'Only PDF files are supported for resume parsing.';
+    return;
+  }
+
+  // Validate file size (1MB limit)
+  if (file.size > 1048576) {
+    uploadError.value = 'File size must be less than 1MB.';
+    return;
+  }
+
+  uploadedFile.value = file;
+
+  // Auto-generate profile name if empty
+  if (!profileName.value.trim()) {
+    const baseName = file.name.replace(/\.[^/.]+$/, ''); // Remove extension
+    profileName.value = `${baseName} Profile`;
+  }
+};
+
+const clearFile = () => {
+  uploadedFile.value = null;
+  profileName.value = '';
+  uploadError.value = '';
+  uploadSuccess.value = '';
+  if (fileInput.value) {
+    fileInput.value.value = '';
+  }
+};
+
+const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+const handleResumeUpload = async () => {
+  if (!profileName.value.trim()) {
+    uploadError.value = 'Profile name is required.';
+    return;
+  }
+
+  if (!uploadedFile.value) {
+    uploadError.value = 'Please select a PDF file to upload.';
+    return;
+  }
+
+  uploadLoading.value = true;
+  uploadError.value = '';
+  uploadSuccess.value = '';
+
+  try {
+    const formData = new FormData();
+    formData.append('file', uploadedFile.value);
+    formData.append('profile_name', profileName.value.trim());
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/job-profiles/parse-resume`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${authStore.accessToken}`
+        },
+        body: formData
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+      const { profile, parsedData } = data;
+      uploadSuccess.value = `Profile created successfully! Extracted ${parsedData.fieldsExtracted} fields, ${parsedData.skillsFound} skills, and ${parsedData.experienceEntries} work experiences.`;
+
+      // Refresh profiles and select the new one
+      await jobProfilesStore.fetchProfiles();
+      jobProfilesStore.selectProfile(profile.id);
+
+      // Clear the upload state after a brief delay
+      setTimeout(() => {
+        clearFile();
+        uploadSuccess.value = '';
+      }, 3000);
+    } else {
+      uploadError.value =
+        data.error ||
+        'Failed to parse resume and create profile. Please try again.';
+    }
+  } catch (err: any) {
+    console.error('Resume upload error:', err);
+    uploadError.value =
+      'Failed to parse resume and create profile. Please try again.';
+  } finally {
+    uploadLoading.value = false;
+  }
 };
 
 // Lifecycle

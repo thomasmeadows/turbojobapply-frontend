@@ -120,13 +120,15 @@ const closeSuccessMessage = () => {
         <section>
           <h2>Supported ATS Platforms</h2>
           <p>
-            Our platform is designed to work seamlessly with 9 major industry-standard
-            Applicant Tracking Systems, ensuring that applications submitted
-            through Turbo Job Apply can be easily imported and managed within
-            your existing recruiting workflow.
+            Our platform is designed to work seamlessly with 9 major
+            industry-standard Applicant Tracking Systems, ensuring that
+            applications submitted through Turbo Job Apply can be easily
+            imported and managed within your existing recruiting workflow.
           </p>
 
-          <div class="mt-8 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
+          <div
+            class="mt-8 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4"
+          >
             <!-- Workday -->
             <div class="rounded-lg bg-gray-50 p-4 text-center">
               <svg

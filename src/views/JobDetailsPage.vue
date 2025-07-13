@@ -103,7 +103,8 @@ useHead(
 
     // Use meta_title and meta_description if available, otherwise generate defaults
     const title = job.value?.meta_title || `${job.value?.title}`;
-    const description = job.value?.meta_description || 
+    const description =
+      job.value?.meta_description ||
       `${title} position in ${job.value?.location?.substring(0, 130)}. Apply now through TurboJobApply.`;
 
     return {
@@ -461,17 +462,20 @@ const handleTurboApplyLeave = () => {
               </div>
 
               <div class="mb-4 flex flex-wrap gap-2">
-                <span v-if="job.type"
+                <span
+                  v-if="job.type"
                   class="inline-flex items-center rounded-full bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800"
                 >
                   {{ job.type }}
                 </span>
-                <span v-if="job.category"
+                <span
+                  v-if="job.category"
                   class="inline-flex items-center rounded-full bg-secondary-100 px-2.5 py-0.5 text-xs font-medium text-secondary-800"
                 >
                   {{ job.category }}
                 </span>
-                <span v-if="job.salary"
+                <span
+                  v-if="job.salary"
                   class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
                 >
                   {{ job.salary }}

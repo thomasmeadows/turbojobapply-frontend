@@ -241,14 +241,12 @@ authStore.hasRole('admin'); // boolean
 ### Frontend Subscription Flow
 
 1. **Subscription Page** (`/subscription`)
-
    - Shows current subscription status with real-time data from Stripe
    - Premium users see billing information, next billing date, and management options
    - Non-premium users see upgrade options with Stripe Checkout integration
    - Displays subscription benefits and pricing information
 
 2. **Cancellation Flow** (`/subscription/cancel`)
-
    - Dedicated cancellation page with clear messaging about access retention
    - Shows what users will lose and when access expires
    - Option to keep subscription or proceed with cancellation

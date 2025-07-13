@@ -20,6 +20,10 @@ export default defineConfig(({ mode }) => {
       'process.env': env
     },
     server: {
+      // enable polling for wsl ubuntu
+      watch: {
+        usePolling: true, // Enable polling for file changes
+      },
       // Configure proxy for development if needed
       proxy: {
         '/api': {
