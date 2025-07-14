@@ -35,6 +35,9 @@
               </select>
             </div>
 
+            <!-- Spacer when no dropdown (pushes buttons to the right) -->
+            <div v-if="profiles.length === 0" class="flex-1"></div>
+
             <!-- Create New Profile Button Group -->
             <div class="flex items-center space-x-3 flex-shrink-0">
               <!-- Resume Upload Drop Box -->
