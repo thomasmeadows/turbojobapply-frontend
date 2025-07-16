@@ -113,6 +113,8 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your-stripe-publishable-key
 - `src/components/job-profiles/ExperienceSection.vue` - Work experience with rich text editor
 - `src/components/job-profiles/CreateProfileModal.vue` - Profile creation modal
 - `src/components/job-profiles/DeleteProfileModal.vue` - Profile deletion confirmation
+- `src/components/job-profiles/ResumeDropBox.vue` - Resume upload button with drag-and-drop support
+- `src/components/job-profiles/ResumeUploadModal.vue` - Resume upload modal with PDF parsing
 
 #### Common Components
 
@@ -278,6 +280,7 @@ The frontend includes sophisticated refresh mechanisms to ensure users get immed
 - **File Upload**: Resume and cover letter upload with validation
 - **Premium Limitations**: Free users limited to 1 profile with upgrade prompts
 - **Auto-Save**: Seamless data persistence with debounced saving
+- **Resume Parsing**: Automatic profile creation from PDF resume uploads
 
 ### Subscription Management
 
@@ -400,6 +403,310 @@ const canCreateProfile = computed(
 - **Premium Limitations**: Free users limited to 1 profile
 - **Real-time Updates**: Profile changes reflected across all components
 - **Full CRUD Support**: Complete create, read, update, delete operations
+
+## Resume Parsing and Upload System
+
+### Resume Upload Architecture
+
+The frontend includes comprehensive resume parsing capabilities that allow users to automatically create job profiles from PDF resumes:
+
+#### **Component Architecture**
+
+- **ResumeDropBox**: Drag-and-drop upload button with global drop zone support
+- **ResumeUploadModal**: Full-featured modal for resume upload and parsing
+- **Integration**: Seamless integration with JobProfilePage for profile creation
+
+#### **Key Features**
+
+- **Drag & Drop Support**: Global drag-and-drop functionality across the job profiles page
+- **PDF Validation**: Client-side validation for PDF file types and size limits
+- **Real-time Feedback**: Progress indicators and success/error messaging
+- **Auto-Profile Creation**: Automatic job profile creation with parsed data
+- **Premium Integration**: Respects free user limitations and premium features
+
+### ResumeDropBox Component
+
+#### **Props Interface**
+
+```typescript
+interface Props {
+  canCreateProfile: boolean; // Synchronized with New Profile button state
+}
+
+interface Emits {
+  (e: 'profile-created', profile: any): void; // Emitted when profile created successfully
+}
+```
+
+#### **Features**
+
+- **Upload Button**: Styled button with question mark icon and tooltip
+- **Tooltip Information**: Explains resume parsing functionality to users
+- **Disabled State**: Automatically disabled when user can't create profiles
+- **Global Drop Zone**: Handles drag-and-drop events across entire page
+- **File Validation**: Checks for PDF file type before processing
+
+#### **Drag & Drop Implementation**
+
+```vue
+<script setup lang="ts">
+// Global drop zone with counter for nested drag events
+const isDragOver = ref(false);
+const dragCounter = ref(0);
+
+const handleDragOver = (event: DragEvent) => {
+  event.preventDefault();
+  dragCounter.value++;
+  
+  const types = event.dataTransfer?.types || [];
+  if (types.includes('Files')) {
+    isDragOver.value = true;
+  }
+};
+
+const handleDragLeave = (event: DragEvent) => {
+  event.preventDefault();
+  dragCounter.value--;
+  
+  // Only hide overlay when leaving all drag areas
+  if (dragCounter.value <= 0) {
+    isDragOver.value = false;
+    dragCounter.value = 0;
+  }
+};
+
+const handleDrop = (event: DragEvent) => {
+  event.preventDefault();
+  isDragOver.value = false;
+  dragCounter.value = 0;
+  
+  const files = event.dataTransfer?.files;
+  if (files && files.length > 0) {
+    const file = files[0];
+    if (file.type === 'application/pdf') {
+      droppedFile.value = file;
+      showResumeModal.value = true;
+    }
+  }
+};
+</script>
+```
+
+### ResumeUploadModal Component
+
+#### **State Management**
+
+```typescript
+// Modal state
+const showResumeModal = ref(false);
+const droppedFile = ref<File | null>(null);
+
+// Upload state
+const profileName = ref('');
+const selectedFile = ref<File | null>(null);
+const loading = ref(false);
+const error = ref('');
+const success = ref('');
+const showErrors = ref(false);
+```
+
+#### **File Handling**
+
+- **File Input**: Hidden file input with PDF-only accept attribute
+- **Drag & Drop**: Modal-specific drag-and-drop area
+- **File Validation**: Client-side validation for file type and size
+- **Auto-naming**: Automatic profile name generation from filename
+
+#### **Upload Process**
+
+```typescript
+const handleUpload = async () => {
+  showErrors.value = true;
+  
+  // Validation
+  if (!profileName.value.trim()) {
+    error.value = 'Profile name is required.';
+    return;
+  }
+  
+  if (!selectedFile.value) {
+    error.value = 'Please select a PDF file to upload.';
+    return;
+  }
+  
+  loading.value = true;
+  error.value = '';
+  success.value = '';
+  
+  try {
+    const formData = new FormData();
+    formData.append('file', selectedFile.value);
+    formData.append('profile_name', profileName.value.trim());
+    
+    const response = await axios.post(
+      '/api/job-profiles/parse-resume',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${authStore.accessToken}`
+        }
+      }
+    );
+    
+    if (response.data.success) {
+      const { profile, parsedData } = response.data;
+      success.value = `Profile created successfully! Extracted ${parsedData.fieldsExtracted} fields, ${parsedData.skillsFound} skills, and ${parsedData.experienceEntries} work experiences.`;
+      
+      // Emit success with delay to show message
+      setTimeout(() => {
+        emit('success', profile);
+      }, 2000);
+    }
+  } catch (err: any) {
+    console.error('Resume upload error:', err);
+    if (err.response?.data?.error) {
+      error.value = err.response.data.error;
+    } else {
+      error.value = 'Failed to parse resume and create profile. Please try again.';
+    }
+  } finally {
+    loading.value = false;
+  }
+};
+```
+
+### JobProfilePage Integration
+
+#### **Resume Upload Integration**
+
+- **Button Group**: Resume upload button positioned next to New Profile button
+- **State Synchronization**: Upload button disabled when profile creation is disabled
+- **Profile Creation Handler**: Seamless integration with existing profile management
+
+#### **Layout Implementation**
+
+```vue
+<template>
+  <!-- Profile Selector and Actions -->
+  <div class="flex items-center space-x-6 mb-6">
+    <!-- Profile Dropdown -->
+    <div v-if="profiles.length > 0" class="relative flex-1">
+      <select v-model="selectedProfileId" class="...">
+        <!-- Profile options -->
+      </select>
+    </div>
+    
+    <!-- Spacer when no dropdown -->
+    <div v-if="profiles.length === 0" class="flex-1"></div>
+    
+    <!-- Button Group -->
+    <div class="flex items-center space-x-3 flex-shrink-0">
+      <!-- Resume Upload Component -->
+      <ResumeDropBox 
+        :can-create-profile="canCreateProfile"
+        @profile-created="handleResumeProfileCreated" 
+      />
+      
+      <!-- Create New Profile Button -->
+      <button
+        :disabled="!canCreateProfile"
+        class="..."
+        @click="showCreateModal = true"
+      >
+        New Profile
+      </button>
+    </div>
+  </div>
+</template>
+```
+
+#### **Event Handlers**
+
+```typescript
+const handleResumeProfileCreated = (profile: any) => {
+  // Refresh profiles list
+  jobProfilesStore.fetchProfiles();
+  
+  // Select the newly created profile
+  jobProfilesStore.selectProfile(profile.id);
+  
+  // Show success message
+  console.log('Profile created from resume:', profile);
+};
+```
+
+### User Experience Features
+
+#### **Visual Feedback**
+
+- **Drag Overlay**: Visual indicator when dragging files over the page
+- **Progress Indicators**: Loading spinners during upload and parsing
+- **Success Metrics**: Detailed feedback on extraction results
+- **Error Handling**: Clear error messages with recovery suggestions
+
+#### **Accessibility**
+
+- **Keyboard Navigation**: Full keyboard support for all interactions
+- **Screen Reader Support**: Proper ARIA labels and descriptions
+- **Focus Management**: Appropriate focus handling during modal interactions
+- **Color Contrast**: High contrast design for visual accessibility
+
+#### **Responsive Design**
+
+- **Mobile Support**: Touch-friendly interface for mobile devices
+- **Flexible Layout**: Responsive button positioning and modal sizing
+- **Cross-browser**: Compatible with all modern browsers
+
+### Integration with Premium Features
+
+#### **Free User Limitations**
+
+- **Profile Limits**: Resume upload respects free user profile limitations
+- **Disabled States**: Upload button disabled when user can't create profiles
+- **Upgrade Prompts**: Context-aware premium feature promotion
+
+#### **Premium User Benefits**
+
+- **Unlimited Uploads**: Premium users can upload unlimited resumes
+- **Enhanced Parsing**: Future premium features for advanced extraction
+- **Batch Processing**: Potential for multiple resume processing
+
+### Error Handling and Recovery
+
+#### **Client-Side Validation**
+
+- **File Type**: Strict PDF-only validation before upload
+- **File Size**: 1MB maximum size limit with user feedback
+- **Required Fields**: Profile name validation with visual indicators
+
+#### **Server Error Handling**
+
+- **Network Errors**: Graceful handling of connection issues
+- **Parsing Failures**: User-friendly messages for parsing errors
+- **Authentication**: Proper handling of authentication failures
+
+#### **User Recovery**
+
+- **Retry Functionality**: Easy retry options for failed uploads
+- **File Replacement**: Simple file selection change without modal reset
+- **Partial Success**: Information about partially successful parsing
+
+### Performance Considerations
+
+#### **Efficient File Handling**
+
+- **Memory Management**: Proper cleanup of file objects and modal state
+- **Request Optimization**: Efficient FormData handling for file uploads
+- **Progress Tracking**: Real-time feedback during upload process
+
+#### **User Interface Performance**
+
+- **Lazy Loading**: Modal components loaded on demand
+- **Debounced Events**: Optimized drag-and-drop event handling
+- **State Optimization**: Minimal re-renders during upload process
+
+This resume parsing system provides a seamless, user-friendly way to create job profiles from PDF resumes while maintaining excellent user experience and technical performance standards.
 
 ## Routing Configuration
 
