@@ -11,7 +11,7 @@ import {
 import { useJobsStore } from '../stores/jobs';
 import { useAuthStore } from '../stores/auth';
 import type { Job } from '../types/job';
-import TurboApplyModal from '../components/job-applications/TurboApplyModal.vue';
+import TurboApplyModal from '@components/job-applications/TurboApplyModal.vue';
 
 const route = useRoute();
 const router = useRouter();

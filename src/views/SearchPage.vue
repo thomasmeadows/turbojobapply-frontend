@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useJobsStore } from '../stores/jobs';
-import JobCard from '../components/jobs/JobCard.vue';
-import JobFilters from '../components/jobs/JobFilters.vue';
+import JobCard from '@components/jobs/JobCard.vue';
+import JobFilters from '@components/jobs/JobFilters.vue';
 
 const jobsStore = useJobsStore();
 const jobCount = ref(0);

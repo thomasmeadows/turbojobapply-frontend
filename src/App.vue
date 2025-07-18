@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import TheHeader from './components/layout/TheHeader.vue';
-import TheFooter from './components/layout/TheFooter.vue';
-import { useAuthStore } from './stores/auth';
-import { useJobsStore } from './stores/jobs';
+import TheHeader from '@components/layout/TheHeader.vue';
+import TheFooter from '@components/layout/TheFooter.vue';
+import { useAuthStore } from '@stores/auth';
+import { useJobsStore } from '@stores/jobs';
 
 const authStore = useAuthStore();
 const jobsStore = useJobsStore();

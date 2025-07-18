@@ -44,6 +44,11 @@ const custom = {
       { code: 600, tabWidth: 2, ignoreUrls: true, ignoreStrings: true }
     ],
     'tailwindcss/no-custom-classname': 'off'
+  },
+  settings: {
+    "import/resolver": {
+      "typescript": {}
+    }
   }
 };
 

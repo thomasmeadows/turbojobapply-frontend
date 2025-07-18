@@ -12,7 +12,15 @@ export default defineConfig(({ mode }) => {
     plugins: [vue()],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src')
+        '@': path.resolve(__dirname, './src'),
+        '@components': path.resolve(__dirname, './src/components'),
+        '@composables': path.resolve(__dirname, './src/composables'),
+        '@router': path.resolve(__dirname, './src/router'),
+        '@services': path.resolve(__dirname, './src/services'),
+        '@stores': path.resolve(__dirname, './src/stores'),
+        '@types': path.resolve(__dirname, './src/types'),
+        '@utils': path.resolve(__dirname, './src/utils'),
+        '@views': path.resolve(__dirname, './src/views')
       }
     },
     // Explicitly handle environment variables for configuration
