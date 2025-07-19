@@ -7,6 +7,7 @@ import {
   configureVueProject
 } from '@vue/eslint-config-typescript';
 import tailwind from 'eslint-plugin-tailwindcss';
+import cypress from 'eslint-plugin-cypress';
 
 configureVueProject({
   tsSyntaxInTemplates: true,
@@ -62,6 +63,10 @@ const config = defineConfigWithVueTs(
   tailwind.configs['flat/recommended'],
   pluginVue.configs['flat/essential'],
   vueTsConfigs.recommendedTypeChecked,
+  {
+    files: ['**/*.cy.ts'],
+    ...cypress.configs.recommended,
+  },
   custom
 );
 

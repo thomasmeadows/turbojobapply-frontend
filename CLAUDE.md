@@ -20,6 +20,8 @@ npm run dev          # Start Vite development server
 npm run build        # Build for production
 npm run preview      # Preview production build
 npm test            # Run TypeScript compiler check
+npm run e2e          # Open Cypress for interactive E2E testing
+npm run cy:run       # Run Cypress tests headlessly
 ```
 
 ## Frontend Architecture
@@ -1006,3 +1008,108 @@ export const use[FeatureName]Store = defineStore('[featureName]', () => {
 - Sanitize HTML content
 - Use secure authentication practices
 - Implement proper CORS handling
+
+## End-to-End Testing with Cypress
+
+This project uses Cypress for end-to-end (E2E) testing to ensure that key user workflows function correctly from the user's perspective. E2E tests simulate real user interactions in a browser, providing a high level of confidence in the application's stability.
+
+### Cypress Setup
+
+-   **Configuration**: The main Cypress configuration is in `cypress.config.ts`. It sets the `baseUrl` for the tests and specifies the locations of support and test files.
+-   **TypeScript**: A `cypress/tsconfig.json` file is included to provide TypeScript support for the tests.
+-   **ESLint**: The main `eslint.config.mjs` is configured with `eslint-plugin-cypress` to lint test files according to best practices.
+
+### Test File Structure
+
+All Cypress-related files are located in the `frontend/cypress/` directory:
+
+```
+frontend/
+└── cypress/
+    ├── e2e/
+    │   └── auth.cy.ts      # Contains E2E tests for authorization
+    ├── support/
+    │   ├── commands.ts     # Custom Cypress commands (e.g., for login)
+    │   └── e2e.ts          # Main support file, imports commands
+    └── tsconfig.json       # TypeScript configuration for Cypress tests
+```
+
+-   **`cypress/e2e/`**: This is where all the test files (specs) are located. Test files should have a `.cy.ts` extension.
+-   **`cypress/support/`**: This directory contains reusable code, such as custom commands, that can be used across different tests.
+
+### How to Write a Test
+
+Tests are written in a `describe`/`it` format. Here is a basic example from `auth.cy.ts`:
+
+```typescript
+// cypress/e2e/auth.cy.ts
+
+describe('Authorization', () => {
+  it('should redirect unauthenticated users from protected routes', () => {
+    // 1. Visit a protected page
+    cy.visit('/dashboard');
+
+    // 2. Assert that the URL has changed to the login page
+    cy.url().should('include', '/login');
+
+    // 3. Assert that a message is shown to the user
+    cy.contains('Please log in to access this page.').should('be.visible');
+  });
+});
+```
+
+### Custom Commands
+
+To simplify common actions, we use custom commands.
+
+#### `cy.login(email, roles)`
+
+A custom command `cy.login()` has been created in `cypress/support/commands.ts` to mock the login process for testing purposes.
+
+```typescript
+// cypress/support/commands.ts
+
+Cypress.Commands.add('login', (email, roles = ['user']) => {
+  // Intercept API calls to simulate a logged-in user
+  cy.intercept('POST', '/api/auth/send-magic-link', { statusCode: 200, body: { success: true } }).as('magicLink');
+  cy.intercept('GET', '/api/auth/profile', {
+    statusCode: 200,
+    body: {
+      id: 'test-user-id',
+      email,
+      roles,
+    },
+  }).as('profile');
+});
+```
+
+**Usage in a test:**
+
+```typescript
+it('should allow admin users to access admin routes', () => {
+  // Use the custom login command to simulate an admin user
+  cy.login('admin@example.com', ['admin']);
+
+  // Visit an admin-only page
+  cy.visit('/employer-integrations');
+
+  // Assert that the user can access the page
+  cy.url().should('include', '/employer-integrations');
+  cy.contains('ATS Integration Requests').should('be.visible');
+});
+```
+
+### How to Run Tests
+
+Make sure the frontend development server is running (`npm run dev`) before starting the tests.
+
+-   **Interactive Mode**: To open the Cypress Test Runner and run tests interactively, use:
+    ```bash
+    npm run e2e
+    ```
+    This is ideal for development, as it allows you to see the tests run in a real browser and provides powerful debugging tools.
+
+-   **Headless Mode**: To run all tests non-interactively in the terminal (e.g., for CI/CD), use:
+    ```bash
+    npm run cy:run
+    ```
