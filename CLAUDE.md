@@ -19,7 +19,8 @@ The TurboJobApply frontend is a modern Vue 3 application with TypeScript that pr
 npm run dev          # Start Vite development server
 npm run build        # Build for production
 npm run preview      # Preview production build
-npm test            # Run TypeScript compiler check
+npm run test:typecheck # Run TypeScript compiler check
+npm run test:unit      # Run component tests with Vitest
 npm run e2e          # Open Cypress for interactive E2E testing
 npm run cy:run       # Run Cypress tests headlessly
 ```
@@ -1008,6 +1009,89 @@ export const use[FeatureName]Store = defineStore('[featureName]', () => {
 - Sanitize HTML content
 - Use secure authentication practices
 - Implement proper CORS handling
+
+## Component Testing with Vitest
+
+This project uses Vitest for component testing. Vitest is a Vite-native testing framework that is fast and easy to use.
+
+### Vitest Setup
+
+-   **Configuration**: The Vitest configuration is in `vitest.config.ts`. It sets up the testing environment, including enabling globals and using `jsdom` to simulate a browser.
+-   **Setup File**: The `src/tests/setup.ts` file is used for global test setup, such as cleaning up the testing environment after each test.
+
+### Test File Structure
+
+Component tests are located in a `__tests__` directory within the `src/components` directory. Test files should have a `.spec.ts` extension.
+
+```
+frontend/
+└── src/
+    └── components/
+        ├── __tests__/
+        │   ├── TheHeader.spec.ts
+        │   └── JobCard.spec.ts
+        ├── jobs/
+        │   └── JobCard.vue
+        └── layout/
+            └── TheHeader.vue
+```
+
+### How to Write a Test
+
+Tests are written using the `describe`/`it` format, and we use `@testing-library/vue` to render components and make assertions.
+
+```typescript
+// src/components/__tests__/JobCard.spec.ts
+
+import { render, screen } from '@testing-library/vue';
+import JobCard from '../jobs/JobCard.vue';
+import { describe, it, expect } from 'vitest';
+import { RouterLinkStub } from '@vue/test-utils';
+
+describe('JobCard', () => {
+  const job = {
+    id: '1',
+    title: 'Software Engineer',
+    companyName: 'Tech Corp',
+    location: 'New York, NY',
+    postedAt: '2024-01-01T00:00:00.000Z',
+    navigation: {
+      atsType: 'greenhouse',
+      clientName: 'tech-corp',
+      urlSafeJobTitle: 'software-engineer-1'
+    }
+  };
+
+  it('renders job details correctly', () => {
+    // 1. Render the component with props
+    render(JobCard, {
+      props: { job },
+      global: {
+        stubs: {
+          RouterLink: RouterLinkStub,
+        },
+      },
+    });
+
+    // 2. Make assertions about the rendered output
+    expect(screen.getByText('Software Engineer')).toBeInTheDocument();
+    expect(screen.getByText('Tech Corp')).toBeInTheDocument();
+    expect(screen.getByText('New York, NY')).toBeInTheDocument();
+  });
+});
+```
+
+### How to Run Tests
+
+-   **Run Once**: To run all component tests once, use:
+    ```bash
+    npm run test:unit
+    ```
+
+-   **Watch Mode**: To run tests in watch mode, which automatically re-runs tests when files change, use:
+    ```bash
+    npm run test:unit:watch
+    ```
 
 ## End-to-End Testing with Cypress
 

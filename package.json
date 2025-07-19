@@ -14,7 +14,9 @@
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
     "preview": "vite preview",
-    "test": "vue-tsc -b",
+    "test:typecheck": "vue-tsc -b",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
     "e2e": "cypress open",
     "cy:run": "cypress run"
   },
