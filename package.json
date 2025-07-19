@@ -59,6 +59,7 @@
     "@testing-library/vue": "^8.1.0",
     "@testing-library/jest-dom": "^6.4.8",
     "jsdom": "^24.1.1",
-    "vitest": "^2.0.4"
+    "vitest": "^2.0.4",
+    "@pinia/testing": "^0.1.3"
   }
 }

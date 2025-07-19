@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/vue';
 import JobCard from '../jobs/JobCard.vue';
 import { describe, it, expect } from 'vitest';
 import { RouterLinkStub } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
 
 describe('JobCard', () => {
   const job = {
@@ -9,7 +10,7 @@ describe('JobCard', () => {
     title: 'Software Engineer',
     companyName: 'Tech Corp',
     location: 'New York, NY',
-    postedAt: '2024-01-01T00:00:00.000Z',
+    posted_at: '2024-01-01T00:00:00.000Z',
     navigation: {
       atsType: 'greenhouse',
       clientName: 'tech-corp',
@@ -21,6 +22,7 @@ describe('JobCard', () => {
     render(JobCard, {
       props: { job },
       global: {
+        plugins: [createTestingPinia()],
         stubs: {
           RouterLink: RouterLinkStub,
         },

@@ -14,6 +14,9 @@ describe('TheHeader', () => {
         stubs: {
           RouterLink: RouterLinkStub,
         },
+        mocks: {
+          $route: { path: '/' },
+        },
       },
     });
 
@@ -34,6 +37,9 @@ describe('TheHeader', () => {
         ],
         stubs: {
           RouterLink: RouterLinkStub,
+        },
+        mocks: {
+          $route: { path: '/' },
         },
       },
     });
