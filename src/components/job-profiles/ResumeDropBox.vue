@@ -92,8 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useAuthStore } from '@/stores/auth';
+import { ref } from 'vue';
 import ResumeUploadModal from './ResumeUploadModal.vue';
 
 interface Props {
@@ -106,7 +105,6 @@ interface Emits {
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
-const authStore = useAuthStore();
 
 // State
 const isDragOver = ref(false);

@@ -1089,6 +1089,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import { useJobProfilesStore } from '@/stores/jobProfiles';
 import { useRouter } from 'vue-router';
@@ -1256,20 +1257,19 @@ const handleResumeUpload = async () => {
     formData.append('file', uploadedFile.value);
     formData.append('profile_name', profileName.value.trim());
 
-    const response = await fetch(
+    const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/api/job-profiles/parse-resume`,
+      formData,
       {
-        method: 'POST',
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`
-        },
-        body: formData
+        }
       }
     );
 
-    const data = await response.json();
+    const data = response.data;
 
-    if (response.ok && data.success) {
+    if (data.success) {
       const { profile, parsedData } = data;
       uploadSuccess.value = `Profile created successfully! Extracted ${parsedData.fieldsExtracted} fields, ${parsedData.skillsFound} skills, and ${parsedData.experienceEntries} work experiences.`;
 
@@ -1279,7 +1279,7 @@ const handleResumeUpload = async () => {
 
       // Clear the upload state after a brief delay
       setTimeout(() => {
-        clearFile();
+        void clearFile();
         uploadSuccess.value = '';
       }, 3000);
     } else {
@@ -1290,7 +1290,7 @@ const handleResumeUpload = async () => {
   } catch (err: any) {
     console.error('Resume upload error:', err);
     uploadError.value =
-      'Failed to parse resume and create profile. Please try again.';
+      err.response?.data?.error || 'Failed to parse resume and create profile. Please try again.';
   } finally {
     uploadLoading.value = false;
   }

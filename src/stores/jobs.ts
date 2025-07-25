@@ -212,6 +212,13 @@ export const useJobsStore = defineStore('jobs', {
   },
 
   actions: {
+    getCurrentJobAts(): string | undefined {
+      return this.currentJob?.navigation?.atsType;
+    },
+    getCurrentJobId(): string | undefined {
+      console.log(this.currentJob);
+      return this.currentJob?.id;
+    },
     async fetchUserConfig() {
       try {
         const response = await axios.get(`${API_URL}/api/users/config`);

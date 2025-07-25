@@ -4,9 +4,16 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  // Load env file based on `mode` in the current working directory.
-  // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
-  const env = loadEnv(mode, process.cwd(), '');
+  // load env based on list below
+  const everyEnv = loadEnv(mode, process.cwd(), '');
+  const filteredEnv = Object.keys(everyEnv).filter(e => 
+    e == 'VITE_API_URL'
+    || e == 'VITE_STRIPE_PUBLISHABLE_KEY'
+  )
+  const env: any = {};
+  for (const envSelected of filteredEnv) {
+    env[envSelected] = everyEnv[envSelected];
+  }
 
   return {
     plugins: [vue()],

@@ -249,6 +249,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 
 const props = defineProps<{
@@ -309,31 +310,26 @@ const addSingleSkill = async () => {
   }
 
   try {
-    const response = await fetch(
+    const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/api/job-profiles/${localProfile.value.id}/skills`,
       {
-        method: 'POST',
+        skill_name: skillName
+      },
+      {
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          skill_name: skillName
-        })
+        }
       }
     );
 
-    if (response.ok) {
-      const result = await response.json();
-      skills.value.push(result.skill);
-      newSkill.value = '';
-    } else {
-      const error = await response.json();
-      alert(error.error || 'Failed to add skill');
-    }
-  } catch (error) {
+    const result = response.data;
+    skills.value.push(result.skill);
+    newSkill.value = '';
+  } catch (error: any) {
     console.error('Error adding skill:', error);
-    alert('Failed to add skill');
+    const errorMessage = error.response?.data?.error || 'Failed to add skill';
+    alert(errorMessage);
   }
 };
 
@@ -366,25 +362,22 @@ const addBulkSkills = async () => {
     if (isAtSkillLimit.value) break;
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/job-profiles/${localProfile.value.id}/skills`,
         {
-          method: 'POST',
+          skill_name: skillName
+        },
+        {
           headers: {
             Authorization: `Bearer ${authStore.accessToken}`,
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            skill_name: skillName
-          })
+          }
         }
       );
 
-      if (response.ok) {
-        const result = await response.json();
-        skills.value.push(result.skill);
-        addedCount++;
-      }
+      const result = response.data;
+      skills.value.push(result.skill);
+      addedCount++;
     } catch (error) {
       console.error('Error adding skill:', skillName, error);
     }
@@ -401,21 +394,16 @@ const removeSkill = async (skill: any) => {
   if (!confirm(`Remove "${skill.skill_name}" from your skills?`)) return;
 
   try {
-    const response = await fetch(
+    await axios.delete(
       `${import.meta.env.VITE_API_URL}/api/job-profiles/skills/${skill.id}`,
       {
-        method: 'DELETE',
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`
         }
       }
     );
 
-    if (response.ok) {
-      skills.value = skills.value.filter((s: any) => s.id !== skill.id);
-    } else {
-      alert('Failed to remove skill');
-    }
+    skills.value = skills.value.filter((s: any) => s.id !== skill.id);
   } catch (error) {
     console.error('Error removing skill:', error);
     alert('Failed to remove skill');
@@ -427,10 +415,9 @@ const clearAllSkills = async () => {
 
   for (const skill of skillsToRemove) {
     try {
-      await fetch(
+      await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/job-profiles/skills/${skill.id}`,
         {
-          method: 'DELETE',
           headers: {
             Authorization: `Bearer ${authStore.accessToken}`
           }

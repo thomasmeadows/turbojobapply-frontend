@@ -1,7 +1,9 @@
 /* eslint-disable max-lines-per-function */
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
+import axios from 'axios';
 import { useAuthStore } from './auth';
+import { useJobsStore } from './jobs';
 
 export interface JobProfile {
   id: string;
@@ -50,6 +52,7 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
   const validating = ref(false);
   const saving = ref(false);
   const error = ref<string>('');
+  const jobsStore = useJobsStore();
 
   // Getters
   const selectedProfile = computed(
@@ -68,28 +71,27 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
       loading.value = true;
       error.value = '';
 
-      const response = await fetch(`${API_URL}/api/job-profiles`, {
+      const response = await axios.get(`${API_URL}/api/job-profiles`, {
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
           'Content-Type': 'application/json'
         }
       });
 
-      if (response.ok) {
-        profiles.value = await response.json();
+      profiles.value = response.data;
 
-        // Auto-select first profile if none selected
-        if (profiles.value.length > 0 && !selectedProfileId.value) {
-          selectedProfileId.value = profiles.value[0].id;
-          await fetchProfile(selectedProfileId.value);
-        }
-      } else {
-        const errorData = await response.json();
-        error.value = errorData.error || 'Failed to load profiles';
+      // Auto-select first profile if none selected
+      if (profiles.value.length > 0 && !selectedProfileId.value) {
+        selectedProfileId.value = profiles.value[0].id;
+        await fetchProfile(selectedProfileId.value);
       }
     } catch (err: any) {
       console.error('Error fetching profiles:', err);
-      error.value = 'Failed to load profiles. Please try again.';
+      if (err.response?.data?.error) {
+        error.value = err.response.data.error;
+      } else {
+        error.value = 'Failed to load profiles. Please try again.';
+      }
     } finally {
       loading.value = false;
     }
@@ -98,30 +100,29 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
   const fetchProfile = async (profileId: string): Promise<void> => {
     const authStore = useAuthStore();
     try {
-      const response = await fetch(`${API_URL}/api/job-profiles/${profileId}`, {
+      const response = await axios.get(`${API_URL}/api/job-profiles/${profileId}`, {
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
           'Content-Type': 'application/json'
         }
       });
 
-      if (response.ok) {
-        const profile = await response.json();
+      const profile = response.data;
 
-        // Update the profile in the profiles array
-        const index = profiles.value.findIndex((p) => p.id === profileId);
-        if (index !== -1) {
-          profiles.value[index] = profile;
-        } else {
-          profiles.value.push(profile);
-        }
+      // Update the profile in the profiles array
+      const index = profiles.value.findIndex((p) => p.id === profileId);
+      if (index !== -1) {
+        profiles.value[index] = profile;
       } else {
-        const errorData = await response.json();
-        error.value = errorData.error || 'Failed to load profile';
+        profiles.value.push(profile);
       }
     } catch (err: any) {
       console.error('Error fetching profile:', err);
-      error.value = 'Failed to load profile. Please try again.';
+      if (err.response?.data?.error) {
+        error.value = err.response.data.error;
+      } else {
+        error.value = 'Failed to load profile. Please try again.';
+      }
     }
   };
 
@@ -134,28 +135,24 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
       loading.value = true;
       error.value = '';
 
-      const response = await fetch(`${API_URL}/api/job-profiles`, {
-        method: 'POST',
+      const response = await axios.post(`${API_URL}/api/job-profiles`, profileData, {
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(profileData)
+        }
       });
 
-      if (response.ok) {
-        const newProfile = await response.json();
-        profiles.value.push(newProfile);
-        selectedProfileId.value = newProfile.id;
-        return newProfile;
-      } else {
-        const errorData = await response.json();
-        error.value = errorData.error || 'Failed to create profile';
-        return null;
-      }
+      const newProfile = response.data;
+      profiles.value.push(newProfile);
+      selectedProfileId.value = newProfile.id;
+      return newProfile;
     } catch (err: any) {
       console.error('Error creating profile:', err);
-      error.value = 'Failed to create profile. Please try again.';
+      if (err.response?.data?.error) {
+        error.value = err.response.data.error;
+      } else {
+        error.value = 'Failed to create profile. Please try again.';
+      }
       return null;
     } finally {
       loading.value = false;
@@ -178,33 +175,32 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
         return false;
       }
 
-      const response = await fetch(`${API_URL}/api/job-profiles/${profileId}`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ...currentProfile, ...updates })
-      });
-
-      if (response.ok) {
-        const updatedProfile = await response.json();
-
-        // Update the profile in the profiles array
-        const index = profiles.value.findIndex((p) => p.id === profileId);
-        if (index !== -1) {
-          profiles.value[index] = updatedProfile;
+      const response = await axios.put(`${API_URL}/api/job-profiles/${profileId}`, 
+        { ...currentProfile, ...updates }, 
+        {
+          headers: {
+            Authorization: `Bearer ${authStore.accessToken}`,
+            'Content-Type': 'application/json'
+          }
         }
+      );
 
-        return true;
-      } else {
-        const errorData = await response.json();
-        error.value = errorData.error || 'Failed to save profile';
-        return false;
+      const updatedProfile = response.data;
+
+      // Update the profile in the profiles array
+      const index = profiles.value.findIndex((p) => p.id === profileId);
+      if (index !== -1) {
+        profiles.value[index] = updatedProfile;
       }
+
+      return true;
     } catch (err: any) {
       console.error('Error saving profile:', err);
-      error.value = 'Failed to save profile. Please try again.';
+      if (err.response?.data?.error) {
+        error.value = err.response.data.error;
+      } else {
+        error.value = 'Failed to save profile. Please try again.';
+      }
       return false;
     } finally {
       saving.value = false;
@@ -217,36 +213,33 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
       loading.value = true;
       error.value = '';
 
-      const response = await fetch(`${API_URL}/api/job-profiles/${profileId}`, {
-        method: 'DELETE',
+      await axios.delete(`${API_URL}/api/job-profiles/${profileId}`, {
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
           'Content-Type': 'application/json'
         }
       });
 
-      if (response.ok) {
-        // Remove from profiles array
-        profiles.value = profiles.value.filter((p) => p.id !== profileId);
+      // Remove from profiles array
+      profiles.value = profiles.value.filter((p) => p.id !== profileId);
 
-        // Update selected profile if needed
-        if (selectedProfileId.value === profileId) {
-          if (profiles.value.length > 0) {
-            selectedProfileId.value = profiles.value[0].id;
-          } else {
-            selectedProfileId.value = '';
-          }
+      // Update selected profile if needed
+      if (selectedProfileId.value === profileId) {
+        if (profiles.value.length > 0) {
+          selectedProfileId.value = profiles.value[0].id;
+        } else {
+          selectedProfileId.value = '';
         }
-
-        return true;
-      } else {
-        const errorData = await response.json();
-        error.value = errorData.error || 'Failed to delete profile';
-        return false;
       }
+
+      return true;
     } catch (err: any) {
       console.error('Error deleting profile:', err);
-      error.value = 'Failed to delete profile. Please try again.';
+      if (err.response?.data?.error) {
+        error.value = err.response.data.error;
+      } else {
+        error.value = 'Failed to delete profile. Please try again.';
+      }
       return false;
     } finally {
       loading.value = false;
@@ -259,34 +252,35 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
 
   const validateProfile = async () => {
     const authStore = useAuthStore();
-    const atsSource: any = null;
-    const requisitionId: any = null;
+    const atsSource: any = jobsStore.getCurrentJobAts();
+    const id: any = jobsStore.getCurrentJobId();
     validating.value = true;
     if (!selectedProfileId.value) return;
 
     try {
       error.value = '';
+      if (!selectedProfileId.value || !id || !atsSource) {
+        throw new Error(`missing required fields selectedProfileId=${selectedProfileId?.value}, id=${id}, atsSource=${atsSource}`)
+      }
 
       // Validate the profile first
-      const validateResponse = await fetch(
+      const validateResponse = await axios.post(
         `${API_URL}/api/job-applications/validate`,
         {
-          method: 'POST',
+          jobProfileId: selectedProfileId.value,
+          id: id,
+          atsSource: atsSource
+        },
+        {
           headers: {
             Authorization: `Bearer ${authStore.accessToken}`,
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            jobProfileId: selectedProfileId.value,
-            requisitionId: requisitionId,
-            atsSource: atsSource
-          })
+          }
         }
       );
 
-      if (validateResponse.ok) {
-        await validateResponse.json();
-      }
+      // Response data is automatically parsed by axios
+      // const data = validateResponse.data;
     } catch (_error: any) {
       console.error('Error validating profile:', _error);
       error.value =

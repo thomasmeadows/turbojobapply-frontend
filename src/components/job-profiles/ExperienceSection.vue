@@ -309,6 +309,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import QuillEditor from '@/components/common/QuillEditor.vue';
 
@@ -405,20 +406,14 @@ const removeExperience = async (exp: any, index: number) => {
   if (exp.id) {
     // Remove from backend
     try {
-      const response = await fetch(
+      await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/job-profiles/experience/${exp.id}`,
         {
-          method: 'DELETE',
           headers: {
             Authorization: `Bearer ${authStore.accessToken}`
           }
         }
       );
-
-      if (!response.ok) {
-        alert('Failed to remove experience');
-        return;
-      }
     } catch (error) {
       console.error('Error removing experience:', error);
       alert('Failed to remove experience');
@@ -485,80 +480,74 @@ const saveExperience = async (exp: any) => {
 
     if (exp.id) {
       // Update existing experience
-      const response = await fetch(
+      const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/job-profiles/experience/${exp.id}`,
         {
-          method: 'PUT',
+          job_title: exp.job_title,
+          company_name: exp.company_name,
+          start_date: exp.start_date,
+          end_date: exp.end_date || null,
+          is_current_job: exp.is_current_job,
+          description: exp.description,
+          display_order: exp.display_order
+        },
+        {
           headers: {
             Authorization: `Bearer ${authStore.accessToken}`,
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            job_title: exp.job_title,
-            company_name: exp.company_name,
-            start_date: exp.start_date,
-            end_date: exp.end_date || null,
-            is_current_job: exp.is_current_job,
-            description: exp.description,
-            display_order: exp.display_order
-          })
+          }
         }
       );
 
-      if (response.ok) {
-        const result = await response.json();
-        // Format dates to yyyy-MM-dd for date inputs
-        const updatedExp = { ...result.experience };
-        if (updatedExp.start_date) {
-          updatedExp.start_date = new Date(updatedExp.start_date)
-            .toISOString()
-            .split('T')[0];
-        }
-        if (updatedExp.end_date) {
-          updatedExp.end_date = new Date(updatedExp.end_date)
-            .toISOString()
-            .split('T')[0];
-        }
-        Object.assign(exp, updatedExp);
+      const result = response.data;
+      // Format dates to yyyy-MM-dd for date inputs
+      const updatedExp = { ...result.experience };
+      if (updatedExp.start_date) {
+        updatedExp.start_date = new Date(updatedExp.start_date)
+          .toISOString()
+          .split('T')[0];
       }
+      if (updatedExp.end_date) {
+        updatedExp.end_date = new Date(updatedExp.end_date)
+          .toISOString()
+          .split('T')[0];
+      }
+      Object.assign(exp, updatedExp);
     } else {
       // Create new experience
-      const response = await fetch(
+      const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/job-profiles/${localProfile.value.id}/experience`,
         {
-          method: 'POST',
+          job_title: exp.job_title,
+          company_name: exp.company_name,
+          start_date: exp.start_date,
+          end_date: exp.end_date || null,
+          is_current_job: exp.is_current_job,
+          description: exp.description,
+          display_order: exp.display_order
+        },
+        {
           headers: {
             Authorization: `Bearer ${authStore.accessToken}`,
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            job_title: exp.job_title,
-            company_name: exp.company_name,
-            start_date: exp.start_date,
-            end_date: exp.end_date || null,
-            is_current_job: exp.is_current_job,
-            description: exp.description,
-            display_order: exp.display_order
-          })
+          }
         }
       );
 
-      if (response.ok) {
-        const result = await response.json();
-        // Format dates to yyyy-MM-dd for date inputs
-        const updatedExp = { ...result.experience };
-        if (updatedExp.start_date) {
-          updatedExp.start_date = new Date(updatedExp.start_date)
-            .toISOString()
-            .split('T')[0];
-        }
-        if (updatedExp.end_date) {
-          updatedExp.end_date = new Date(updatedExp.end_date)
-            .toISOString()
-            .split('T')[0];
-        }
-        Object.assign(exp, updatedExp);
+      const result = response.data;
+      // Format dates to yyyy-MM-dd for date inputs
+      const updatedExp = { ...result.experience };
+      if (updatedExp.start_date) {
+        updatedExp.start_date = new Date(updatedExp.start_date)
+          .toISOString()
+          .split('T')[0];
       }
+      if (updatedExp.end_date) {
+        updatedExp.end_date = new Date(updatedExp.end_date)
+          .toISOString()
+          .split('T')[0];
+      }
+      Object.assign(exp, updatedExp);
     }
   } catch (error) {
     console.error('Error saving experience:', error);
