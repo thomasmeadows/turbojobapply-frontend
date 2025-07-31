@@ -42,6 +42,37 @@ export interface JobProfile {
   validating: boolean;
 }
 
+export interface JobApplyField {
+  id: string,
+  category: string,
+  value: string,
+  question: string,
+  type: string,
+  options: { id: string; text: string }[],
+  optional: boolean
+}
+
+export interface JobProfileField {
+    name: string;
+    type: JobProfileFieldType;
+    customQuestion?: boolean;
+    ats?: string;
+}
+
+export enum JobProfileFieldType {
+    INPUT = 'input',
+    COVER_LETTER = 'cover_letter',
+    RESUME = 'resume',
+    EMAIL = 'email',
+    PHONE = 'phone',
+    DATE = 'date',
+    LINKEDIN = 'linkedin',
+    WEBSITE = 'website',
+    CITY = 'city',
+    STATE = 'state',
+    ZIP = 'zip'
+}
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const useJobProfilesStore = defineStore('jobProfiles', () => {
@@ -53,6 +84,7 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
   const saving = ref(false);
   const error = ref<string>('');
   const jobsStore = useJobsStore();
+  const fieldsNeededForProfile = ref<JobProfileField[]>([]);
 
   // Getters
   const selectedProfile = computed(
@@ -264,7 +296,7 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
       }
 
       // Validate the profile first
-      const validateResponse = await axios.post(
+      const results = await axios.post(
         `${API_URL}/api/job-applications/validate`,
         {
           jobProfileId: selectedProfileId.value,
@@ -278,6 +310,11 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
           }
         }
       );
+
+      
+      fieldsNeededForProfile.value = results.data.data.missingFields;
+      loading.value = false;
+      validating.value = false;
 
       // Response data is automatically parsed by axios
       // const data = validateResponse.data;
@@ -342,6 +379,7 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
     // Getters
     selectedProfile,
     canCreateProfile,
+    fieldsNeededForProfile,
 
     // Actions
     fetchProfiles,

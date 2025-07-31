@@ -41,8 +41,12 @@ const isPremium = computed(() => authStore.isPremium);
 // Turbo Apply functionality
 const canTurboApply = computed(() => {
   if (!job.value || !isAuthenticated.value) return false;
+  const atsSource: any = jobsStore.getCurrentJobAts();
   // Only enable for BambooHR jobs for now
-  return true;
+  if (atsSource != 'adp' && atsSource != 'workday' && atsSource != 'lever' && atsSource != 'smartrecruiters') {
+    return true;
+  }
+  return false;
 });
 
 const formattedDate = computed(() => {
