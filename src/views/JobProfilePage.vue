@@ -5,7 +5,7 @@
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="py-8">
           <!-- Header Section -->
-          <div class="text-center mb-8">
+          <div class="mb-8 text-center">
             <h1 class="text-4xl font-bold text-gray-900">Job Profiles</h1>
             <p class="mt-3 text-lg text-gray-600">
               Create and manage profiles for different career paths
@@ -13,7 +13,7 @@
           </div>
 
           <!-- Profile Selector and Actions -->
-          <div class="flex items-center space-x-6 mb-6">
+          <div class="mb-6 flex items-center space-x-6">
             <!-- Profile Dropdown -->
             <div v-if="profiles.length > 0" class="relative flex-1">
               <select
@@ -39,11 +39,11 @@
             <div v-if="profiles.length === 0" class="flex-1"></div>
 
             <!-- Create New Profile Button Group -->
-            <div class="flex items-center space-x-3 flex-shrink-0">
+            <div class="flex flex-shrink-0 items-center space-x-3">
               <!-- Resume Upload Drop Box -->
-              <ResumeDropBox 
+              <ResumeDropBox
                 :can-create-profile="canCreateProfile"
-                @profile-created="handleResumeProfileCreated" 
+                @profile-created="handleResumeProfileCreated"
               />
 
               <!-- Create New Profile Button -->
@@ -1290,7 +1290,8 @@ const handleResumeUpload = async () => {
   } catch (err: any) {
     console.error('Resume upload error:', err);
     uploadError.value =
-      err.response?.data?.error || 'Failed to parse resume and create profile. Please try again.';
+      err.response?.data?.error ||
+      'Failed to parse resume and create profile. Please try again.';
   } finally {
     uploadLoading.value = false;
   }

@@ -47,8 +47,8 @@ const custom = {
     'tailwindcss/no-custom-classname': 'off'
   },
   settings: {
-    "import/resolver": {
-      "typescript": {}
+    'import/resolver': {
+      typescript: {}
     }
   }
 };
@@ -65,7 +65,7 @@ const config = defineConfigWithVueTs(
   vueTsConfigs.recommendedTypeChecked,
   {
     files: ['**/*.cy.ts'],
-    ...cypress.configs.recommended,
+    ...cypress.configs.recommended
   },
   custom
 );

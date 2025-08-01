@@ -10,11 +10,18 @@
     <div class="space-y-8">
       <!-- Date Available -->
       <div>
-        <label for="date-available" class="mb-2 block text-sm font-semibold text-gray-800">
+        <label
+          for="date-available"
+          class="mb-2 block text-sm font-semibold text-gray-800"
+        >
           Date Available
         </label>
-        <input id="date-available" v-model="localProfile.date_available" type="date"
-          class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500" />
+        <input
+          id="date-available"
+          v-model="localProfile.date_available"
+          type="date"
+          class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+        />
         <p class="mt-2 text-sm text-gray-500">
           When you're available to start a new position
         </p>
@@ -22,12 +29,19 @@
 
       <!-- Desired Pay -->
       <div>
-        <label for="desired-pay" class="mb-2 block text-sm font-semibold text-gray-800">
+        <label
+          for="desired-pay"
+          class="mb-2 block text-sm font-semibold text-gray-800"
+        >
           Desired Pay
         </label>
-        <input id="desired-pay" v-model="localProfile.desired_pay" type="text"
+        <input
+          id="desired-pay"
+          v-model="localProfile.desired_pay"
+          type="text"
           class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-          placeholder="e.g., $80,000/year, $40/hour, Competitive" />
+          placeholder="e.g., $80,000/year, $40/hour, Competitive"
+        />
         <p class="mt-2 text-sm text-gray-500">
           Your salary expectations or preferred compensation
         </p>
@@ -35,17 +49,25 @@
 
       <!-- LinkedIn Profile URL -->
       <div>
-        <label for="linkedin-url" class="mb-2 block text-sm font-semibold text-gray-800">
+        <label
+          for="linkedin-url"
+          class="mb-2 block text-sm font-semibold text-gray-800"
+        >
           LinkedIn Profile URL
         </label>
         <div class="flex rounded-lg shadow-sm">
           <span
-            class="inline-flex items-center rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 px-4 py-3 text-base font-medium text-gray-600">
+            class="inline-flex items-center rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 px-4 py-3 text-base font-medium text-gray-600"
+          >
             https://
           </span>
-          <input id="linkedin-url" v-model="linkedinUrl" type="text"
+          <input
+            id="linkedin-url"
+            v-model="linkedinUrl"
+            type="text"
             class="block w-full flex-1 rounded-none rounded-r-lg border border-gray-300 px-4 py-3 text-base transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-            placeholder="linkedin.com/in/yourprofile" />
+            placeholder="linkedin.com/in/yourprofile"
+          />
         </div>
         <p class="mt-2 text-sm text-gray-500">
           Your professional LinkedIn profile
@@ -54,17 +76,25 @@
 
       <!-- Website, Blog, or Portfolio URL -->
       <div>
-        <label for="website-url" class="mb-2 block text-sm font-semibold text-gray-800">
+        <label
+          for="website-url"
+          class="mb-2 block text-sm font-semibold text-gray-800"
+        >
           Website, Blog, or Portfolio URL
         </label>
         <div class="flex rounded-lg shadow-sm">
           <span
-            class="inline-flex items-center rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 px-4 py-3 text-base font-medium text-gray-600">
+            class="inline-flex items-center rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 px-4 py-3 text-base font-medium text-gray-600"
+          >
             https://
           </span>
-          <input id="website-url" v-model="websiteUrl" type="text"
+          <input
+            id="website-url"
+            v-model="websiteUrl"
+            type="text"
             class="block w-full flex-1 rounded-none rounded-r-lg border border-gray-300 px-4 py-3 text-base transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-            placeholder="yourportfolio.com" />
+            placeholder="yourportfolio.com"
+          />
         </div>
         <p class="mt-2 text-sm text-gray-500">
           Your personal website, blog, or online portfolio
@@ -73,11 +103,17 @@
 
       <!-- Optional Fields Handling -->
       <div>
-        <label for="optional-fields-handling" class="mb-2 block text-sm font-semibold text-gray-800">
+        <label
+          for="optional-fields-handling"
+          class="mb-2 block text-sm font-semibold text-gray-800"
+        >
           TurboApply Optional Fields Handling
         </label>
-        <select id="optional-fields-handling" v-model="localProfile.optional_fields_handling"
-          class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+        <select
+          id="optional-fields-handling"
+          v-model="localProfile.optional_fields_handling"
+          class="block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+        >
           <option value="fill_unanswered_questions">
             I want to fill out any questions I have not answered yet
           </option>
@@ -112,11 +148,22 @@
               Resume
             </label>
 
-            <div v-if="!localProfile.has_resume"
-              class="cursor-pointer rounded-xl border-2 border-dashed border-gray-300 p-8 text-center transition-all duration-200 hover:border-gray-400 hover:bg-gray-50">
-              <svg class="mx-auto size-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <div
+              v-if="!localProfile.has_resume"
+              class="cursor-pointer rounded-xl border-2 border-dashed border-gray-300 p-8 text-center transition-all duration-200 hover:border-gray-400 hover:bg-gray-50"
+            >
+              <svg
+                class="mx-auto size-12 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
               </svg>
               <div class="mt-4">
                 <label for="resume-upload" class="cursor-pointer">
@@ -127,17 +174,31 @@
                     PDF, DOC, DOCX up to 1MB
                   </span>
                 </label>
-                <input id="resume-upload" type="file" class="sr-only" accept=".pdf,.doc,.docx"
-                  @change="handleResumeUpload" />
+                <input
+                  id="resume-upload"
+                  type="file"
+                  class="sr-only"
+                  accept=".pdf,.doc,.docx"
+                  @change="handleResumeUpload"
+                />
               </div>
             </div>
 
-            <div v-else class="rounded-xl border border-green-200 bg-green-50 p-6">
+            <div
+              v-else
+              class="rounded-xl border border-green-200 bg-green-50 p-6"
+            >
               <div class="flex items-center">
-                <svg class="size-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd"
+                <svg
+                  class="size-5 text-green-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clip-rule="evenodd" />
+                    clip-rule="evenodd"
+                  />
                 </svg>
                 <div class="ml-3 flex-1">
                   <p class="text-sm font-medium text-green-800">
@@ -150,12 +211,14 @@
                 <div class="ml-4 flex space-x-3">
                   <button
                     class="rounded-md px-3 py-1 text-sm font-medium text-green-700 transition-colors hover:bg-green-100 hover:text-green-900"
-                    @click="downloadResume">
+                    @click="downloadResume"
+                  >
                     Download
                   </button>
                   <button
                     class="rounded-md px-3 py-1 text-sm font-medium text-red-600 transition-colors hover:bg-red-100 hover:text-red-800"
-                    @click="removeResume">
+                    @click="removeResume"
+                  >
                     Remove
                   </button>
                 </div>
@@ -169,11 +232,22 @@
               Cover Letter
             </label>
 
-            <div v-if="!localProfile.has_cover_letter"
-              class="cursor-pointer rounded-xl border-2 border-dashed border-gray-300 p-8 text-center transition-all duration-200 hover:border-gray-400 hover:bg-gray-50">
-              <svg class="mx-auto size-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <div
+              v-if="!localProfile.has_cover_letter"
+              class="cursor-pointer rounded-xl border-2 border-dashed border-gray-300 p-8 text-center transition-all duration-200 hover:border-gray-400 hover:bg-gray-50"
+            >
+              <svg
+                class="mx-auto size-12 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
               </svg>
               <div class="mt-4">
                 <label for="cover-letter-upload" class="cursor-pointer">
@@ -184,17 +258,31 @@
                     PDF, DOC, DOCX up to 1MB
                   </span>
                 </label>
-                <input id="cover-letter-upload" type="file" class="sr-only" accept=".pdf,.doc,.docx"
-                  @change="handleCoverLetterUpload" />
+                <input
+                  id="cover-letter-upload"
+                  type="file"
+                  class="sr-only"
+                  accept=".pdf,.doc,.docx"
+                  @change="handleCoverLetterUpload"
+                />
               </div>
             </div>
 
-            <div v-else class="rounded-xl border border-green-200 bg-green-50 p-6">
+            <div
+              v-else
+              class="rounded-xl border border-green-200 bg-green-50 p-6"
+            >
               <div class="flex items-center">
-                <svg class="size-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd"
+                <svg
+                  class="size-5 text-green-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clip-rule="evenodd" />
+                    clip-rule="evenodd"
+                  />
                 </svg>
                 <div class="ml-3 flex-1">
                   <p class="text-sm font-medium text-green-800">
@@ -210,12 +298,14 @@
                 <div class="ml-4 flex space-x-3">
                   <button
                     class="rounded-md px-3 py-1 text-sm font-medium text-green-700 transition-colors hover:bg-green-100 hover:text-green-900"
-                    @click="downloadCoverLetter">
+                    @click="downloadCoverLetter"
+                  >
                     Download
                   </button>
                   <button
                     class="rounded-md px-3 py-1 text-sm font-medium text-red-600 transition-colors hover:bg-red-100 hover:text-red-800"
-                    @click="removeCoverLetter">
+                    @click="removeCoverLetter"
+                  >
                     Remove
                   </button>
                 </div>
@@ -337,7 +427,8 @@ const handleResumeUpload = async (event: Event) => {
     localProfile.value.resume_mimetype = file.type;
   } catch (error: any) {
     console.error('Error uploading resume:', error);
-    const errorMessage = error.response?.data?.error || 'Failed to upload resume';
+    const errorMessage =
+      error.response?.data?.error || 'Failed to upload resume';
     alert(errorMessage);
   }
 
@@ -388,7 +479,8 @@ const handleCoverLetterUpload = async (event: Event) => {
     localProfile.value.cover_letter_mimetype = file.type;
   } catch (error: any) {
     console.error('Error uploading cover letter:', error);
-    const errorMessage = error.response?.data?.error || 'Failed to upload cover letter';
+    const errorMessage =
+      error.response?.data?.error || 'Failed to upload cover letter';
     alert(errorMessage);
   }
 
@@ -439,8 +531,7 @@ const downloadCoverLetter = async () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download =
-      localProfile.value.cover_letter_filename || 'cover-letter.pdf';
+    a.download = localProfile.value.cover_letter_filename || 'cover-letter.pdf';
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);

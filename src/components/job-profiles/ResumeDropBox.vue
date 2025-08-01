@@ -1,7 +1,7 @@
 <template>
   <div class="relative">
     <!-- Resume Upload Button -->
-    <div class="relative group">
+    <div class="group relative">
       <button
         :disabled="!props.canCreateProfile"
         class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-base font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
@@ -21,11 +21,13 @@
           />
         </svg>
         Upload Resume
-        
+
         <!-- Help Icon inside button -->
-        <div class="ml-2 flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 text-gray-500">
+        <div
+          class="ml-2 flex h-4 w-4 items-center justify-center rounded-full bg-gray-200 text-gray-500"
+        >
           <svg
-            class="w-2.5 h-2.5"
+            class="h-2.5 w-2.5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -39,12 +41,19 @@
           </svg>
         </div>
       </button>
-      
+
       <!-- Tooltip -->
-      <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20">
-        <div class="bg-gray-900 text-white text-xs rounded-lg py-3 px-4 w-80 text-center leading-relaxed">
-          Automatically parse your resume and fill fields you need to apply by uploading your resume first
-          <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-b-gray-900"></div>
+      <div
+        class="pointer-events-none absolute left-1/2 top-full z-20 mt-2 -translate-x-1/2 transform opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+      >
+        <div
+          class="w-80 rounded-lg bg-gray-900 px-4 py-3 text-center text-xs leading-relaxed text-white"
+        >
+          Automatically parse your resume and fill fields you need to apply by
+          uploading your resume first
+          <div
+            class="absolute bottom-full left-1/2 -translate-x-1/2 transform border-4 border-transparent border-b-gray-900"
+          ></div>
         </div>
       </div>
     </div>

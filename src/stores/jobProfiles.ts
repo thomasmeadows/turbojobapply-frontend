@@ -37,40 +37,50 @@ export interface JobProfile {
   }>;
   resume_file_name?: string;
   cover_letter_file_name?: string;
+  // ATS-specific custom question fields
+  ats_bamboo_custom_questions?: Record<string, any>;
+  ats_workday_custom_questions?: Record<string, any>;
+  ats_greenhouse_custom_questions?: Record<string, any>;
+  ats_adp_custom_questions?: Record<string, any>;
+  ats_jobvite_custom_questions?: Record<string, any>;
+  ats_breezy_custom_questions?: Record<string, any>;
+  ats_lever_custom_questions?: Record<string, any>;
+  ats_smartrecruiters_custom_questions?: Record<string, any>;
+  ats_dover_custom_questions?: Record<string, any>;
   created_at?: string;
   updated_at?: string;
   validating: boolean;
 }
 
 export interface JobApplyField {
-  id: string,
-  category: string,
-  value: string,
-  question: string,
-  type: string,
-  options: { id: string; text: string }[],
-  optional: boolean
+  id: string;
+  category: string;
+  value: string;
+  question: string;
+  type: string;
+  options: { id: string; text: string }[];
+  optional: boolean;
 }
 
 export interface JobProfileField {
-    name: string;
-    type: JobProfileFieldType;
-    customQuestion?: boolean;
-    ats?: string;
+  name: string;
+  type: JobProfileFieldType;
+  customQuestion?: boolean;
+  ats?: string;
 }
 
 export enum JobProfileFieldType {
-    INPUT = 'input',
-    COVER_LETTER = 'cover_letter',
-    RESUME = 'resume',
-    EMAIL = 'email',
-    PHONE = 'phone',
-    DATE = 'date',
-    LINKEDIN = 'linkedin',
-    WEBSITE = 'website',
-    CITY = 'city',
-    STATE = 'state',
-    ZIP = 'zip'
+  INPUT = 'input',
+  COVER_LETTER = 'cover_letter',
+  RESUME = 'resume',
+  EMAIL = 'email',
+  PHONE = 'phone',
+  DATE = 'date',
+  LINKEDIN = 'linkedin',
+  WEBSITE = 'website',
+  CITY = 'city',
+  STATE = 'state',
+  ZIP = 'zip'
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -132,12 +142,15 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
   const fetchProfile = async (profileId: string): Promise<void> => {
     const authStore = useAuthStore();
     try {
-      const response = await axios.get(`${API_URL}/api/job-profiles/${profileId}`, {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-          'Content-Type': 'application/json'
+      const response = await axios.get(
+        `${API_URL}/api/job-profiles/${profileId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authStore.accessToken}`,
+            'Content-Type': 'application/json'
+          }
         }
-      });
+      );
 
       const profile = response.data;
 
@@ -167,12 +180,16 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
       loading.value = true;
       error.value = '';
 
-      const response = await axios.post(`${API_URL}/api/job-profiles`, profileData, {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-          'Content-Type': 'application/json'
+      const response = await axios.post(
+        `${API_URL}/api/job-profiles`,
+        profileData,
+        {
+          headers: {
+            Authorization: `Bearer ${authStore.accessToken}`,
+            'Content-Type': 'application/json'
+          }
         }
-      });
+      );
 
       const newProfile = response.data;
       profiles.value.push(newProfile);
@@ -207,8 +224,9 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
         return false;
       }
 
-      const response = await axios.put(`${API_URL}/api/job-profiles/${profileId}`, 
-        { ...currentProfile, ...updates }, 
+      const response = await axios.put(
+        `${API_URL}/api/job-profiles/${profileId}`,
+        { ...currentProfile, ...updates },
         {
           headers: {
             Authorization: `Bearer ${authStore.accessToken}`,
@@ -292,7 +310,9 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
     try {
       error.value = '';
       if (!selectedProfileId.value || !id || !atsSource) {
-        throw new Error(`missing required fields selectedProfileId=${selectedProfileId?.value}, id=${id}, atsSource=${atsSource}`)
+        throw new Error(
+          `missing required fields selectedProfileId=${selectedProfileId?.value}, id=${id}, atsSource=${atsSource}`
+        );
       }
 
       // Validate the profile first
@@ -311,7 +331,6 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
         }
       );
 
-      
       fieldsNeededForProfile.value = results.data.data.missingFields;
       loading.value = false;
       validating.value = false;

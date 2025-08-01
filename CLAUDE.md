@@ -460,7 +460,7 @@ const dragCounter = ref(0);
 const handleDragOver = (event: DragEvent) => {
   event.preventDefault();
   dragCounter.value++;
-  
+
   const types = event.dataTransfer?.types || [];
   if (types.includes('Files')) {
     isDragOver.value = true;
@@ -470,7 +470,7 @@ const handleDragOver = (event: DragEvent) => {
 const handleDragLeave = (event: DragEvent) => {
   event.preventDefault();
   dragCounter.value--;
-  
+
   // Only hide overlay when leaving all drag areas
   if (dragCounter.value <= 0) {
     isDragOver.value = false;
@@ -482,7 +482,7 @@ const handleDrop = (event: DragEvent) => {
   event.preventDefault();
   isDragOver.value = false;
   dragCounter.value = 0;
-  
+
   const files = event.dataTransfer?.files;
   if (files && files.length > 0) {
     const file = files[0];
@@ -525,27 +525,27 @@ const showErrors = ref(false);
 ```typescript
 const handleUpload = async () => {
   showErrors.value = true;
-  
+
   // Validation
   if (!profileName.value.trim()) {
     error.value = 'Profile name is required.';
     return;
   }
-  
+
   if (!selectedFile.value) {
     error.value = 'Please select a PDF file to upload.';
     return;
   }
-  
+
   loading.value = true;
   error.value = '';
   success.value = '';
-  
+
   try {
     const formData = new FormData();
     formData.append('file', selectedFile.value);
     formData.append('profile_name', profileName.value.trim());
-    
+
     const response = await axios.post(
       '/api/job-profiles/parse-resume',
       formData,
@@ -556,11 +556,11 @@ const handleUpload = async () => {
         }
       }
     );
-    
+
     if (response.data.success) {
       const { profile, parsedData } = response.data;
       success.value = `Profile created successfully! Extracted ${parsedData.fieldsExtracted} fields, ${parsedData.skillsFound} skills, and ${parsedData.experienceEntries} work experiences.`;
-      
+
       // Emit success with delay to show message
       setTimeout(() => {
         emit('success', profile);
@@ -571,7 +571,8 @@ const handleUpload = async () => {
     if (err.response?.data?.error) {
       error.value = err.response.data.error;
     } else {
-      error.value = 'Failed to parse resume and create profile. Please try again.';
+      error.value =
+        'Failed to parse resume and create profile. Please try again.';
     }
   } finally {
     loading.value = false;
@@ -592,25 +593,25 @@ const handleUpload = async () => {
 ```vue
 <template>
   <!-- Profile Selector and Actions -->
-  <div class="flex items-center space-x-6 mb-6">
+  <div class="mb-6 flex items-center space-x-6">
     <!-- Profile Dropdown -->
     <div v-if="profiles.length > 0" class="relative flex-1">
       <select v-model="selectedProfileId" class="...">
         <!-- Profile options -->
       </select>
     </div>
-    
+
     <!-- Spacer when no dropdown -->
     <div v-if="profiles.length === 0" class="flex-1"></div>
-    
+
     <!-- Button Group -->
-    <div class="flex items-center space-x-3 flex-shrink-0">
+    <div class="flex flex-shrink-0 items-center space-x-3">
       <!-- Resume Upload Component -->
-      <ResumeDropBox 
+      <ResumeDropBox
         :can-create-profile="canCreateProfile"
-        @profile-created="handleResumeProfileCreated" 
+        @profile-created="handleResumeProfileCreated"
       />
-      
+
       <!-- Create New Profile Button -->
       <button
         :disabled="!canCreateProfile"
@@ -630,10 +631,10 @@ const handleUpload = async () => {
 const handleResumeProfileCreated = (profile: any) => {
   // Refresh profiles list
   jobProfilesStore.fetchProfiles();
-  
+
   // Select the newly created profile
   jobProfilesStore.selectProfile(profile.id);
-  
+
   // Show success message
   console.log('Profile created from resume:', profile);
 };
@@ -972,6 +973,245 @@ export const use[FeatureName]Store = defineStore('[featureName]', () => {
 - Use proper null checking and optional chaining
 - Handle async operations with proper error typing
 
+## Modal UX Protocol
+
+**🚨 CRITICAL UX REQUIREMENT**: Modal interactions MUST follow strict user experience guidelines to prevent jarring and confusing interfaces.
+
+### Modal-on-Modal Prevention
+
+**NEVER create a situation where a modal opens another modal.** This creates poor user experience through:
+
+- **Navigation Confusion**: Users lose track of their location in the interface
+- **Focus Management Issues**: Screen readers and keyboard navigation become problematic
+- **Visual Hierarchy Problems**: Multiple modal layers create z-index conflicts and visual confusion
+- **Mobile UX Degradation**: Stacked modals are particularly problematic on small screens
+- **Escape Path Confusion**: Users don't know which modal will close when pressing escape
+
+### Approved Modal UX Patterns
+
+#### ✅ **Inline Content Expansion**
+
+Replace modal-on-modal with inline content that expands within the existing modal:
+
+```vue
+<!-- GOOD: Inline expansion within existing modal -->
+<div class="modal">
+  <!-- Normal modal content -->
+  <div v-if="!showingForm">
+    <button @click="showingForm = true">Edit Details</button>
+  </div>
+
+  <!-- Expanded inline form -->
+  <div v-if="showingForm" class="space-y-4">
+    <form @submit="handleSubmit">
+      <!-- Form fields -->
+    </form>
+    <button @click="showingForm = false">Back</button>
+  </div>
+</div>
+```
+
+#### ✅ **Modal Replacement**
+
+Replace the current modal content entirely:
+
+```vue
+<!-- GOOD: Modal content replacement -->
+<template>
+  <div class="modal">
+    <!-- Step 1: Initial content -->
+    <div v-if="currentStep === 'initial'">
+      <button @click="currentStep = 'form'">Continue</button>
+    </div>
+
+    <!-- Step 2: Form content -->
+    <div v-if="currentStep === 'form'">
+      <form @submit="handleSubmit">
+        <!-- Form fields -->
+      </form>
+      <button @click="currentStep = 'initial'">Back</button>
+    </div>
+  </div>
+</template>
+```
+
+#### ✅ **Sequential Modal Flow**
+
+Close current modal before opening the next:
+
+```vue
+<script setup lang="ts">
+const showFirstModal = ref(true);
+const showSecondModal = ref(false);
+
+const proceedToNext = () => {
+  showFirstModal.value = false;
+  // Allow DOM to update before showing next modal
+  nextTick(() => {
+    showSecondModal.value = true;
+  });
+};
+</script>
+```
+
+#### ✅ **Sidebar/Drawer Expansion**
+
+Use expandable sidebars or drawers instead of additional modals:
+
+```vue
+<!-- GOOD: Expandable sidebar -->
+<div class="modal">
+  <div class="flex">
+    <div class="main-content">
+      <!-- Primary modal content -->
+    </div>
+
+    <div v-if="showSidebar" class="sidebar border-l">
+      <!-- Additional content in sidebar -->
+    </div>
+  </div>
+</div>
+```
+
+### Implementation Requirements
+
+#### **Before Creating Any Modal**
+
+1. **Check Existing Modals**: Ensure no other modals are currently open
+2. **Plan Content Flow**: Design the complete user journey within a single modal
+3. **Consider Alternatives**: Evaluate if the content could be inline or on a separate page
+4. **Test Escape Paths**: Ensure users can always return to the previous state
+
+#### **Modal State Management**
+
+```vue
+<script setup lang="ts">
+// Single modal state - never have multiple modals open
+const currentModal = ref<'none' | 'profile' | 'settings' | 'confirmation'>(
+  'none'
+);
+
+// Helper methods
+const openModal = (modalType: string) => {
+  currentModal.value = modalType;
+};
+
+const closeModal = () => {
+  currentModal.value = 'none';
+};
+
+// Replace modal content instead of opening new modal
+const switchModal = (newModalType: string) => {
+  currentModal.value = newModalType;
+};
+</script>
+```
+
+#### **Content Organization Patterns**
+
+**Multi-Step Forms**: Use step indicators and content switching:
+
+```vue
+<template>
+  <div class="modal">
+    <!-- Step indicator -->
+    <div class="step-indicator">
+      <span :class="{ active: step === 1 }">Step 1</span>
+      <span :class="{ active: step === 2 }">Step 2</span>
+      <span :class="{ active: step === 3 }">Step 3</span>
+    </div>
+
+    <!-- Dynamic content based on step -->
+    <component :is="currentStepComponent" @next="nextStep" @back="prevStep" />
+  </div>
+</template>
+```
+
+**Expandable Sections**: Use collapsible content areas:
+
+```vue
+<template>
+  <div class="modal">
+    <div class="space-y-4">
+      <!-- Always visible content -->
+      <div class="main-content">
+        <!-- Core modal content -->
+      </div>
+
+      <!-- Expandable additional content -->
+      <div v-if="showAdvanced" class="additional-content border-t pt-4">
+        <!-- Expanded content -->
+      </div>
+
+      <button @click="showAdvanced = !showAdvanced">
+        {{ showAdvanced ? 'Hide' : 'Show' }} Advanced Options
+      </button>
+    </div>
+  </div>
+</template>
+```
+
+### Code Review Requirements
+
+#### **Mandatory Modal Checks**
+
+All code reviews MUST verify:
+
+1. **No Nested Modals**: No component opens a modal while another modal is active
+2. **Proper State Management**: Only one modal state active at a time
+3. **Clear Navigation**: Users can always understand their current location
+4. **Escape Paths**: Clear methods to return to previous states
+5. **Mobile Compatibility**: Modal interactions work on small screens
+
+#### **Violation Examples**
+
+```vue
+<!-- ❌ BAD: Modal opening another modal -->
+<template>
+  <div class="first-modal">
+    <button @click="showSecondModal = true">Open Settings</button>
+  </div>
+
+  <div v-if="showSecondModal" class="second-modal">
+    <!-- This creates modal-on-modal -->
+  </div>
+</template>
+
+<!-- ❌ BAD: Confirmation modal from existing modal -->
+<template>
+  <div class="main-modal">
+    <button @click="showConfirmation = true">Delete</button>
+
+    <ConfirmationModal v-if="showConfirmation" />
+  </div>
+</template>
+```
+
+### Exception Handling
+
+#### **Rare Acceptable Cases**
+
+The ONLY acceptable modal-on-modal scenarios are:
+
+1. **System-Level Alerts**: Browser-native `alert()`, `confirm()`, or `prompt()` dialogs
+2. **Critical Error States**: Unexpected errors that require immediate user attention
+3. **Browser Security Dialogs**: File upload, location access, camera permissions
+
+Even in these cases, prefer inline alternatives when possible.
+
+#### **Alternative Solutions**
+
+Instead of modal-on-modal, use:
+
+- **Toast Notifications**: For confirmations and feedback
+- **Inline Alerts**: For warnings and status messages
+- **Page Navigation**: For complex multi-step processes
+- **Sidebar Panels**: For additional information or actions
+- **Dropdown Menus**: For action selections
+- **Expandable Sections**: For showing/hiding content
+
+This protocol ensures consistent, user-friendly modal interactions throughout the application while maintaining accessibility and mobile compatibility.
+
 ## Best Practices
 
 ### Component Design
@@ -1016,8 +1256,8 @@ This project uses Vitest for component testing. Vitest is a Vite-native testing 
 
 ### Vitest Setup
 
--   **Configuration**: The Vitest configuration is in `vitest.config.ts`. It sets up the testing environment, including enabling globals and using `jsdom` to simulate a browser.
--   **Setup File**: The `src/tests/setup.ts` file is used for global test setup, such as cleaning up the testing environment after each test.
+- **Configuration**: The Vitest configuration is in `vitest.config.ts`. It sets up the testing environment, including enabling globals and using `jsdom` to simulate a browser.
+- **Setup File**: The `src/tests/setup.ts` file is used for global test setup, such as cleaning up the testing environment after each test.
 
 ### Test File Structure
 
@@ -1068,9 +1308,9 @@ describe('JobCard', () => {
       props: { job },
       global: {
         stubs: {
-          RouterLink: RouterLinkStub,
-        },
-      },
+          RouterLink: RouterLinkStub
+        }
+      }
     });
 
     // 2. Make assertions about the rendered output
@@ -1083,15 +1323,16 @@ describe('JobCard', () => {
 
 ### How to Run Tests
 
--   **Run Once**: To run all component tests once, use:
-    ```bash
-    npm run test:unit
-    ```
+- **Run Once**: To run all component tests once, use:
 
--   **Watch Mode**: To run tests in watch mode, which automatically re-runs tests when files change, use:
-    ```bash
-    npm run test:unit:watch
-    ```
+  ```bash
+  npm run test:unit
+  ```
+
+- **Watch Mode**: To run tests in watch mode, which automatically re-runs tests when files change, use:
+  ```bash
+  npm run test:unit:watch
+  ```
 
 ## End-to-End Testing with Cypress
 
@@ -1099,9 +1340,9 @@ This project uses Cypress for end-to-end (E2E) testing to ensure that key user w
 
 ### Cypress Setup
 
--   **Configuration**: The main Cypress configuration is in `cypress.config.ts`. It sets the `baseUrl` for the tests and specifies the locations of support and test files.
--   **TypeScript**: A `cypress/tsconfig.json` file is included to provide TypeScript support for the tests.
--   **ESLint**: The main `eslint.config.mjs` is configured with `eslint-plugin-cypress` to lint test files according to best practices.
+- **Configuration**: The main Cypress configuration is in `cypress.config.ts`. It sets the `baseUrl` for the tests and specifies the locations of support and test files.
+- **TypeScript**: A `cypress/tsconfig.json` file is included to provide TypeScript support for the tests.
+- **ESLint**: The main `eslint.config.mjs` is configured with `eslint-plugin-cypress` to lint test files according to best practices.
 
 ### Test File Structure
 
@@ -1118,8 +1359,8 @@ frontend/
     └── tsconfig.json       # TypeScript configuration for Cypress tests
 ```
 
--   **`cypress/e2e/`**: This is where all the test files (specs) are located. Test files should have a `.cy.ts` extension.
--   **`cypress/support/`**: This directory contains reusable code, such as custom commands, that can be used across different tests.
+- **`cypress/e2e/`**: This is where all the test files (specs) are located. Test files should have a `.cy.ts` extension.
+- **`cypress/support/`**: This directory contains reusable code, such as custom commands, that can be used across different tests.
 
 ### How to Write a Test
 
@@ -1155,14 +1396,17 @@ A custom command `cy.login()` has been created in `cypress/support/commands.ts` 
 
 Cypress.Commands.add('login', (email, roles = ['user']) => {
   // Intercept API calls to simulate a logged-in user
-  cy.intercept('POST', '/api/auth/send-magic-link', { statusCode: 200, body: { success: true } }).as('magicLink');
+  cy.intercept('POST', '/api/auth/send-magic-link', {
+    statusCode: 200,
+    body: { success: true }
+  }).as('magicLink');
   cy.intercept('GET', '/api/auth/profile', {
     statusCode: 200,
     body: {
       id: 'test-user-id',
       email,
-      roles,
-    },
+      roles
+    }
   }).as('profile');
 });
 ```
@@ -1187,13 +1431,15 @@ it('should allow admin users to access admin routes', () => {
 
 Make sure the frontend development server is running (`npm run dev`) before starting the tests.
 
--   **Interactive Mode**: To open the Cypress Test Runner and run tests interactively, use:
-    ```bash
-    npm run e2e
-    ```
-    This is ideal for development, as it allows you to see the tests run in a real browser and provides powerful debugging tools.
+- **Interactive Mode**: To open the Cypress Test Runner and run tests interactively, use:
 
--   **Headless Mode**: To run all tests non-interactively in the terminal (e.g., for CI/CD), use:
-    ```bash
-    npm run cy:run
-    ```
+  ```bash
+  npm run e2e
+  ```
+
+  This is ideal for development, as it allows you to see the tests run in a real browser and provides powerful debugging tools.
+
+- **Headless Mode**: To run all tests non-interactively in the terminal (e.g., for CI/CD), use:
+  ```bash
+  npm run cy:run
+  ```

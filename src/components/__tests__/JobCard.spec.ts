@@ -24,9 +24,9 @@ describe('JobCard', () => {
       global: {
         plugins: [createTestingPinia()],
         stubs: {
-          RouterLink: RouterLinkStub,
-        },
-      },
+          RouterLink: RouterLinkStub
+        }
+      }
     });
 
     expect(screen.getByText('Software Engineer')).toBeInTheDocument();

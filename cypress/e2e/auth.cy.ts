@@ -6,7 +6,9 @@ describe('Authorization', () => {
     cy.get('input[name="email"').type(email);
     cy.get('button[type="submit"]').click();
 
-    cy.contains('Check your email for a magic link to log in.').should('be.visible');
+    cy.contains('Check your email for a magic link to log in.').should(
+      'be.visible'
+    );
   });
 
   it('should redirect unauthenticated users from protected routes', () => {
@@ -26,6 +28,8 @@ describe('Authorization', () => {
     cy.login('user@example.com', ['user']);
     cy.visit('/employer-integrations');
     cy.url().should('not.include', '/employer-integrations');
-    cy.contains('You are not authorized to access this page.').should('be.visible');
+    cy.contains('You are not authorized to access this page.').should(
+      'be.visible'
+    );
   });
 });

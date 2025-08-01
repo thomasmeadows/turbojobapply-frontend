@@ -6,10 +6,9 @@ import path from 'path';
 export default defineConfig(({ mode }) => {
   // load env based on list below
   const everyEnv = loadEnv(mode, process.cwd(), '');
-  const filteredEnv = Object.keys(everyEnv).filter(e => 
-    e == 'VITE_API_URL'
-    || e == 'VITE_STRIPE_PUBLISHABLE_KEY'
-  )
+  const filteredEnv = Object.keys(everyEnv).filter(
+    (e) => e == 'VITE_API_URL' || e == 'VITE_STRIPE_PUBLISHABLE_KEY'
+  );
   const env: any = {};
   for (const envSelected of filteredEnv) {
     env[envSelected] = everyEnv[envSelected];
@@ -37,7 +36,7 @@ export default defineConfig(({ mode }) => {
     server: {
       // enable polling for wsl ubuntu
       watch: {
-        usePolling: true, // Enable polling for file changes
+        usePolling: true // Enable polling for file changes
       },
       // Configure proxy for development if needed
       proxy: {

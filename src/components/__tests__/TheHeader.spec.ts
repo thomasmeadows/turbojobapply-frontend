@@ -12,12 +12,12 @@ describe('TheHeader', () => {
       global: {
         plugins: [createTestingPinia()],
         stubs: {
-          RouterLink: RouterLinkStub,
+          RouterLink: RouterLinkStub
         },
         mocks: {
-          $route: { path: '/' },
-        },
-      },
+          $route: { path: '/' }
+        }
+      }
     });
 
     await nextTick();
@@ -31,17 +31,17 @@ describe('TheHeader', () => {
         plugins: [
           createTestingPinia({
             initialState: {
-              auth: { isAuthenticated: true },
-            },
-          }),
+              auth: { isAuthenticated: true }
+            }
+          })
         ],
         stubs: {
-          RouterLink: RouterLinkStub,
+          RouterLink: RouterLinkStub
         },
         mocks: {
-          $route: { path: '/' },
-        },
-      },
+          $route: { path: '/' }
+        }
+      }
     });
 
     const authStore = useAuthStore();
