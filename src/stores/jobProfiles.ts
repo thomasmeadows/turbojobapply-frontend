@@ -37,19 +37,80 @@ export interface JobProfile {
   }>;
   resume_file_name?: string;
   cover_letter_file_name?: string;
-  // ATS-specific custom question fields
-  ats_bamboo_custom_questions?: Record<string, any>;
-  ats_workday_custom_questions?: Record<string, any>;
-  ats_greenhouse_custom_questions?: Record<string, any>;
-  ats_adp_custom_questions?: Record<string, any>;
-  ats_jobvite_custom_questions?: Record<string, any>;
-  ats_breezy_custom_questions?: Record<string, any>;
-  ats_lever_custom_questions?: Record<string, any>;
-  ats_smartrecruiters_custom_questions?: Record<string, any>;
-  ats_dover_custom_questions?: Record<string, any>;
+  // ATS custom fields (normalized structure)
+  ats_custom_fields?: UserJobProfileATSCustomField[];
   created_at?: string;
   updated_at?: string;
   validating: boolean;
+}
+
+// ATS Custom Field interfaces (aligned with backend models)
+export interface UserJobProfileATSCustomField {
+  id: string;
+  user_job_profile_id: string;
+  ats_source_id: number;
+  input_type: ATSCustomFieldInputType;
+  ats_question_id: string;
+  question_options?: QuestionOption[];
+  question_text: string;
+  question_label: string;
+  question_answer?: string;
+  is_required: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface QuestionOption {
+  value: string;
+  label: string;
+}
+
+// Enum for ATS custom field input types
+export enum ATSCustomFieldInputType {
+  TEXT = 'text',
+  TEXTAREA = 'textarea',
+  SELECT = 'select',
+  RADIO = 'radio',
+  CHECKBOX = 'checkbox',
+  DATE = 'date',
+  NUMBER = 'number',
+  EMAIL = 'email',
+  PHONE = 'phone',
+  URL = 'url',
+  FILE = 'file'
+}
+
+// Request/Response DTOs for API calls
+export interface CreateATSCustomFieldRequest {
+  user_job_profile_id: string;
+  ats_source_id: number;
+  input_type: ATSCustomFieldInputType;
+  ats_question_id: string;
+  question_options?: QuestionOption[];
+  question_text: string;
+  question_label: string;
+  question_answer?: string;
+  is_required?: boolean;
+}
+
+export interface UpdateATSCustomFieldRequest
+  extends Partial<CreateATSCustomFieldRequest> {
+  id: string;
+}
+
+export interface BulkUpdateATSCustomFieldsRequest {
+  user_job_profile_id: string;
+  ats_source_id: number;
+  custom_fields: Array<{
+    id?: string; // If provided, update existing; if not, create new
+    ats_question_id: string;
+    input_type: ATSCustomFieldInputType;
+    question_text: string;
+    question_label: string;
+    question_options?: QuestionOption[];
+    question_answer?: string;
+    is_required?: boolean;
+  }>;
 }
 
 export interface JobApplyField {
@@ -65,12 +126,17 @@ export interface JobApplyField {
 export interface JobProfileField {
   name: string;
   type: JobProfileFieldType;
+  question?: string;
+  options?: Array<{ id: string; text: string }>;
   customQuestion?: boolean;
   ats?: string;
 }
 
 export enum JobProfileFieldType {
   INPUT = 'input',
+  SELECT = 'select',
+  YES_NO = 'yes_no',
+  CHECKBOX = 'checkbox',
   COVER_LETTER = 'cover_letter',
   RESUME = 'resume',
   EMAIL = 'email',
@@ -386,6 +452,151 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
     error.value = '';
   };
 
+  // ===========================================
+  // ATS CUSTOM FIELDS METHODS
+  // ===========================================
+
+  const fetchATSCustomFields = async (
+    profileId: string,
+    atsSourceId?: number
+  ): Promise<UserJobProfileATSCustomField[]> => {
+    const authStore = useAuthStore();
+    try {
+      const url = atsSourceId
+        ? `${API_URL}/api/job-profiles/${profileId}/ats-custom-fields?ats_source_id=${atsSourceId}`
+        : `${API_URL}/api/job-profiles/${profileId}/ats-custom-fields`;
+
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${authStore.accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      return response.data;
+    } catch (err: any) {
+      console.error('Error fetching ATS custom fields:', err);
+      if (err.response?.data?.error) {
+        error.value = err.response.data.error;
+      } else {
+        error.value = 'Failed to load ATS custom fields. Please try again.';
+      }
+      return [];
+    }
+  };
+
+  const createATSCustomField = async (
+    customFieldData: CreateATSCustomFieldRequest
+  ): Promise<UserJobProfileATSCustomField | null> => {
+    const authStore = useAuthStore();
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/job-profiles/ats-custom-fields`,
+        customFieldData,
+        {
+          headers: {
+            Authorization: `Bearer ${authStore.accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      return response.data;
+    } catch (err: any) {
+      console.error('Error creating ATS custom field:', err);
+      if (err.response?.data?.error) {
+        error.value = err.response.data.error;
+      } else {
+        error.value = 'Failed to create ATS custom field. Please try again.';
+      }
+      return null;
+    }
+  };
+
+  const updateATSCustomField = async (
+    customFieldData: UpdateATSCustomFieldRequest
+  ): Promise<UserJobProfileATSCustomField | null> => {
+    const authStore = useAuthStore();
+    try {
+      const response = await axios.put(
+        `${API_URL}/api/job-profiles/ats-custom-fields/${customFieldData.id}`,
+        customFieldData,
+        {
+          headers: {
+            Authorization: `Bearer ${authStore.accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      return response.data;
+    } catch (err: any) {
+      console.error('Error updating ATS custom field:', err);
+      if (err.response?.data?.error) {
+        error.value = err.response.data.error;
+      } else {
+        error.value = 'Failed to update ATS custom field. Please try again.';
+      }
+      return null;
+    }
+  };
+
+  const deleteATSCustomField = async (
+    customFieldId: string
+  ): Promise<boolean> => {
+    const authStore = useAuthStore();
+    try {
+      await axios.delete(
+        `${API_URL}/api/job-profiles/ats-custom-fields/${customFieldId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authStore.accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      return true;
+    } catch (err: any) {
+      console.error('Error deleting ATS custom field:', err);
+      if (err.response?.data?.error) {
+        error.value = err.response.data.error;
+      } else {
+        error.value = 'Failed to delete ATS custom field. Please try again.';
+      }
+      return false;
+    }
+  };
+
+  const bulkUpdateATSCustomFields = async (
+    bulkUpdateData: BulkUpdateATSCustomFieldsRequest
+  ): Promise<UserJobProfileATSCustomField[]> => {
+    const authStore = useAuthStore();
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/job-profiles/${bulkUpdateData.user_job_profile_id}/ats-custom-fields/bulk`,
+        bulkUpdateData,
+        {
+          headers: {
+            Authorization: `Bearer ${authStore.accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      return response.data;
+    } catch (err: any) {
+      console.error('Error bulk updating ATS custom fields:', err);
+      if (err.response?.data?.error) {
+        error.value = err.response.data.error;
+      } else {
+        error.value =
+          'Failed to bulk update ATS custom fields. Please try again.';
+      }
+      return [];
+    }
+  };
+
   return {
     // State
     profiles,
@@ -410,6 +621,13 @@ export const useJobProfilesStore = defineStore('jobProfiles', () => {
     validateProfile,
     submitApplication,
     clearError,
-    resetStore
+    resetStore,
+
+    // ATS Custom Field Actions
+    fetchATSCustomFields,
+    createATSCustomField,
+    updateATSCustomField,
+    deleteATSCustomField,
+    bulkUpdateATSCustomFields
   };
 });
