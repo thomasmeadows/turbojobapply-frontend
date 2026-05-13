@@ -276,7 +276,7 @@ export const useAuthStore = defineStore('auth', {
         async (error) => {
           const originalRequest = error.config;
 
-          if (error.response?.status === 401 && !originalRequest._retry) {
+          if (error.response?.status === 401 && !originalRequest._retry && this.refreshToken) {
             console.error('axios intercepter, 401');
             originalRequest._retry = false;
 
