@@ -1,12 +1,31 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
 import { useJobsStore } from '../../stores/jobs';
+import { useFeatureFlagStore } from '../../stores/featureFlags';
 import LocationTypeahead from '../common/LocationTypeahead.vue';
 
 const jobsStore = useJobsStore();
+const featureFlagStore = useFeatureFlagStore();
+
+const atsOptions = [
+  { value: '4', label: 'ADP', flag: 'search_adp' },
+  { value: '1', label: 'BambooHR', flag: 'search_bamboohr' },
+  { value: '6', label: 'Breezy', flag: 'search_breezy' },
+  { value: '9', label: 'Dover', flag: 'search_dover' },
+  { value: '3', label: 'GreenhouseIO', flag: 'search_greenhouse' },
+  { value: '5', label: 'Jobvite', flag: 'search_jobvite' },
+  { value: '7', label: 'Lever', flag: 'search_lever' },
+  { value: '8', label: 'SmartRecruiters', flag: 'search_smartrecruiters' },
+  { value: '2', label: 'Workday', flag: 'search_workday' },
+];
+
+const filteredAtsOptions = computed(() => {
+  return atsOptions.filter(option => featureFlagStore.isEnabled(option.flag));
+});
 
 // Get the location and category options from the store
 const countries = computed(() => jobsStore.countries);
+// ...
 
 // Handle location selection from typeahead
 const handleLocationSelect = (location: any) => {
@@ -157,15 +176,13 @@ watch(
           <h3 class="mb-3 text-sm font-medium text-gray-900">Job Source</h3>
           <select v-model="jobsStore.jobSource" class="form-input">
             <option value="">All Job Sources</option>
-            <option value="4">ADP</option>
-            <option value="1">BambooHR</option>
-            <option value="6">Breezy</option>
-            <option value="9">Dover</option>
-            <option value="3">GreenhouseIO</option>
-            <option value="5">Jobvite</option>
-            <option value="7">Lever</option>
-            <option value="8">SmartRecruiters</option>
-            <option value="2">Workday</option>
+            <option
+              v-for="option in filteredAtsOptions"
+              :key="option.value"
+              :value="option.value"
+            >
+              {{ option.label }}
+            </option>
           </select>
         </div>
 

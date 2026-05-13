@@ -10,6 +10,7 @@ import {
 } from 'date-fns';
 import { useJobsStore } from '../stores/jobs';
 import { useAuthStore } from '../stores/auth';
+import { useFeatureFlagStore } from '../stores/featureFlags';
 import type { Job } from '../types/job';
 import TurboApplyModal from '@components/job-applications/TurboApplyModal.vue';
 
@@ -17,6 +18,7 @@ const route = useRoute();
 const router = useRouter();
 const jobsStore = useJobsStore();
 const authStore = useAuthStore();
+const featureFlagStore = useFeatureFlagStore();
 const loading = ref(true);
 const relatedJobs = ref<Job[]>([]);
 const showTurboApplyModal = ref(false);
@@ -42,16 +44,8 @@ const isPremium = computed(() => authStore.isPremium);
 const canTurboApply = computed(() => {
   if (!job.value || !isAuthenticated.value) return false;
   const atsSource: any = jobsStore.getCurrentJobAts();
-  // Only enable for BambooHR jobs for now
-  if (
-    atsSource != 'adp' &&
-    atsSource != 'workday' &&
-    atsSource != 'lever' &&
-    atsSource != 'smartrecruiters'
-  ) {
-    return true;
-  }
-  return false;
+  const flagName = `quick_apply_${atsSource}`;
+  return featureFlagStore.isEnabled(flagName);
 });
 
 const formattedDate = computed(() => {

@@ -3,6 +3,7 @@ import { createPinia } from 'pinia';
 import { createHead } from '@unhead/vue/client';
 import App from './App.vue';
 import router from './router';
+import { useFeatureFlagStore } from './stores/featureFlags';
 import { useAuthStore } from './stores/auth';
 import './assets/styles/fonts.css';
 import './assets/styles/main.css';
@@ -15,8 +16,12 @@ app.use(pinia);
 app.use(router);
 app.use(head);
 
-// Set up axios interceptor for automatic token refresh
+// Initialize stores
+const featureFlagStore = useFeatureFlagStore();
+featureFlagStore.fetchFeatureFlags();
+
 const authStore = useAuthStore();
 authStore.setupAxiosInterceptor();
 
 app.mount('#app');
+

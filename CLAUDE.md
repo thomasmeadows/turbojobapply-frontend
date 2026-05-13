@@ -69,6 +69,8 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your-stripe-publishable-key
 - `src/stores/auth.ts` - Authentication state and methods
 - `src/stores/jobs.ts` - Job search and bookmark state
 - `src/stores/jobProfiles.ts` - Job profiles management and CRUD operations
+- `src/stores/featureFlags.ts` - Feature flag management and ATS service toggling
+
 
 ### Views (Pages)
 
