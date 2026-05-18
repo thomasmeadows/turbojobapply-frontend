@@ -11,7 +11,7 @@ export const useFeatureFlagStore = defineStore('featureFlags', {
     async fetchFeatureFlags() {
       this.loading = true;
       try {
-        const response = await axios.get('/api/features');
+        const response = await axios.get('/v1/api/features');
         this.flags = response.data;
       } catch (err: any) {
         this.error = 'Failed to load feature flags';
